@@ -1,0 +1,41 @@
+# Eclipse 메타데이터 중 개인 설정 (.project / .classpath / .settings는 공유)
+# .settings/  # 팀 공유를 위해 커밋
+# .project    # 팀 공유를 위해 커밋
+# .classpath  # 팀 공유를 위해 커밋
+
+# Java 컴파일 결과
+*.class
+build/
+target/
+bin/
+out/
+*.log
+hs_err_pid*
+
+# 사용자 업로드 파일 (각 PC 로컬에만 보관)
+src/main/webapp/resources/upload/profile/*
+!src/main/webapp/resources/upload/profile/.gitkeep
+src/main/webapp/resources/upload/recipe/*
+!src/main/webapp/resources/upload/recipe/.gitkeep
+src/main/webapp/resources/upload/step/*
+!src/main/webapp/resources/upload/step/.gitkeep
+src/main/webapp/resources/upload/theme/*
+!src/main/webapp/resources/upload/theme/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE 외
+.idea/
+*.iml
+.vscode/
+
+# 비밀 파일
+*.local.properties
+src/main/resources/db.properties
+
+# jar는 반드시 커밋
+!src/main/webapp/WEB-INF/lib/
+!src/main/webapp/WEB-INF/lib/*.jar

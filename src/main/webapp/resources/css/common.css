@@ -1,0 +1,482 @@
+/* ========================================================
+   BGGChef - 방구석셰프들
+   만개의레시피 벤치마킹 / 빨강 + 흰색 톤
+   ======================================================== */
+
+:root {
+    --bggchef-primary: #DC3545;          /* 메인 빨강 */
+    --bggchef-primary-hover: #C92A2A;    /* 호버 진한 빨강 */
+    --bggchef-primary-light: #FFF5F5;    /* 옅은 빨강 (배경) */
+    --bggchef-primary-soft: #FFE3E3;     /* 살짝 더 진한 옅은 빨강 */
+    --bggchef-text: #212529;
+    --bggchef-muted: #6C757D;
+    --bggchef-border: #E9ECEF;
+    --bggchef-bg: #F8F9FA;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background-color: var(--bggchef-bg);
+    color: var(--bggchef-text);
+    margin: 0;
+    line-height: 1.6;
+}
+
+a { text-decoration: none; color: inherit; }
+a:hover { text-decoration: none; }
+
+/* ============================================
+   상단 헤더
+   ============================================ */
+.bggchef-header {
+    background-color: white;
+    border-bottom: 1px solid var(--bggchef-border);
+    padding: 18px 0;
+}
+
+.bggchef-logo {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--bggchef-primary) !important;
+    letter-spacing: -1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.bggchef-logo:hover { color: var(--bggchef-primary-hover) !important; }
+.bggchef-logo .logo-icon { font-size: 1.9rem; }
+
+/* 검색바 */
+.bggchef-search {
+    max-width: 600px;
+    position: relative;
+    margin: 0 auto;
+}
+.bggchef-search input {
+    border: 2px solid var(--bggchef-primary);
+    border-radius: 30px;
+    padding: 11px 56px 11px 22px;
+    width: 100%;
+    font-size: 0.95rem;
+    background: white;
+    transition: box-shadow 0.2s;
+}
+.bggchef-search input:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.12);
+}
+.bggchef-search button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bggchef-primary);
+    color: white;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.bggchef-search button:hover { background: var(--bggchef-primary-hover); }
+
+/* 우측 액션 아이콘 */
+.bggchef-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.bggchef-icon-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--bggchef-primary-light);
+    color: var(--bggchef-primary) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+.bggchef-icon-btn:hover {
+    background: var(--bggchef-primary);
+    color: white !important;
+}
+.bggchef-icon-btn.write {
+    background: white;
+    border-color: var(--bggchef-primary);
+}
+.bggchef-icon-btn.write:hover {
+    background: var(--bggchef-primary);
+}
+
+/* ============================================
+   GNB (글로벌 네비)
+   ============================================ */
+.bggchef-gnb {
+    background-color: var(--bggchef-primary);
+    border-bottom: 3px solid var(--bggchef-primary-hover);
+}
+.bggchef-gnb .nav { flex-wrap: nowrap; overflow-x: auto; }
+.bggchef-gnb .nav-link {
+    color: rgba(255, 255, 255, 0.88) !important;
+    font-weight: 600;
+    font-size: 1.05rem;
+    padding: 16px 28px;
+    border-radius: 0;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.bggchef-gnb .nav-link:hover {
+    color: white !important;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.bggchef-gnb .nav-link.active {
+    color: white !important;
+    font-weight: 700;
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow: inset 0 -3px 0 white;
+}
+
+/* ============================================
+   섹션 카드 (메인 콘텐츠 박스)
+   ============================================ */
+.section-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--bggchef-text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.section-title .accent { color: var(--bggchef-primary); }
+
+.btn-more {
+    background: white;
+    color: var(--bggchef-muted);
+    border: 1px solid var(--bggchef-border);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-more:hover {
+    background: var(--bggchef-primary);
+    color: white;
+    border-color: var(--bggchef-primary);
+}
+
+/* ============================================
+   레시피 카드
+   ============================================ */
+.recipe-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    background: white;
+    cursor: pointer;
+}
+.recipe-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.18);
+}
+.recipe-card-img-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--bggchef-primary-light);
+    aspect-ratio: 1 / 1;
+}
+.recipe-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+}
+.recipe-card:hover .recipe-card-img { transform: scale(1.05); }
+
+.rank-badge {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: var(--bggchef-primary);
+    color: white;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    z-index: 2;
+}
+
+.like-badge {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    z-index: 2;
+}
+
+.recipe-card-body {
+    padding: 12px 4px 8px;
+}
+.recipe-card-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--bggchef-text);
+    line-height: 1.4;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.7em;
+}
+.recipe-meta {
+    font-size: 0.8rem;
+    color: var(--bggchef-muted);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.recipe-meta .rating {
+    color: var(--bggchef-primary);
+    font-weight: 700;
+}
+
+/* ============================================
+   캐러셀 화살표
+   ============================================ */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px; height: 42px;
+    background: white;
+    border: 1px solid var(--bggchef-border);
+    border-radius: 50%;
+    color: var(--bggchef-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    font-size: 1.1rem;
+}
+.carousel-arrow:hover {
+    background: var(--bggchef-primary);
+    color: white;
+    border-color: var(--bggchef-primary);
+}
+.carousel-arrow.prev { left: 8px; }
+.carousel-arrow.next { right: 8px; }
+
+/* ============================================
+   히어로 배너
+   ============================================ */
+.hero-banner {
+    background: linear-gradient(135deg, var(--bggchef-primary) 0%, #FF7B7B 100%);
+    color: white;
+    padding: 45px 40px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.hero-banner::before {
+    content: '🍳';
+    position: absolute;
+    font-size: 120px;
+    opacity: 0.15;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.hero-banner h2 {
+    font-weight: 800;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    position: relative;
+}
+.hero-banner .highlight {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 2px 12px;
+    border-radius: 4px;
+}
+.hero-banner p {
+    margin: 0;
+    opacity: 0.95;
+    position: relative;
+}
+
+/* ============================================
+   셰프 카드 (랭킹)
+   ============================================ */
+.chef-card {
+    text-align: center;
+    padding: 20px 12px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--bggchef-border);
+    transition: all 0.25s;
+    height: 100%;
+}
+.chef-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.15);
+    border-color: var(--bggchef-primary);
+}
+.chef-avatar-wrap {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 12px;
+}
+.chef-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--bggchef-primary-light);
+    background: var(--bggchef-bg);
+}
+.chef-rank-badge {
+    position: absolute;
+    top: -4px; left: -4px;
+    background: var(--bggchef-primary);
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    line-height: 32px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 2px solid white;
+}
+.chef-name {
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 4px 0 2px;
+    color: var(--bggchef-text);
+}
+.chef-stat {
+    font-size: 0.8rem;
+    color: var(--bggchef-muted);
+}
+
+/* ============================================
+   카테고리 칩
+   ============================================ */
+.category-chip {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--bggchef-primary-light);
+    color: var(--bggchef-primary);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 4px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+.category-chip:hover, .category-chip.active {
+    background: var(--bggchef-primary);
+    color: white;
+}
+
+/* ============================================
+   폼 (회원가입, 로그인, 작성)
+   ============================================ */
+.form-control:focus, .form-select:focus {
+    border-color: var(--bggchef-primary);
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+.form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    max-width: 480px;
+    margin: 30px auto;
+}
+.form-card h2 {
+    text-align: center;
+    color: var(--bggchef-primary);
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+/* ============================================
+   버튼 (Bootstrap override)
+   ============================================ */
+.btn-danger, .btn-primary {
+    background-color: var(--bggchef-primary) !important;
+    border-color: var(--bggchef-primary) !important;
+    font-weight: 500;
+}
+.btn-danger:hover, .btn-primary:hover {
+    background-color: var(--bggchef-primary-hover) !important;
+    border-color: var(--bggchef-primary-hover) !important;
+}
+.btn-outline-danger {
+    color: var(--bggchef-primary) !important;
+    border-color: var(--bggchef-primary) !important;
+}
+.btn-outline-danger:hover {
+    background-color: var(--bggchef-primary) !important;
+    color: white !important;
+}
+.text-danger { color: var(--bggchef-primary) !important; }
+.bg-danger { background-color: var(--bggchef-primary) !important; }
+.badge.bg-danger { background-color: var(--bggchef-primary) !important; }
+.border-danger { border-color: var(--bggchef-primary) !important; }
+
+/* ============================================
+   푸터
+   ============================================ */
+.bggchef-footer {
+    background: #2C2C2C;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 30px 0;
+    margin-top: 60px;
+    font-size: 0.9rem;
+}
+.bggchef-footer a { color: rgba(255, 255, 255, 0.9); }
+
+/* ============================================
+   반응형
+   ============================================ */
+@media (max-width: 768px) {
+    .bggchef-header { padding: 12px 0; }
+    .bggchef-logo { font-size: 1.4rem; }
+    .section-card { padding: 20px 16px; }
+    .hero-banner { padding: 30px 20px; }
+    .hero-banner h2 { font-size: 1.4rem; }
+    .carousel-arrow { display: none; }
+}
+
+/* ============================================
+   유틸 (가용성)
+   ============================================ */
+.text-bggchef { color: var(--bggchef-primary); }
+.bg-bggchef-light { background-color: var(--bggchef-primary-light); }
+.shadow-soft { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
