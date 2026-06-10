@@ -22,7 +22,7 @@ public class CategoryDAO {
     /** 대분류 목록 조회 */
     public List<CategoryLDTO> listL() throws SQLException {
         List<CategoryLDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM CATEGORY_L ORDER BY category_l_id ASC";
+        String sql = "SELECT * FROM CATEGORY_L ORDER BY categoryl_id ASC";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -30,7 +30,7 @@ public class CategoryDAO {
 
             while (rs.next()) {
                 CategoryLDTO dto = new CategoryLDTO();
-                dto.setCategorylId(rs.getInt("category_l_id"));
+                dto.setCategorylId(rs.getInt("categoryl_id"));
                 dto.setName(rs.getString("name"));
                 dto.setType(rs.getString("type"));
                 list.add(dto);
@@ -42,7 +42,7 @@ public class CategoryDAO {
     /** 특정 대분류에 속한 중분류 목록 조회 */
     public List<CategoryMDTO> listMByLId(int categoryLId) throws SQLException {
         List<CategoryMDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM CATEGORY_M WHERE category_l_id = ? ORDER BY category_m_id ASC";
+        String sql = "SELECT * FROM CATEGORY_M WHERE categoryl_id = ? ORDER BY categorym_id ASC";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -50,8 +50,8 @@ public class CategoryDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     CategoryMDTO dto = new CategoryMDTO();
-                    dto.setCategorymId(rs.getInt("category_m_id"));
-                    dto.setCategorylId(rs.getInt("category_l_id"));
+                    dto.setCategorymId(rs.getInt("categorym_id"));
+                    dto.setCategorylId(rs.getInt("categoryl_id"));
                     dto.setName(rs.getString("name"));
                     dto.setType(rs.getString("type"));
                     list.add(dto);
