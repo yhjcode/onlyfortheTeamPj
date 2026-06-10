@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script type="text/javascript" src="imsi.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>방구석셰프들 - 우리집만의 레시피 공유</title>
@@ -24,10 +25,18 @@
                 </div>
 
                 <!-- 중앙 검색바 -->
+               
                 <div class="col-md-7 col-12">
-                    <form action="${pageContext.request.contextPath}/recipe/search" method="get" class="bggchef-search">
+                  
+                    <form action="${pageContext.request.contextPath}/search/search.jsp" method="get" class="bggchef-search" onsubmit="return checkSearch()">
+                    <div class="select d-flex align-items-center">
+                   <select name="searchType" class="form-select bggchef-select">
+                    		<option value="recipe" selected>레시피</option>
+                    		<option value="theme">추천테마</option>
+                   			<option value="chef">쉐프</option></select>	
+                    		&nbsp;&nbsp;
                         <input type="search" name="keyword" placeholder="레시피, 재료, 셰프를 검색하세요" value="${param.keyword}">
-                        <button type="submit" aria-label="검색"><i class="bi bi-search"></i></button>
+                        <button type="submit" aria-label="검색"><i class="bi bi-search"></i></button></div>
                     </form>
                 </div>
 

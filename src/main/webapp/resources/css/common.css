@@ -47,7 +47,22 @@ a:hover { text-decoration: none; }
 }
 .bggchef-logo:hover { color: var(--bggchef-primary-hover) !important; }
 .bggchef-logo .logo-icon { font-size: 1.9rem; }
-
+/*검색바 옆 select 태그*/
+.select .form-select {
+    border: 2px solid #DC3545;
+    background-color: transparent !important;
+    
+    width: auto !important; 
+    max-width: 150px !important; 
+    display: inline-block;
+    flex: none !important;
+    
+    padding-right: 35px;
+    font-size: 0.95rem !important;
+    color: #333;
+    cursor: pointer !important;                 
+    
+}
 /* 검색바 */
 .bggchef-search {
     max-width: 600px;
