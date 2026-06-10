@@ -2,13 +2,31 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="container py-4">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">
+            <span class="text-danger">Theme:</span> ${theme.title}
+        </h2>
+        <div class="d-flex justify-content-center align-items-center gap-3 text-muted">
+            <span><i class="bi bi-eye"></i> 조회수 ${theme.viewCount}</span>
+            <span><i class="bi bi-calendar3"></i> ${theme.createdAt}</span>
+        </div>
+    </div>
+
     <div class="section-card mb-5">
         <h3 class="section-title mb-4">
             <i class="bi bi-list-ul text-danger me-2"></i> <span class="accent">테마 관련</span> 요리 상세 목록
         </h3>
         <!-- 테마 설명 영역 -->
-        <div class="mb-5 p-4 bg-light rounded-4">
-    <p class="mb-0 text-secondary" style="font-size: 20px; white-space: pre-wrap; line-height: 1.6;">${not empty theme.description ? theme.description : '테마 소개글을 준비 중입니다.'}</p>
+       <div class="mb-5 p-4 bg-light rounded-4">
+    <p class="mb-0 text-secondary" 
+       style="font-size: 18px; 
+              white-space: pre-line; 
+              line-height: 1.8; 
+              word-break: keep-all; 
+              text-align: center; 
+              letter-spacing: -0.3px;">
+        ${not empty theme.description ? theme.description : '테마 소개글을 준비 중입니다.'}
+    </p>
 </div>
         
         <c:forEach var="recipe" items="${recipeList}" varStatus="status">
