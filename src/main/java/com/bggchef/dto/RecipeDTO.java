@@ -1,6 +1,8 @@
 package com.bggchef.dto;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecipeDTO {
     private long recipeId;
@@ -18,6 +20,8 @@ public class RecipeDTO {
     private Date createdAt;
     private String nickname;
     private String categoryName;
+    private List<RecipeIngredientDTO> ingredients = new ArrayList<>();
+    private List<RecipeStepDTO> steps = new ArrayList<>();
 
     public long getRecipeId() { return recipeId; }
     public void setRecipeId(long recipeId) { this.recipeId = recipeId; }
@@ -49,4 +53,8 @@ public class RecipeDTO {
     public void setNickname(String nickname) { this.nickname = nickname; }
     public String getCategoryName() { return categoryName; }
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public List<RecipeIngredientDTO> getIngredients() { return ingredients; }
+    public void setIngredients(List<RecipeIngredientDTO> ingredients) { this.ingredients = ingredients; }
+    public List<RecipeStepDTO> getSteps() { return steps; }
+    public void setSteps(List<RecipeStepDTO> steps) { this.steps = steps; }
 }

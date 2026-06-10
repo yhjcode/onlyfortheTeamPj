@@ -1,6 +1,204 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<h2 class="mb-4">레시피 상세</h2>
-<div>
-    <!-- TODO: 메인이미지 / 인분 / 시간 / 난이도 / 재료 / 단계별 조리법 / 댓글 -->
-    <p class="text-muted">레시피 상세 내용</p>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<style>
+    .recipe-view-wrap { max-width: 980px; margin: 0 auto; }
+    .recipe-hero {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 22px;
+    }
+    .recipe-hero-img {
+        width: 100%;
+        max-height: 520px;
+        object-fit: cover;
+        background: #f4f4f4;
+    }
+    .recipe-hero-empty {
+        min-height: 320px;
+        background: #f7f7f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #adb5bd;
+        font-size: 4rem;
+    }
+    .recipe-hero-body { padding: 30px 36px; text-align: center; }
+    .recipe-title {
+        font-size: 2rem;
+        line-height: 1.35;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+    .recipe-desc {
+        color: #6c757d;
+        white-space: pre-line;
+        margin-bottom: 18px;
+    }
+    .recipe-meta-list {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .recipe-meta-item {
+        min-width: 110px;
+        color: #495057;
+        font-weight: 700;
+    }
+    .recipe-meta-item i {
+        display: block;
+        font-size: 1.8rem;
+        color: #dc3545;
+        margin-bottom: 6px;
+    }
+    .recipe-view-section {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 30px 36px;
+        margin-bottom: 22px;
+    }
+    .recipe-view-section h3 {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #24a043;
+        margin-bottom: 22px;
+    }
+    .ingredient-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 28px;
+    }
+    .ingredient-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        border-bottom: 1px solid #f1f3f5;
+        padding: 12px 0;
+    }
+    .ingredient-name { font-weight: 700; color: #343a40; }
+    .ingredient-amount { color: #868e96; text-align: right; }
+    .step-item {
+        display: grid;
+        grid-template-columns: 82px 1fr;
+        gap: 22px;
+        padding: 26px 0;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    .step-item:last-child { border-bottom: 0; }
+    .step-no {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #dc3545;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 800;
+    }
+    .step-content {
+        font-size: 1.05rem;
+        color: #343a40;
+        white-space: pre-line;
+        margin-bottom: 16px;
+    }
+    .step-img {
+        width: 100%;
+        max-width: 680px;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        object-fit: cover;
+    }
+    @media (max-width: 768px) {
+        .recipe-hero-body,
+        .recipe-view-section { padding: 24px 18px; }
+        .recipe-title { font-size: 1.55rem; }
+        .ingredient-list { grid-template-columns: 1fr; }
+        .step-item { grid-template-columns: 1fr; gap: 12px; }
+        .step-no { width: 58px; height: 58px; font-size: 1rem; }
+    }
+</style>
+
+<div class="recipe-view-wrap">
+    <article class="recipe-hero">
+        <c:choose>
+            <c:when test="${not empty recipe.thumbnail}">
+                <img class="recipe-hero-img" src="${pageContext.request.contextPath}${recipe.thumbnail}" alt="${fn:escapeXml(recipe.title)}">
+            </c:when>
+            <c:otherwise>
+                <div class="recipe-hero-empty"><i class="bi bi-image"></i></div>
+            </c:otherwise>
+        </c:choose>
+
+        <div class="recipe-hero-body">
+            <div class="text-danger fw-bold mb-2">
+                <c:out value="${recipe.categoryName}" />
+            </div>
+            <h2 class="recipe-title"><c:out value="${recipe.title}" /></h2>
+            <div class="recipe-desc"><c:out value="${recipe.description}" /></div>
+            <div class="text-muted">
+                by <strong><c:out value="${recipe.nickname}" /></strong>
+                <span class="mx-2">|</span>
+                조회수 <c:out value="${recipe.viewCount}" />
+            </div>
+
+            <div class="recipe-meta-list">
+                <div class="recipe-meta-item">
+                    <i class="bi bi-people"></i>
+                    <c:out value="${recipe.servings}" />인분
+                </div>
+                <div class="recipe-meta-item">
+                    <i class="bi bi-clock"></i>
+                    <c:out value="${recipe.cookTime}" />분
+                </div>
+                <div class="recipe-meta-item">
+                    <i class="bi bi-bar-chart"></i>
+                    <c:choose>
+                        <c:when test="${recipe.difficulty == 1}">쉬움</c:when>
+                        <c:when test="${recipe.difficulty == 2}">보통</c:when>
+                        <c:otherwise>어려움</c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <section class="recipe-view-section">
+        <h3>재료</h3>
+        <div class="ingredient-list">
+            <c:forEach var="ingredient" items="${ingredients}">
+                <div class="ingredient-item">
+                    <span class="ingredient-name"><c:out value="${ingredient.name}" /></span>
+                    <span class="ingredient-amount"><c:out value="${ingredient.amount}" /></span>
+                </div>
+            </c:forEach>
+        </div>
+    </section>
+
+    <section class="recipe-view-section">
+        <h3>조리순서</h3>
+        <c:forEach var="step" items="${steps}">
+            <div class="step-item">
+                <div class="step-no">Step<br><c:out value="${step.stepNo}" /></div>
+                <div>
+                    <div class="step-content"><c:out value="${step.content}" /></div>
+                    <c:if test="${not empty step.imageUrl}">
+                        <img class="step-img" src="${pageContext.request.contextPath}${step.imageUrl}" alt="Step ${step.stepNo} 이미지">
+                    </c:if>
+                </div>
+            </div>
+        </c:forEach>
+    </section>
+
+    <div class="d-flex justify-content-between mb-5">
+        <a href="${pageContext.request.contextPath}/recipe/list" class="btn btn-outline-secondary px-4">목록</a>
+        <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}" class="btn btn-outline-danger px-4">수정</a>
+    </div>
 </div>
