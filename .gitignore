@@ -39,3 +39,4 @@ src/main/resources/db.properties
 # jar는 반드시 커밋
 !src/main/webapp/WEB-INF/lib/
 !src/main/webapp/WEB-INF/lib/*.jar
+.metadata/
