@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bggchef.dto.CategoryLDTO;
+import com.bggchef.dto.CategoryMDTO;
 import com.bggchef.util.DBUtil;
 
 /**
@@ -18,11 +19,45 @@ import com.bggchef.util.DBUtil;
  */
 public class CategoryDAO {
 
-    // ============================================================
-    // TODO: CRUD 메서드 구현
-    // 예: public CategoryLDTO selectById(...) throws SQLException { ... }
-    //     public int insert(CategoryLDTO dto) throws SQLException { ... }
-    //     public int update(CategoryLDTO dto) throws SQLException { ... }
-    //     public int delete(...) throws SQLException { ... }
-    // ============================================================
+    /** 대분류 목록 조회 */
+    public List<CategoryLDTO> listL() throws SQLException {
+        List<CategoryLDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM CATEGORY_L ORDER BY category_l_id ASC";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                CategoryLDTO dto = new CategoryLDTO();
+                dto.setCategorylId(rs.getInt("category_l_id"));
+                dto.setName(rs.getString("name"));
+                dto.setType(rs.getString("type"));
+                list.add(dto);
+            }
+        }
+        return list;
+    }
+
+    /** 특정 대분류에 속한 중분류 목록 조회 */
+    public List<CategoryMDTO> listMByLId(int categoryLId) throws SQLException {
+        List<CategoryMDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM CATEGORY_M WHERE category_l_id = ? ORDER BY category_m_id ASC";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, categoryLId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    CategoryMDTO dto = new CategoryMDTO();
+                    dto.setCategorymId(rs.getInt("category_m_id"));
+                    dto.setCategorylId(rs.getInt("category_l_id"));
+                    dto.setName(rs.getString("name"));
+                    dto.setType(rs.getString("type"));
+                    list.add(dto);
+                }
+            }
+        }
+        return list;
+    }
 }

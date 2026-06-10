@@ -156,6 +156,40 @@
 </section>
 
 <!-- ============================================
+     추천 테마
+     ============================================ -->
+<section class="section-card position-relative">
+	<div class="d-flex justify-content-between align-items-center mb-1">
+		<h3 class="section-title">
+			<i class="bi bi-bookmark-fill text-danger me-2"></i> <span class="accent">추천</span>&nbsp;테마
+		</h3>
+		<a href="${pageContext.request.contextPath}/theme/list"
+			class="btn-more"> 더보기 <i class="bi bi-chevron-right"></i>
+		</a>
+	</div>
+	<p class="text-muted mb-4">전문 셰프들이 추천하는 다양한 테마별 레시피를 만나보세요!</p>
+
+	<div class="row g-3">
+		<c:set var="themes" value='<%= new String[]{"🍚 한식", "🍝 양식", "🥢 중식", "🍣 일식", "🍰 디저트", "🥤 음료"} %>' />
+		<c:forEach var="theme" items="${themes}" varStatus="status">
+			<div class="col-md-2 col-4">
+				<a href="${pageContext.request.contextPath}/theme/list?type=${status.count}">
+					<div class="recipe-card border">
+						<div class="recipe-card-img-wrap">
+							<img class="recipe-card-img"
+								src="https://picsum.photos/seed/theme${status.count}/400/400" alt="${theme}">
+						</div>
+						<div class="recipe-card-body text-center">
+							<h6 class="recipe-card-title">${theme}</h6>
+						</div>
+					</div>
+				</a>
+			</div>
+		</c:forEach>
+	</div>
+</section>
+
+<!-- ============================================
      카테고리 칩 (빠른 이동)
      ============================================ -->
 <section class="section-card text-center">

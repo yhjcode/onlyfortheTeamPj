@@ -91,5 +91,37 @@ public class UserDAO {
         }
     }
 
-    // TODO: update, deleteLogically(논리 삭제), selectByEmail 등 추가 구현
+    /** 회원 논리 삭제 (is_deleted = 1) */
+    public int deleteLogically(String userId) throws SQLException {
+        String sql = "UPDATE USERS SET is_deleted = 1 WHERE user_id = ?";
+        Connection conn = null; PreparedStatement pstmt = null;
+        try {
+            conn  = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            return pstmt.executeUpdate();
+        } finally {
+            DBUtil.close(conn, pstmt);
+        }
+    }
+
+    /** 회원정보 수정 */
+    public int update(UserDTO u) throws SQLException {
+        String sql = "UPDATE USERS SET email=?, nickname=?, phone=?, birthday=?, profile_img=? "
+                   + "WHERE user_id=?";
+        Connection conn = null; PreparedStatement pstmt = null;
+        try {
+            conn  = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, u.getEmail());
+            pstmt.setString(2, u.getNickname());
+            pstmt.setString(3, u.getPhone());
+            pstmt.setDate  (4, u.getBirthday());
+            pstmt.setString(5, u.getProfileImg());
+            pstmt.setString(6, u.getUserId());
+            return pstmt.executeUpdate();
+        } finally {
+            DBUtil.close(conn, pstmt);
+        }
+    }
 }
