@@ -3,6 +3,7 @@
 
 <%@ page import="com.bggchef.dao.SearchDAO" %>
 <%@ page import="com.bggchef.dto.RecipeDTO" %>
+<%@ page import="com.bggchef.dto.ThemeDTO" %>
 
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
@@ -14,6 +15,7 @@
     String keyword = request.getParameter("keyword");
 	
     List<RecipeDTO> arrRecipe = new ArrayList<RecipeDTO>();
+    List<ThemeDTO> arrTheme = new ArrayList<ThemeDTO>();
     
     if (keyword == null || keyword.trim().equals("")) { 
 %>
@@ -85,8 +87,10 @@
             %>
         </div>
     </section>
-<%}} 
-     %>
+<% 
+        } 
+    } 
+%>
 
 </main>
 

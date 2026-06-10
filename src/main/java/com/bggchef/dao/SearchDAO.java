@@ -79,9 +79,9 @@ public List<ThemeDTO> searchTheme(String keyword){
 		List<ThemeDTO> arr = new ArrayList<ThemeDTO>();
 		try {
 			con = getConnection(); //DB연결
-			String sql ="SELECT R.* ,U.* FROM"
+			String sql ="SELECT R.* ,U.NICKNAME FROM"
 					+ " RECOMMENDED_THEME R, USERS U WHERE"
-					+ " R.USER_ID=U.USER_ID AND R.TITLE LIKE ? ORDER BY CREATED_AT;";		//%는 바인딩할떄 추가
+					+ " R.USER_ID=U.USER_ID AND R.TITLE LIKE ? ORDER BY CREATED_AT";		//%는 바인딩할떄 추가
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1,"%"+keyword+"%");
 			rs = pstmt.executeQuery(); //쿼리문 실행 결과가 rs로 들어옴
@@ -98,6 +98,7 @@ public List<ThemeDTO> searchTheme(String keyword){
 				dto.setTitle(rs.getString("TITLE"));
 				dto.setUserId(rs.getString("USER_ID"));
 				dto.setViewCount(rs.getInt("VIEW_COUNT"));
+				
 				
 				arr.add(dto);
 			}
