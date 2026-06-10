@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * 로그인 검증 필터
- * - 보호된 URL 접근 시 세션에 loginUser 없으면 /user/login.do로 리다이렉트
+ * - 보호된 URL 접근 시 세션에 loginUser 없으면 /user/login로 리다이렉트
  */
 public class LoginFilter implements Filter {
 
@@ -29,7 +29,7 @@ public class LoginFilter implements Filter {
 
         Object loginUser = (session != null) ? session.getAttribute("loginUser") : null;
         if (loginUser == null) {
-            response.sendRedirect(request.getContextPath() + "/user/login.do");
+            response.sendRedirect(request.getContextPath() + "/user/login");
             return;
         }
         chain.doFilter(req, res);

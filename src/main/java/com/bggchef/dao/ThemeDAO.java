@@ -1,22 +1,9 @@
 package com.bggchef.dao;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.bggchef.dto.RecipeDTO;
+import java.sql.*;
+import java.util.*;
 import com.bggchef.dto.ThemeDTO;
 import com.bggchef.util.DBUtil;
 
-/**
- * 추천 테마(RECOMMENDED_THEME, THEME_RECIPE) DAO
- *
- * TODO: 팀원이 기능 분담받은 메서드를 구현합니다.
- *       기본 패턴은 UserDAO의 selectById/insert를 참고하세요.
- */
 public class ThemeDAO {
 
     /** 테마 목록 조회 (가시성 있는 것만) */
