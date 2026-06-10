@@ -1,28 +1,29 @@
 package com.bggchef.dao;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.sql.*;
+import java.util.*;
 import com.bggchef.dto.RecipeDTO;
 import com.bggchef.util.DBUtil;
 
-/**
- * 레시피(RECIPE) 테이블 DAO
- *
- * TODO: 팀원이 기능 분담받은 메서드를 구현합니다.
- *       기본 패턴은 UserDAO의 selectById/insert를 참고하세요.
- */
 public class RecipeDAO {
-
-    // ============================================================
-    // TODO: CRUD 메서드 구현
-    // 예: public RecipeDTO selectById(...) throws SQLException { ... }
-    //     public int insert(RecipeDTO dto) throws SQLException { ... }
-    //     public int update(RecipeDTO dto) throws SQLException { ... }
-    //     public int delete(...) throws SQLException { ... }
-    // ============================================================
+    public List<RecipeDTO> selectByUserId(String userId) throws SQLException {
+        List<RecipeDTO> list = new ArrayList<>();
+        String sql = "SELECT recipe_id, title, thumbnail, avg_rating, view_count, created_at " +
+                     "FROM RECIPE WHERE user_id = ? AND is_deleted = 0 ORDER BY created_at DESC";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                RecipeDTO dto = new RecipeDTO();
+                dto.setRecipeId(rs.getLong("recipe_id"));
+                dto.setTitle(rs.getString("title"));
+                dto.setThumbnail(rs.getString("thumbnail"));
+                dto.setAvgRating(rs.getDouble("avg_rating"));
+                dto.setViewCount(rs.getInt("view_count"));
+                dto.setCreatedAt(rs.getDate("created_at"));
+                list.add(dto);
+            }
+        }
+        return list;
+    }
 }

@@ -1,28 +1,30 @@
 package com.bggchef.dao;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.sql.*;
+import java.util.*;
 import com.bggchef.dto.ThemeDTO;
 import com.bggchef.util.DBUtil;
 
-/**
- * 추천 테마(RECOMMENDED_THEME, THEME_RECIPE) DAO
- *
- * TODO: 팀원이 기능 분담받은 메서드를 구현합니다.
- *       기본 패턴은 UserDAO의 selectById/insert를 참고하세요.
- */
 public class ThemeDAO {
-
-    // ============================================================
-    // TODO: CRUD 메서드 구현
-    // 예: public ThemeDTO selectById(...) throws SQLException { ... }
-    //     public int insert(ThemeDTO dto) throws SQLException { ... }
-    //     public int update(ThemeDTO dto) throws SQLException { ... }
-    //     public int delete(...) throws SQLException { ... }
-    // ============================================================
+    public List<ThemeDTO> selectByUserId(String userId) throws SQLException {
+        List<ThemeDTO> list = new ArrayList<>();
+        String sql = "SELECT theme_id, title, description, thumbnail, view_count, created_at " +
+                     "FROM RECOMMENDED_THEME WHERE user_id = ? AND is_visible = 1 " +
+                     "ORDER BY created_at DESC";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ThemeDTO dto = new ThemeDTO();
+                dto.setThemeId(rs.getInt("theme_id"));
+                dto.setTitle(rs.getString("title"));
+                dto.setDescription(rs.getString("description"));
+                dto.setThumbnail(rs.getString("thumbnail"));
+                dto.setViewCount(rs.getInt("view_count"));
+                dto.setCreatedAt(rs.getDate("created_at"));
+                list.add(dto);
+            }
+        }
+        return list;
+    }
 }

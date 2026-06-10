@@ -12,6 +12,7 @@ public class ReviewDTO {
     private int isDeleted;
     private Date createdAt;
     private String nickname;
+    private String recipeTitle; // ← 이게 있어야 해요!
 
     public long getReviewId() { return reviewId; }
     public void setReviewId(long reviewId) { this.reviewId = reviewId; }
@@ -31,4 +32,6 @@ public class ReviewDTO {
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
     public String getNickname() { return nickname; }
     public void setNickname(String nickname) { this.nickname = nickname; }
+    public String getRecipeTitle() { return recipeTitle; }
+    public void setRecipeTitle(String recipeTitle) { this.recipeTitle = recipeTitle; }
 }
