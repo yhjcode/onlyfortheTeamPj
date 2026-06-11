@@ -12,7 +12,8 @@ public class ThemeDTO {
     private int isVisible;
     private int viewCount;
     private Date createdAt;
-
+    private String nickname;
+    
     public int getThemeId() { return themeId; }
     public void setThemeId(int themeId) { this.themeId = themeId; }
     public String getUserId() { return userId; }
@@ -31,4 +32,13 @@ public class ThemeDTO {
     public void setViewCount(int viewCount) { this.viewCount = viewCount; }
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+    
+    
+    
 }
