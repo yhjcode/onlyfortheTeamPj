@@ -44,10 +44,10 @@ public class RecipeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        String path = req.getServletPath();
+        String path = req.getServletPath(); // 매핑정보를 Path에 저장
 
         try {
-            if ("/recipe/write".equals(path)) {
+            if ("/recipe/write".equals(path)) { 
                 showWriteForm(req, res);
             } else if ("/recipe/view".equals(path)) {
                 showView(req, res);
@@ -81,11 +81,11 @@ public class RecipeController extends HttpServlet {
 
     private void showWriteForm(HttpServletRequest req, HttpServletResponse res)
             throws SQLException, ServletException, IOException {
-        requireLogin(req, res);
-        if (res.isCommitted()) return;
+        requireLogin(req, res); // 로그인 체크
+        if (res.isCommitted()) return; // 비회원일 경우 리턴처리
 
-        req.setAttribute("categoryList", recipeDAO.selectCategoryList());
-        forward(req, res, "/WEB-INF/views/recipe/write.do.jsp");
+        req.setAttribute("categoryList", recipeDAO.selectCategoryList()); // 카테고리 리스트를 불러와서 req에 저장
+        forward(req, res, "/WEB-INF/views/recipe/write.jsp");  // req에 담긴 카테고리 리스트로  write.do.jsp화면을 조립해서 사용자 브라우저에 전달
     }
 
     private void showEditForm(HttpServletRequest req, HttpServletResponse res)
