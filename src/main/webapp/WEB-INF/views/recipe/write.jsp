@@ -13,7 +13,7 @@
         margin-bottom: 18px;
     }
     .recipe-form-section h3 {
-        color: #24a043;
+        color: var(--bggchef-primary);
         font-size: 1.25rem;
         font-weight: 800;
         margin-bottom: 24px;
@@ -98,14 +98,17 @@
         line-height: 1;
     }
     .add-soft-btn {
-        border: 1px solid #2fb344;
-        color: #2fb344;
+        border: 1px solid var(--bggchef-primary);
+        color: var(--bggchef-primary); 
         background: #fff;
         border-radius: 28px;
         padding: 12px 48px;
         font-weight: 800;
     }
-    .add-soft-btn:hover { background: #f0fff4; color: #22963a; }
+    .add-soft-btn:hover {
+        background: var(--bggchef-primary-light);
+        color: var(--bggchef-primary-hover);
+    }
     .step-content { min-height: 160px; resize: vertical; }
     .step-file-row {
         display: grid;

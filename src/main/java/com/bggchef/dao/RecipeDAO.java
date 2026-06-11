@@ -71,6 +71,21 @@ public class RecipeDAO {
         }
     }
 
+    public void deleteRecipe(long recipeId, String userId) throws SQLException {
+        String sql = "UPDATE RECIPE SET is_deleted = 1 WHERE recipe_id = ? AND user_id = ? AND is_deleted = 0";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, recipeId);
+            pstmt.setString(2, userId);
+            pstmt.executeUpdate();
+        } finally {
+            DBUtil.close(conn, pstmt);
+        }
+    }
+
     public RecipeDTO selectRecipeById(long recipeId) throws SQLException {
         String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
                    + "       r.servings, r.cook_time, r.difficulty, r.view_count, r.avg_rating, "
@@ -193,7 +208,7 @@ public class RecipeDAO {
             if (isBlank(ingredient.getName()) || isBlank(ingredient.getAmount())) {
                 continue;
             }
-            int ingredientId = findOrCreateIngredient(conn, ingredient.getName());
+            int ingredientId = findOrCreateIngredient(conn, ingredient.getName(), ingredient.getUnit());
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setInt(1, ingredientId);
                 pstmt.setLong(2, recipeId);
@@ -226,25 +241,39 @@ public class RecipeDAO {
         }
     }
 
-    private int findOrCreateIngredient(Connection conn, String name) throws SQLException {
-        String selectSql = "SELECT ingredient_id FROM INGREDIENT WHERE name = ?";
+    private int findOrCreateIngredient(Connection conn, String name, String unit) throws SQLException {
+        String selectSql = "SELECT ingredient_id, unit FROM INGREDIENT WHERE name = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
             pstmt.setString(1, name);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("ingredient_id");
+                    int ingredientId = rs.getInt("ingredient_id");
+                    if (!isBlank(unit) && !unit.equals(rs.getString("unit"))) {
+                        updateIngredientUnit(conn, ingredientId, unit);
+                    }
+                    return ingredientId;
                 }
             }
         }
 
         int ingredientId = (int) nextLong(conn, "SELECT SEQ_INGREDIENT.NEXTVAL FROM DUAL");
-        String insertSql = "INSERT INTO INGREDIENT (ingredient_id, name, unit) VALUES (?, ?, NULL)";
+        String insertSql = "INSERT INTO INGREDIENT (ingredient_id, name, unit) VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
             pstmt.setInt(1, ingredientId);
             pstmt.setString(2, name);
+            pstmt.setString(3, unit);
             pstmt.executeUpdate();
         }
         return ingredientId;
+    }
+
+    private void updateIngredientUnit(Connection conn, int ingredientId, String unit) throws SQLException {
+        String sql = "UPDATE INGREDIENT SET unit = ? WHERE ingredient_id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, unit);
+            pstmt.setInt(2, ingredientId);
+            pstmt.executeUpdate();
+        }
     }
 
     private List<RecipeIngredientDTO> selectIngredientsByRecipeId(Connection conn, long recipeId)

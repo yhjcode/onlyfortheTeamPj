@@ -26,7 +26,8 @@ import com.bggchef.util.FileUtil;
         "/recipe/list",
         "/recipe/write",
         "/recipe/view",
-        "/recipe/edit"
+        "/recipe/edit",
+        "/recipe/delete"
 })
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
@@ -53,6 +54,8 @@ public class RecipeController extends HttpServlet {
                 showView(req, res);
             } else if ("/recipe/edit".equals(path)) {
                 showEditForm(req, res);
+            } else if ("/recipe/delete".equals(path)) {
+                res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             } else {
                 showList(req, res);
             }
@@ -71,6 +74,8 @@ public class RecipeController extends HttpServlet {
                 insertRecipe(req, res);
             } else if ("/recipe/edit".equals(path)) {
                 updateRecipe(req, res);
+            } else if ("/recipe/delete".equals(path)) {
+                deleteRecipe(req, res);
             } else {
                 doGet(req, res);
             }
@@ -104,7 +109,7 @@ public class RecipeController extends HttpServlet {
         req.setAttribute("ingredients", recipe.getIngredients());
         req.setAttribute("steps", recipe.getSteps());
         req.setAttribute("categoryList", recipeDAO.selectCategoryList());
-        forward(req, res, "/WEB-INF/views/recipe/edit.do.jsp");
+        forward(req, res, "/WEB-INF/views/recipe/edit.jsp");
     }
 
     private void showView(HttpServletRequest req, HttpServletResponse res)
@@ -169,6 +174,21 @@ public class RecipeController extends HttpServlet {
         res.sendRedirect(req.getContextPath() + "/recipe/view?recipe_id=" + recipe.getRecipeId());
     }
 
+    private void deleteRecipe(HttpServletRequest req, HttpServletResponse res)
+            throws SQLException, IOException {
+        UserDTO loginUser = requireLogin(req, res);
+        if (res.isCommitted()) return;
+
+        long recipeId = parseLong(req.getParameter("recipe_id"), parseLong(req.getParameter("id"), 0L));
+        if (recipeId <= 0) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        recipeDAO.deleteRecipe(recipeId, loginUser.getUserId());
+        res.sendRedirect(req.getContextPath() + "/recipe/list");
+    }
+
     private RecipeDTO buildRecipe(HttpServletRequest req) {
         RecipeDTO recipe = new RecipeDTO();
         recipe.setCategoryId(parseInt(req.getParameter("category_id"), 0));
@@ -196,6 +216,7 @@ public class RecipeController extends HttpServlet {
             RecipeIngredientDTO ingredient = new RecipeIngredientDTO();
             ingredient.setName(name.trim());
             ingredient.setAmount(amount.trim());
+            ingredient.setUnit(amount.trim());
             list.add(ingredient);
         }
         return list;

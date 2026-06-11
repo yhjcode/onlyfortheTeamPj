@@ -13,10 +13,21 @@
         margin-bottom: 18px;
     }
     .recipe-form-section h3 {
-        color: #24a043;
+    
+    
+    
+    
+      color: var(--bggchef-primary);
         font-size: 1.25rem;
         font-weight: 800;
         margin-bottom: 24px;
+    
+    
+    
+        <%--color: #24a043;
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 24px;--%>
     }
     .recipe-label { font-weight: 700; margin-bottom: 8px; }
     .help-text { color: #8b95a1; font-size: 0.86rem; }
@@ -99,15 +110,31 @@
         font-weight: 800;
         line-height: 1;
     }
-    .add-soft-btn {
-        border: 1px solid #2fb344;
-        color: #2fb344;
+    .add-soft-btn {      
+    
+    
+        border: 1px solid var(--bggchef-primary);  
+        color: var(--bggchef-primary); 
         background: #fff;
         border-radius: 28px;
         padding: 12px 48px;
         font-weight: 800;
-    }
-    .add-soft-btn:hover { background: #f0fff4; color: #22963a; }
+    
+    
+    
+                                           
+       <%-- border: 1px solid #2fb344;
+        color: #2fb344;
+        background: #fff;
+        border-radius: 28px;
+        padding: 12px 48px;
+        font-weight: 800;            제료묶음추가 버튼 색상변경@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--%>
+    } 
+    
+    .add-soft-btn:hover {background: var(--bggchef-primary-light);
+        color: var(--bggchef-primary-hover);}                        <%--{ background: #f0fff4; color: #22963a; }--%>
+    
+    
     .step-content { min-height: 160px; resize: vertical; }
     .step-file-row {
         display: grid;
@@ -281,9 +308,15 @@
         </section>
 
         <div class="d-flex justify-content-between align-items-center mb-5">
-            <a href="${pageContext.request.contextPath}/recipe/view?recipe_id=${recipe.recipeId}" class="btn btn-outline-secondary btn-lg px-4">수정취소</a>
-            <button type="submit" class="btn btn-danger btn-lg px-5">수정하기</button>
+            <a href="${pageContext.request.contextPath}/recipe/view?recipe_id=${recipe.recipeId}" class=" btn btn-outline-secondary px-4<%--btn btn-outline-secondary btn-lg px-4--%>">수정취소</a>
+            <div class="d-flex gap-2">
+                <button type="submit" class="  btn btn-outline-danger px-4   <%-- btn btn-danger btn-lg px-5--%>">수정</button>
+                <button type="submit" form="deleteRecipeForm" class=" btn btn-danger px-4"<%--btn btn-outline-danger btn-lg px-4--%>" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+            </div>
         </div>
+    </form>
+    <form id="deleteRecipeForm" action="${pageContext.request.contextPath}/recipe/delete" method="post">
+        <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
     </form>
 </div>
 
