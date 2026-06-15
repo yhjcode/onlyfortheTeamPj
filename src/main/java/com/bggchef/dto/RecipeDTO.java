@@ -11,6 +11,7 @@ public class RecipeDTO {
     private String title;
     private String thumbnail;
     private String description;
+    private String recipeLink; // [추가] 상세 링크 필드
     private int servings;
     private int cookTime;
     private int difficulty;
@@ -35,6 +36,11 @@ public class RecipeDTO {
     public void setThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    
+    // [추가] 상세 링크 Getter/Setter
+    public String getRecipeLink() { return recipeLink; }
+    public void setRecipeLink(String recipeLink) { this.recipeLink = recipeLink; }
+    
     public int getServings() { return servings; }
     public void setServings(int servings) { this.servings = servings; }
     public int getCookTime() { return cookTime; }
