@@ -3,8 +3,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script type="text/javascript" src="imsi.js"></script>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>방구석셰프들 - 우리집만의 레시피 공유</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
@@ -74,7 +73,6 @@
                 <li class="nav-item"><a class="nav-link ${menu == 'category' ? 'active' : ''}" href="${pageContext.request.contextPath}/category/list">분류</a></li>
                 <li class="nav-item"><a class="nav-link ${menu == 'ranking' ? 'active' : ''}" href="${pageContext.request.contextPath}/ranking/daily">랭킹</a></li>
                 <li class="nav-item"><a class="nav-link ${menu == 'theme' ? 'active' : ''}" href="${pageContext.request.contextPath}/theme/list">추천테마</a></li>
-                <li class="nav-item"><a class="nav-link ${menu == 'recipe' ? 'active' : ''}" href="${pageContext.request.contextPath}/recipe/list">전체레시피</a></li>
             </ul>
         </div>
     </nav>

@@ -1,17 +1,22 @@
 package com.bggchef.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * 메인페이지 컨트롤러 (REQ_REC_001)
- * - 별점순 / 최신순 / 셰프랭킹 3개 섹션 데이터 준비
- * URL: /main
- */
+import com.bggchef.dao.RankingDAO;
+import com.bggchef.dao.RecipeDAO;
+import com.bggchef.dao.ThemeDAO;
+import com.bggchef.dto.ChefRankingDTO;
+import com.bggchef.dto.RecipeDTO;
+import com.bggchef.dto.ThemeDTO;
+
 @WebServlet("/main")
 public class MainController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -20,10 +25,24 @@ public class MainController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
-        // TODO: RecipeDAO에서 별점순 TOP10, 최신순 TOP10, 셰프랭킹 TOP10 조회
-        // req.setAttribute("topRatedRecipes", recipeDAO.selectTopRated(10));
-        // req.setAttribute("latestRecipes",   recipeDAO.selectLatest(10));
-        // req.setAttribute("chefRanking",     userDAO.selectChefRanking(10));
+        try {
+            RecipeDAO recipeDAO   = new RecipeDAO();
+            RankingDAO rankingDAO = new RankingDAO();
+            ThemeDAO themeDAO     = new ThemeDAO();
+
+            List<RecipeDTO>      topRatedRecipes = rankingDAO.selectRecipesByRating(4);
+            List<RecipeDTO>      latestRecipes   = recipeDAO.selectLatest(4);
+            List<ChefRankingDTO> chefRanking     = rankingDAO.selectChefsByAvgRating(4);
+            List<ThemeDTO>       themes          = themeDAO.selectTop(6);
+
+            req.setAttribute("topRatedRecipes", topRatedRecipes);
+            req.setAttribute("latestRecipes",   latestRecipes);
+            req.setAttribute("chefRanking",     chefRanking);
+            req.setAttribute("themes",          themes);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         req.setAttribute("contentPage", "/WEB-INF/views/main/index.jsp");
         req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, res);

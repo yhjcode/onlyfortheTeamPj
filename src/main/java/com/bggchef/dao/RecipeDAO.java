@@ -361,6 +361,42 @@ public class RecipeDAO {
         }
     }
     
+    public List<RecipeDTO> selectLatest(int limit) throws SQLException {
+        String sql = "SELECT * FROM ("
+                   + "    SELECT r.recipe_id, r.user_id, r.title, r.thumbnail,"
+                   + "           r.view_count, r.avg_rating, r.created_at, u.nickname"
+                   + "    FROM RECIPE r"
+                   + "    JOIN USERS u ON r.user_id = u.user_id"
+                   + "    WHERE r.is_deleted = 0 AND u.is_deleted = 0"
+                   + "    ORDER BY r.created_at DESC"
+                   + ") WHERE ROWNUM <= ?";
+
+        Connection conn = null; PreparedStatement pstmt = null; ResultSet rs = null;
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, limit);
+            rs = pstmt.executeQuery();
+            List<RecipeDTO> list = new ArrayList<>();
+            while (rs.next()) {
+                RecipeDTO dto = new RecipeDTO();
+                dto.setRecipeId(rs.getLong("recipe_id"));
+                dto.setUserId(rs.getString("user_id"));
+                dto.setTitle(rs.getString("title"));
+                dto.setThumbnail(rs.getString("thumbnail"));
+                dto.setViewCount(rs.getInt("view_count"));
+                double avgRating = rs.getDouble("avg_rating");
+                dto.setAvgRating(rs.wasNull() ? null : avgRating);
+                dto.setCreatedAt(rs.getDate("created_at"));
+                dto.setNickname(rs.getString("nickname"));
+                list.add(dto);
+            }
+            return list;
+        } finally {
+            DBUtil.close(conn, pstmt, rs);
+        }
+    }
+
     public List<RecipeDTO> selectByUserId(String userId) throws SQLException {
         List<RecipeDTO> list = new ArrayList<>();
         String sql = "SELECT recipe_id, title, thumbnail, avg_rating, view_count, created_at " +

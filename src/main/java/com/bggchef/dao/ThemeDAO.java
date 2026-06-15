@@ -8,6 +8,32 @@ import com.bggchef.util.DBUtil;
 
 public class ThemeDAO {
 	
+    public List<ThemeDTO> selectTop(int limit) throws SQLException {
+        String sql = "SELECT * FROM ("
+                   + "    SELECT theme_id, title, thumbnail, description, view_count"
+                   + "    FROM RECOMMENDED_THEME"
+                   + "    WHERE is_visible = 1"
+                   + "    ORDER BY theme_id DESC"
+                   + ") WHERE ROWNUM <= ?";
+        List<ThemeDTO> list = new ArrayList<>();
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, limit);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    ThemeDTO dto = new ThemeDTO();
+                    dto.setThemeId(rs.getInt("theme_id"));
+                    dto.setTitle(rs.getString("title"));
+                    dto.setThumbnail(rs.getString("thumbnail"));
+                    dto.setDescription(rs.getString("description"));
+                    dto.setViewCount(rs.getInt("view_count"));
+                    list.add(dto);
+                }
+            }
+        }
+        return list;
+    }
+
     public List<ThemeDTO> selectByUserId(String userId) throws SQLException {
         List<ThemeDTO> list = new ArrayList<>();
         String sql = "SELECT theme_id, title, description, thumbnail, view_count, created_at " +
