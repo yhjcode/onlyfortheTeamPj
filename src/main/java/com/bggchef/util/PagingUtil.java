@@ -9,7 +9,7 @@ package com.bggchef.util;
  */
 public class PagingUtil {
     private int currentPage;
-    private int pageSize  = 10;
+    private int pageSize  = 12;
     private int blockSize = 5;
     private int totalCount;
     private int totalPage;
