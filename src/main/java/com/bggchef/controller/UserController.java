@@ -49,6 +49,7 @@ public class UserController extends HttpServlet {
                 req.setAttribute("repliesToMe", reviewDAO.selectRepliesToMe(loginUser.getUserId()));
                 req.setAttribute("myFavorites", favoriteDAO.selectByUserId(loginUser.getUserId()));
                 req.setAttribute("myThemes",    themeDAO.selectByUserId(loginUser.getUserId()));
+                req.setAttribute("chefIntro",   userService.getIntro(loginUser.getUserId()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -104,6 +105,8 @@ public class UserController extends HttpServlet {
             doEdit(req, resp);
         } else if ("/withdraw".equals(action)) {
             doWithdraw(req, resp);
+        } else if ("/intro".equals(action)) {
+            doSaveIntro(req, resp);
         }
     }
 
@@ -197,6 +200,28 @@ public class UserController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/user/mypage");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /** 셰프 소개글 저장 (AJAX POST, JSON 응답) */
+    private void doSaveIntro(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        resp.setContentType("application/json; charset=UTF-8");
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("loginUser") == null) {
+            resp.getWriter().write("{\"ok\":false,\"msg\":\"로그인이 필요합니다.\"}");
+            return;
+        }
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        String intro = req.getParameter("intro");
+        if (intro == null) intro = "";
+        if (intro.length() > 1000) intro = intro.substring(0, 1000);
+        try {
+            userService.saveIntro(loginUser.getUserId(), intro);
+            resp.getWriter().write("{\"ok\":true}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.getWriter().write("{\"ok\":false,\"msg\":\"저장에 실패했습니다.\"}");
         }
     }
 

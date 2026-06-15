@@ -11,6 +11,37 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+    <style>
+        .write-menu-wrap { position: relative; display: inline-flex; }
+        .write-menu-box {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: calc(100% + 8px);
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.13);
+            min-width: 172px;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .write-menu-box.open { display: block; }
+        .write-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 18px;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+        .write-menu-item:hover { background: #fff5f5; color: #dc3545; }
+        .write-menu-item + .write-menu-item { border-top: 1px solid #f0f0f0; }
+    </style>
 </head>
 <body>
     <!-- 상단 헤더 -->
@@ -54,9 +85,19 @@
                                 <a href="${pageContext.request.contextPath}/user/mypage" class="bggchef-icon-btn" title="마이페이지">
                                     <i class="bi bi-person-fill"></i>
                                 </a>
-                                <a href="${pageContext.request.contextPath}/recipe/write" class="bggchef-icon-btn write" title="레시피 작성">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </a>
+                                <div class="write-menu-wrap" id="writeMenuWrap">
+                                    <button type="button" class="bggchef-icon-btn write" title="글 작성" id="writeMenuBtn">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <div class="write-menu-box" id="writeMenuBox">
+                                        <a href="${pageContext.request.contextPath}/recipe/write" class="write-menu-item">
+                                            <i class="bi bi-journal-richtext"></i>레시피 작성하기
+                                        </a>
+                                        <a href="${pageContext.request.contextPath}/theme/write" class="write-menu-item">
+                                            <i class="bi bi-collection"></i>테마 작성하기
+                                        </a>
+                                    </div>
+                                </div>
                                 <a href="${pageContext.request.contextPath}/user/logout" class="text-muted small" style="font-size: 0.85rem;">로그아웃</a>
                             </c:otherwise>
                         </c:choose>
@@ -78,5 +119,20 @@
             </ul>
         </div>
     </nav>
+
+    <script>
+    (function() {
+        var btn = document.getElementById('writeMenuBtn');
+        var box = document.getElementById('writeMenuBox');
+        if (!btn) return;
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            box.classList.toggle('open');
+        });
+        document.addEventListener('click', function() {
+            box.classList.remove('open');
+        });
+    })();
+    </script>
 
     <main class="container py-4">

@@ -7,7 +7,7 @@
     String ctx = request.getContextPath();
 
     String profileImg = (loginUser.getProfileImg() != null && !loginUser.getProfileImg().isEmpty())
-        ? ctx + loginUser.getProfileImg()
+        ? ctx + "/resources/upload/profile/" + loginUser.getProfileImg()
         : "https://via.placeholder.com/80x80?text=User";
 
     String medal = loginUser.getMedalGrade() != null ? loginUser.getMedalGrade() : "브론즈";
@@ -15,6 +15,29 @@
 <c:set var="ctx" value="<%= ctx %>"/>
 
 <style>
+.page-hero {
+    background: linear-gradient(135deg, var(--bggchef-primary) 0%, #FF6B6B 100%);
+    color: white;
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+}
+.page-hero::after {
+    font-family: "bootstrap-icons";
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 120px;
+    opacity: 0.12;
+    line-height: 1;
+}
+.page-hero.mypage::after { content: '\F4E5'; /* bi-person-circle */ }
+.page-hero h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 6px; }
+.page-hero p  { margin: 0; opacity: 0.9; font-size: 1rem; }
+
 .mp-profile-card { background:#fff; border:1px solid #e9ecef; border-radius:16px; padding:1.5rem 2rem; display:flex; align-items:center; gap:1.4rem; margin-bottom:2rem; }
 .mp-avatar { width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #DC3545; flex-shrink:0; }
 .mp-name  { font-size:18px; font-weight:600; margin-bottom:3px; }
@@ -47,7 +70,21 @@
 .mp-meta { font-size:12px; color:#adb5bd; margin-top:5px; }
 .mp-empty { text-align:center; padding:3rem 0; color:#adb5bd; font-size:14px; }
 .mp-empty-icon { font-size:2.5rem; display:block; margin-bottom:8px; }
+.mp-intro-wrap { margin-top:10px; }
+.mp-intro-text { font-size:13px; color:#495057; line-height:1.6; white-space:pre-wrap; word-break:break-all; }
+.mp-intro-empty { font-size:13px; color:#adb5bd; font-style:italic; }
+.mp-intro-edit-btn { font-size:12px; color:#DC3545; background:none; border:none; padding:0; cursor:pointer; margin-left:6px; }
+.mp-intro-edit-btn:hover { text-decoration:underline; }
+.mp-intro-form { display:none; margin-top:6px; }
+.mp-intro-form textarea { width:100%; font-size:13px; border:1px solid #dee2e6; border-radius:8px; padding:8px 10px; resize:vertical; }
+.mp-intro-form .btn-save { font-size:12px; padding:3px 12px; }
 </style>
+
+<!-- 히어로 배너 -->
+<div class="page-hero mypage">
+    <h1><i class="bi bi-person-circle me-2"></i>마이페이지</h1>
+    <p>나의 레시피와 활동을 한눈에 확인하세요</p>
+</div>
 
 <!-- 프로필 카드 -->
 <div class="mp-profile-card">
@@ -57,6 +94,27 @@
         <div class="mp-name"><%= loginUser.getNickname() %></div>
         <div class="mp-email"><%= loginUser.getEmail() %></div>
         <span class="mp-medal">🏅 <%= medal %></span>
+        <!-- 셰프 소개글 -->
+        <div class="mp-intro-wrap">
+            <c:choose>
+                <c:when test="${not empty chefIntro}">
+                    <span class="mp-intro-text" id="introText">${chefIntro}</span>
+                </c:when>
+                <c:otherwise>
+                    <span class="mp-intro-empty" id="introText">소개글을 작성해 보세요.</span>
+                </c:otherwise>
+            </c:choose>
+            <button type="button" class="mp-intro-edit-btn" id="introEditBtn" title="소개글 수정">
+                <i class="bi bi-pencil"></i> 수정
+            </button>
+            <div class="mp-intro-form" id="introForm">
+                <textarea id="introTextarea" rows="3" maxlength="1000" placeholder="나를 소개하는 글을 입력하세요 (최대 1000자)">${chefIntro}</textarea>
+                <div class="d-flex justify-content-end gap-2 mt-1">
+                    <button type="button" class="btn btn-outline-secondary btn-sm btn-save" id="introCancelBtn">취소</button>
+                    <button type="button" class="btn btn-danger btn-sm btn-save" id="introSaveBtn">저장</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="mp-actions">
         <a href="<%= ctx %>/user/edit" class="mp-edit-btn" title="정보 수정">
@@ -89,7 +147,7 @@
             <div class="mp-grid">
                 <c:forEach var="r" items="${myRecipes}">
                     <a href="<%= ctx %>/recipe/view?id=${r.recipeId}" class="mp-card">
-                        <img src="${not empty r.thumbnail ? r.thumbnail : 'https://via.placeholder.com/200x140?text=No+Image'}"
+                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}"
                              alt="${r.title}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">
@@ -161,7 +219,7 @@
             <div class="mp-grid">
                 <c:forEach var="t" items="${myThemes}">
                     <div class="mp-card">
-                        <img src="${not empty t.thumbnail ? t.thumbnail : 'https://via.placeholder.com/200x140?text=No+Image'}"
+                        <img src="${pageContext.request.contextPath}/resources/upload/theme/${t.thumbnail}"
                              alt="${t.title}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">
@@ -185,7 +243,7 @@
             <div class="mp-grid">
                 <c:forEach var="f" items="${myFavorites}">
                     <a href="<%= ctx %>/recipe/view?id=${f.recipeId}" class="mp-card">
-                        <img src="${not empty f.thumbnail ? f.thumbnail : 'https://via.placeholder.com/200x140?text=No+Image'}"
+                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${f.thumbnail}"
                              alt="${f.recipeTitle}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">
@@ -201,6 +259,56 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
+    // ── 소개글 인라인 편집 ──
+    var introText     = document.getElementById('introText');
+    var introEditBtn  = document.getElementById('introEditBtn');
+    var introForm     = document.getElementById('introForm');
+    var introTextarea = document.getElementById('introTextarea');
+    var introSaveBtn  = document.getElementById('introSaveBtn');
+    var introCancelBtn = document.getElementById('introCancelBtn');
+
+    introEditBtn.addEventListener('click', function () {
+        introText.style.display    = 'none';
+        introEditBtn.style.display = 'none';
+        introForm.style.display    = 'block';
+        introTextarea.focus();
+    });
+
+    introCancelBtn.addEventListener('click', function () {
+        introForm.style.display    = 'none';
+        introText.style.display    = '';
+        introEditBtn.style.display = '';
+    });
+
+    introSaveBtn.addEventListener('click', function () {
+        var intro = introTextarea.value.trim();
+        fetch('<%= ctx %>/user/intro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: 'intro=' + encodeURIComponent(intro)
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.ok) {
+                if (intro) {
+                    introText.className = 'mp-intro-text';
+                    introText.textContent = intro;
+                } else {
+                    introText.className = 'mp-intro-empty';
+                    introText.textContent = '소개글을 작성해 보세요.';
+                }
+                introForm.style.display    = 'none';
+                introText.style.display    = '';
+                introEditBtn.style.display = '';
+            } else {
+                alert(data.msg || '저장에 실패했습니다.');
+            }
+        })
+        .catch(function () { alert('저장 중 오류가 발생했습니다.'); });
+    });
+
+    // ── 탭 전환 ──
     var tabs  = document.querySelectorAll('#mpTabs .mp-tab-btn');
     var panes = document.querySelectorAll('.mp-pane');
 
