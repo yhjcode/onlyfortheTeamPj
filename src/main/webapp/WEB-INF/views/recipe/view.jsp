@@ -66,7 +66,7 @@
     .recipe-view-section h3 {
         font-size: 1.35rem;
         font-weight: 800;
-        color: #24a043;
+        color: var(--bggchef-primary);
         margin-bottom: 22px;
     }
     .ingredient-list {
@@ -197,8 +197,14 @@
         </c:forEach>
     </section>
 
-    <div class="d-flex justify-content-between mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
         <a href="${pageContext.request.contextPath}/recipe/list" class="btn btn-outline-secondary px-4">목록</a>
-        <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}" class="btn btn-outline-danger px-4">수정</a>
+        <div class="d-flex gap-2">
+            <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}" class="btn btn-outline-danger px-4">수정</a>
+            <form action="${pageContext.request.contextPath}/recipe/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
+                <button type="submit" class="btn btn-danger px-4">삭제</button>
+            </form>
+        </div>
     </div>
 </div>
