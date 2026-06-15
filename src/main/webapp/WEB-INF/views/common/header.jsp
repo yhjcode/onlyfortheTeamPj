@@ -28,12 +28,12 @@
                
                 <div class="col-md-7 col-12">
                   
-                    <form action="${pageContext.request.contextPath}/search/search.jsp" method="get" class="bggchef-search" onsubmit="return checkSearch()">
+                    <form action="${pageContext.request.contextPath}/search/search.jsp" method="get" class="bggchef-search"><%-- onsubmit="return checkSearch()" --%>
                     <div class="select d-flex align-items-center">
                    <select name="searchType" class="form-select bggchef-select">
                     		<option value="recipe" selected>레시피</option>
                     		<option value="theme">추천테마</option>
-                   			<option value="chef">쉐프</option></select>	
+                   			<option value="user">쉐프</option></select>	
                     		&nbsp;&nbsp;
                         <input type="search" name="keyword" placeholder="레시피, 재료, 셰프를 검색하세요" value="${param.keyword}">
                         <button type="submit" aria-label="검색"><i class="bi bi-search"></i></button></div>

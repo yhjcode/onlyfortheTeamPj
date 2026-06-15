@@ -13,8 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bggchef.dao.CategoryDAO;
+import com.bggchef.dao.ListDAO;
 import com.bggchef.dto.CategoryLDTO;
 import com.bggchef.dto.CategoryMDTO;
+import com.bggchef.dto.ListDTO;
 
 /**
  * 카테고리 필터/정렬 (REQ_REC_009)
@@ -42,6 +44,35 @@ public class CategoryController extends HttpServlet {
                 mapM.put(l.getCategorylId(), categoryDAO.listMByLId(l.getCategorylId()));
             }
             req.setAttribute("mapM", mapM);
+            //sort로 버튼기능 구현
+            
+            String sort = req.getParameter("sort");
+            
+            ListDAO dao = new ListDAO();
+            
+            List<ListDTO> Recipestack = null;
+            
+            if("desc".equals(sort)) {
+            	Recipestack = dao.descRecipe();
+            }else if("view".equals(sort)) {
+            	Recipestack = dao.viewcountRecipe();
+            }else if("avg".equals(sort)) {
+            	Recipestack = dao.avgratingRecipe();
+            }else {
+            	Recipestack = dao.descRecipe();
+            }
+            
+            /*
+			List<ListDTO> descRe = dao.descRecipe();
+			List<ListDTO> viewcountRe = dao.viewcountRecipe();
+			List<ListDTO> avgratingRe = dao.avgratingRecipe();
+			
+			req.setAttribute("descRe", descRe);
+			req.setAttribute("viewcountRe", viewcountRe);
+			req.setAttribute("avgratingRe", avgratingRe);
+            */
+            
+            req.setAttribute("descRe", Recipestack);
             
             req.setAttribute("contentPage", "/WEB-INF/views/category/list.jsp");
             req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, res);
@@ -52,6 +83,8 @@ public class CategoryController extends HttpServlet {
         }
     }
 
+    
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {

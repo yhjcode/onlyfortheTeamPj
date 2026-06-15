@@ -12,6 +12,9 @@ public class UserDTO {
     private Date birthday;
     private int isDeleted;
     private String medalGrade;
+    // 검색기능에 필요해서 추가
+    private Double avgRating;
+    private int    recipeCount;
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
@@ -31,4 +34,18 @@ public class UserDTO {
     public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
     public String getMedalGrade() { return medalGrade; }
     public void setMedalGrade(String medalGrade) { this.medalGrade = medalGrade; }
+	
+    public Double getAvgRating() {
+		return avgRating;
+	}
+	public void setAvgRating(Double avgRating) {
+		this.avgRating = avgRating;
+	}
+	public int getRecipeCount() {
+		return recipeCount;
+	}
+	public void setRecipeCount(int recipeCount) {
+		this.recipeCount = recipeCount;
+	}
+    
 }

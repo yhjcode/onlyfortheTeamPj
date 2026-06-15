@@ -15,3 +15,4 @@ function checkSearch() {
     }
     return true;
 }
+/* 현재 공백으로 검색하면 전체검색되게 바꿔서 미사용중 */
