@@ -26,7 +26,8 @@ import com.bggchef.util.FileUtil;
         "/recipe/list",
         "/recipe/write",
         "/recipe/view",
-        "/recipe/edit"
+        "/recipe/edit",
+        "/recipe/delete"
 })
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
@@ -44,15 +45,17 @@ public class RecipeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        String path = req.getServletPath();
+        String path = req.getServletPath(); // 매핑정보를 Path에 저장
 
         try {
-            if ("/recipe/write".equals(path)) {
+            if ("/recipe/write".equals(path)) { 
                 showWriteForm(req, res);
             } else if ("/recipe/view".equals(path)) {
                 showView(req, res);
             } else if ("/recipe/edit".equals(path)) {
                 showEditForm(req, res);
+            } else if ("/recipe/delete".equals(path)) {
+                res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             } else {
                 showList(req, res);
             }
@@ -71,6 +74,8 @@ public class RecipeController extends HttpServlet {
                 insertRecipe(req, res);
             } else if ("/recipe/edit".equals(path)) {
                 updateRecipe(req, res);
+            } else if ("/recipe/delete".equals(path)) {
+                deleteRecipe(req, res);
             } else {
                 doGet(req, res);
             }
@@ -81,11 +86,11 @@ public class RecipeController extends HttpServlet {
 
     private void showWriteForm(HttpServletRequest req, HttpServletResponse res)
             throws SQLException, ServletException, IOException {
-        requireLogin(req, res);
-        if (res.isCommitted()) return;
+        requireLogin(req, res); // 로그인 체크
+        if (res.isCommitted()) return; // 비회원일 경우 리턴처리
 
-        req.setAttribute("categoryList", recipeDAO.selectCategoryList());
-        forward(req, res, "/WEB-INF/views/recipe/write.do.jsp");
+        req.setAttribute("categoryList", recipeDAO.selectCategoryList()); // 카테고리 리스트를 불러와서 req에 저장
+        forward(req, res, "/WEB-INF/views/recipe/write.jsp");  // req에 담긴 카테고리 리스트로  write.do.jsp화면을 조립해서 사용자 브라우저에 전달
     }
 
     private void showEditForm(HttpServletRequest req, HttpServletResponse res)
@@ -104,7 +109,7 @@ public class RecipeController extends HttpServlet {
         req.setAttribute("ingredients", recipe.getIngredients());
         req.setAttribute("steps", recipe.getSteps());
         req.setAttribute("categoryList", recipeDAO.selectCategoryList());
-        forward(req, res, "/WEB-INF/views/recipe/edit.do.jsp");
+        forward(req, res, "/WEB-INF/views/recipe/edit.jsp");
     }
 
     private void showView(HttpServletRequest req, HttpServletResponse res)
@@ -169,6 +174,21 @@ public class RecipeController extends HttpServlet {
         res.sendRedirect(req.getContextPath() + "/recipe/view?recipe_id=" + recipe.getRecipeId());
     }
 
+    private void deleteRecipe(HttpServletRequest req, HttpServletResponse res)
+            throws SQLException, IOException {
+        UserDTO loginUser = requireLogin(req, res);
+        if (res.isCommitted()) return;
+
+        long recipeId = parseLong(req.getParameter("recipe_id"), parseLong(req.getParameter("id"), 0L));
+        if (recipeId <= 0) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        recipeDAO.deleteRecipe(recipeId, loginUser.getUserId());
+        res.sendRedirect(req.getContextPath() + "/recipe/list");
+    }
+
     private RecipeDTO buildRecipe(HttpServletRequest req) {
         RecipeDTO recipe = new RecipeDTO();
         recipe.setCategoryId(parseInt(req.getParameter("category_id"), 0));
@@ -196,6 +216,7 @@ public class RecipeController extends HttpServlet {
             RecipeIngredientDTO ingredient = new RecipeIngredientDTO();
             ingredient.setName(name.trim());
             ingredient.setAmount(amount.trim());
+            ingredient.setUnit(amount.trim());
             list.add(ingredient);
         }
         return list;
