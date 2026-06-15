@@ -34,29 +34,6 @@ public class ThemeDAO {
         return list;
     }
 
-    public List<ThemeDTO> selectByUserId(String userId) throws SQLException {
-        List<ThemeDTO> list = new ArrayList<>();
-        String sql = "SELECT theme_id, title, description, thumbnail, view_count, created_at " +
-                     "FROM RECOMMENDED_THEME WHERE user_id = ? AND is_visible = 1 " +
-                     "ORDER BY created_at DESC";
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, userId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ThemeDTO dto = new ThemeDTO();
-                dto.setThemeId(rs.getInt("theme_id"));
-                dto.setTitle(rs.getString("title"));
-                dto.setDescription(rs.getString("description"));
-                dto.setThumbnail(rs.getString("thumbnail"));
-                dto.setViewCount(rs.getInt("view_count"));
-                dto.setCreatedAt(rs.getDate("created_at"));
-                list.add(dto);
-            }
-        }
-        return list;
-    }
-
     /** 1. 테마 등록 */
     public void insert(ThemeDTO dto) throws SQLException {
         String sql = "INSERT INTO RECOMMENDED_THEME (theme_id, user_id, title, subtitle, description, thumbnail, is_visible, view_count, created_at) " +
@@ -163,7 +140,7 @@ public class ThemeDAO {
                     dto.setTitle(rs.getString("title"));
                     dto.setThumbnail(rs.getString("thumbnail"));
                     dto.setUserId(rs.getString("user_id"));
-                    dto.setRecipeLink(rs.getString("link")); // 링크 포함
+                    dto.setRecipeLink(rs.getString("link")); 
                     String themeDesc = rs.getString("theme_desc");
                     dto.setDescription((themeDesc != null && !themeDesc.isEmpty()) ? themeDesc : rs.getString("description"));
                     list.add(dto);
@@ -227,7 +204,6 @@ public class ThemeDAO {
         return dto;
     }
     
-    // [수정] 레시피 상세 조회 (링크 컬럼 추가)
     public RecipeDTO getThemeRecipeDetail(int themeId, int recipeId) throws SQLException {
         String sql = "SELECT r.*, tr.description AS theme_desc FROM RECIPE r " +
                      "JOIN THEME_RECIPE tr ON r.recipe_id = tr.recipe_id WHERE tr.theme_id = ? AND tr.recipe_id = ?";
@@ -240,7 +216,7 @@ public class ThemeDAO {
                     dto.setRecipeId(rs.getLong("recipe_id"));
                     dto.setTitle(rs.getString("title"));
                     dto.setThumbnail(rs.getString("thumbnail"));
-                    dto.setRecipeLink(rs.getString("link")); // 링크 로드
+                    dto.setRecipeLink(rs.getString("link")); 
                     dto.setDescription(rs.getString("theme_desc"));
                     return dto;
                 }
@@ -249,7 +225,6 @@ public class ThemeDAO {
         return null;
     }
 
-    // [수정] 레시피 기본 정보 업데이트 (링크 업데이트 추가)
     public void updateRecipeInfo(RecipeDTO dto) throws SQLException {
         String sql = "UPDATE RECIPE SET title = ?, description = ?, thumbnail = ?, link = ? WHERE recipe_id = ?";
         try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -262,7 +237,6 @@ public class ThemeDAO {
         }
     }
 
-    // [유지] 테마-레시피 관계 테이블의 소개글 업데이트
     public void updateThemeRecipeDescription(int themeId, int recipeId, String description) throws SQLException {
         String sql = "UPDATE THEME_RECIPE SET description = ? WHERE theme_id = ? AND recipe_id = ?";
         try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
