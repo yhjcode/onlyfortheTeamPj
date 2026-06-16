@@ -21,6 +21,12 @@ public class ReviewController extends HttpServlet {
         // TODO: 비즈니스 로직 + DAO 호출 + request 속성 set
         req.setAttribute("contentPage", "/WEB-INF/views/recipe/view.jsp");
         req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, res);
+        
+        
+        
+        
+        
+        
     }
 
     @Override
@@ -28,5 +34,9 @@ public class ReviewController extends HttpServlet {
             throws ServletException, IOException {
         // 기본은 doGet으로 위임. POST 동작이 다르면 분리 구현
         doGet(req, res);
+        
+        
+        
+        
     }
 }
