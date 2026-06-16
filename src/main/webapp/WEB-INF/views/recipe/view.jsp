@@ -220,4 +220,145 @@
         </div>
     </c:if>
 </div>
+
+
+
 </div>
+
+<!-- ================= [댓글 기능 구현 구역] ================= -->
+<div class="container mt-5" style="max-width: 800px;">
+    <h4 class="mb-4">📢 레시피 리뷰 / 댓글</h4>
+    
+    <!-- 댓글 작성 양식 -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h6 class="card-title fw-bold mb-3">리뷰 작성하기</h6>
+            <div class="row g-2 mb-2">
+                <!-- 평점 선택 (1점 ~ 5점) -->
+                <div class="col-md-3">
+                    <select id="review-rating" class="form-select">
+                        <option value="5.0">⭐⭐⭐⭐⭐ (5점)</option>
+                        <option value="4.0">⭐⭐⭐⭐ (4점)</option>
+                        <option value="3.0">⭐⭐⭐ (3점)</option>
+                        <option value="2.0">⭐⭐ (2점)</option>
+                        <option value="1.0">⭐ (1점)</option>
+                    </select>
+                </div>
+                <!-- 댓글 내용 입력창 -->
+                <div class="col-md-9">
+                    <textarea id="review-content" class="form-control" rows="2" placeholder="이 레시피에 대한 솔직한 리뷰를 남겨주세요!"></textarea>
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="button" id="btn-submit-review" class="btn btn-primary px-4">등록</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 댓글 목록이 동적으로 출력될 단 하나의 영역 -->
+    <div id="review-list-container" class="mb-4">
+        <!-- Ajax 통신 후 자바스크립트가 여기에 댓글 카드를 채워 넣습니다. -->
+    </div>
+</div>
+
+<!-- 부트스트랩 아이콘 스타일시트 경로 정상 수정 완료 -->
+<link rel="stylesheet" href="https://jsdelivr.net">
+
+<script>
+// 페이지 로드가 완료되면 실행
+document.addEventListener("DOMContentLoaded", function() {
+    var currentRecipeId = "${recipe.recipeId}";
+    
+    // 1. 최초 목록 로드 호출
+    loadReviews(currentRecipeId);
+    
+    // 2. 등록 버튼 클릭 이벤트 연결
+    var submitBtn = document.getElementById("btn-submit-review");
+    if (submitBtn) {
+        submitBtn.addEventListener("click", function() {
+            var contentInput = document.getElementById("review-content");
+            var ratingInput = document.getElementById("review-rating");
+            
+            var content = contentInput.value.trim();
+            var rating = ratingInput.value;
+            
+            if (!content) {
+                alert("리뷰 내용을 입력해주세요.");
+                contentInput.focus();
+                return;
+            }
+            
+            // 순수 자바스크립트 Form 데이터 조립
+            var params = new URLSearchParams();
+            params.append("recipe_id", currentRecipeId);
+            params.append("content", content);
+            params.append("rating", rating);
+            
+            // Fetch API를 이용한 Ajax POST 요청
+            fetch("${pageContext.request.contextPath}/review/list", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: params.toString()
+            })
+            .then(function(response) { return response.text(); }) // 응답을 텍스트로 변환
+            .then(function(result) {
+                // 서블릿에서 넘어온 결과 텍스트의 공백 제거 후 비교
+                if (result.trim() === "success") {
+                    alert("리뷰가 등록되었습니다!");
+                    contentInput.value = ""; // 입력창 비우기
+                    loadReviews(currentRecipeId); // 목록 실시간 새로고침
+                } else {
+                    alert("등록에 실패했습니다. 서버 메시지: " + result);
+                }
+            })
+            .catch(function(error) {
+                console.error("리뷰 등록 실패: ", error);
+            });
+        });
+    }
+});
+
+// 댓글 목록을 불러오는 함수 (Fetch API 버전)
+function loadReviews(recipeId) {
+    fetch("${pageContext.request.contextPath}/review/list?recipe_id=" + recipeId)
+        .then(function(response) { return response.json(); }) // 응답을 JSON 배열 객체로 변환
+        .then(function(responseList) {
+            var container = document.getElementById("review-list-container");
+            var html = "";
+            
+            if (responseList.length > 0) {
+                // 순수 자바스크립트 반복문 처리
+                responseList.forEach(function(review) {
+                    html += '<div class="card mb-3 shadow-sm">';
+                    html += '  <div class="card-body">';
+                    html += '    <div class="d-flex justify-content-between align-items-center mb-2">';
+                    html += '      <div>';
+                    html += '        <strong class="text-primary">' + review.nickname + '</strong> ';
+                    html += '        <span class="text-muted small">(' + review.userId + ')</span>';
+                    html += '      </div>';
+                    html += '      <small class="text-secondary">' + review.createdAt + '</small>';
+                    html += '    </div>';
+                    html += '    <div class="mb-2 text-warning">';
+                    html += '       <i class="bi bi-star-fill"></i> 평점: ' + parseFloat(review.rating).toFixed(1);
+                    html += '    </div>';
+                    html += '    <p class="card-text text-dark" style="white-space: pre-wrap;">' + review.content + '</p>';
+                    html += '  </div>';
+                    html += '</div>';
+                });
+            } else {
+                html += '<div class="text-center py-4 text-muted border rounded bg-light">';
+                html += '  <p class="mb-0">아직 작성된 리뷰가 없습니다. 첫 리뷰를 작성해 보세요!</p>';
+                html += '</div>';
+            }
+            
+            container.innerHTML = html; // 화면에 삽입
+        })
+        .catch(function(error) {
+            console.error("리뷰 목록 로딩 실패 원인: ", error);
+            document.getElementById("review-list-container").innerHTML = '<p class="text-danger">리뷰를 불러오는 중 오류가 발생했습니다.</p>';
+        });
+}
+</script>
+<!-- ======================================================== -->

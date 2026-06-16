@@ -6,50 +6,79 @@ import com.bggchef.util.DBUtil;
 
 public class ReviewDAO {
 
+	// Ajax-
 	
 	
-	//댓글 작성메서드
+    /** 특정 레시피 번호에 달린 모든 댓글(리뷰) 목록 조회 */
+    public List<ReviewDTO> selectByRecipeId(long recipeId) throws SQLException {
+        List<ReviewDTO> list = new ArrayList<>();
+        String sql = "SELECT r.review_id, r.user_id, r.recipe_id, r.rating, r.content, "
+                   + "r.parent_review_id, r.is_deleted, r.created_at, u.nickname "
+                   + "FROM REVIEW r "
+                   + "JOIN USERS u ON r.user_id = u.user_id "
+                   + "WHERE r.recipe_id = ? AND r.is_deleted = 0 AND r.parent_review_id IS NULL "
+                   + "ORDER BY r.created_at DESC";
+                   
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, recipeId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ReviewDTO dto = new ReviewDTO();
+                dto.setReviewId(rs.getLong("review_id"));
+                dto.setUserId(rs.getString("user_id"));
+                dto.setRecipeId(rs.getLong("recipe_id"));
+                dto.setRating(rs.getDouble("rating"));
+                dto.setContent(readClob(rs, "content"));
+                dto.setParentReviewId(rs.getObject("parent_review_id") != null ? rs.getLong("parent_review_id") : null);
+                dto.setIsDeleted(rs.getInt("is_deleted"));
+                dto.setCreatedAt(rs.getDate("created_at"));
+                dto.setNickname(rs.getString("nickname")); // 화면에 뿌릴 작성자 닉네임
+                list.add(dto);
+            }
+        }
+        return list;
+    }
+
+	
+    
+    
+    
+    //
+    
+    /** 새 리뷰/댓글 등록 */
+    public int insertReview(ReviewDTO dto) throws SQLException {
+        String sql = "INSERT INTO REVIEW (review_id, user_id, recipe_id, rating, content, parent_review_id, is_deleted, created_at) "
+                   + "VALUES (SEQ_REVIEW.NEXTVAL, ?, ?, ?, ?, NULL, 0, SYSDATE)";
+                   // ※ 만약 시퀀스명이 다르면 SEQ_REVIEW 대신 본인의 시퀀스명을 적어주세요.
+                   
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, dto.getUserId());
+            ps.setLong(2, dto.getRecipeId());
+            ps.setDouble(3, dto.getRating());
+            ps.setString(4, dto.getContent()); // CLOB 타입이어도 setString으로 정상 저장됩니다.
+            
+            return ps.executeUpdate(); // 성공하면 1 반환
+        }
+    }
+
+    
+    
+    //
+    
+    
+    
+    
+    
+    
+    
+    
 	
 	
 	
+	//
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//댓글 삭제메서드
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//댓글수정메서드
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
     /** 내가 작성한 댓글 목록 */
     public List<ReviewDTO> selectByUserId(String userId) throws SQLException {
