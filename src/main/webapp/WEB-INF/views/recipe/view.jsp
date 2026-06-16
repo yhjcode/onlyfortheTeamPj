@@ -129,24 +129,24 @@
 <div class="recipe-view-wrap">
     <article class="recipe-hero">
         <c:choose>
-            <c:when test="${not empty recipe.thumbnail}">
+            <c:when test="${not empty recipe.thumbnail}"> <%--썸네일이미지가 있을땐 송출 --%>
                 <img class="recipe-hero-img" src="${pageContext.request.contextPath}${recipe.thumbnail}" alt="${fn:escapeXml(recipe.title)}">
             </c:when>
             <c:otherwise>
-                <div class="recipe-hero-empty"><i class="bi bi-image"></i></div>
+                <div class="recipe-hero-empty"><i class="bi bi-image"></i></div> <%--없을땐 부트스트랩 이미지로 대체 --%>
             </c:otherwise>
         </c:choose>
 
         <div class="recipe-hero-body">
             <div class="text-danger fw-bold mb-2">
-                <c:out value="${recipe.categoryName}" />
+                <c:out value="${recipe.categoryName}" />  
             </div>
             <h2 class="recipe-title"><c:out value="${recipe.title}" /></h2>
-            <div class="recipe-desc"><c:out value="${recipe.description}" /></div>
-            <div class="text-muted">
+            <div class="recipe-desc"><c:out value="${recipe.description}" /></div> 
+            <div class="text-muted">   <%-- 텍스트 색을 연하게 만드는 부트스트랩 --%>
                 by <strong><c:out value="${recipe.nickname}" /></strong>
                 <span class="mx-2">|</span>
-                조회수 <c:out value="${recipe.viewCount}" />
+                조회수 <c:out value="${recipe.viewCount}" />               <%--       레시피정보:이름,설명,작성자이름등을 출력함   --%>
             </div>
 
             <div class="recipe-meta-list">
@@ -167,8 +167,10 @@
                     </c:choose>
                 </div>
             </div>
-        </div>
-    </article>
+        </div>                                                                            <%--       레시피정보:몇인분인지,몇분걸리는지 요리난이도 등을 출력함   --%>
+    </article> <%----------------------- 뷰페이지 첫번째 박스 끝--%>
+    
+    
 
     <section class="recipe-view-section">
         <h3>재료</h3>
@@ -180,11 +182,14 @@
                 </div>
             </c:forEach>
         </div>
-    </section>
+    </section>          <%--       재료정보:  재료 종류, 수량  등을 출력함   --%>
+    <%----------------------- 뷰페이지 두번째 박스 끝--%>
+    
+    
 
     <section class="recipe-view-section">
         <h3>조리순서</h3>
-        <c:forEach var="step" items="${steps}">
+        <c:forEach var="step" items="${steps}">    <%--레시피에 존재하는 step수만큼 반복하며 순서번호,스텝당 설명, 사진을 모두 송출 --%>
             <div class="step-item">
                 <div class="step-no">Step<br><c:out value="${step.stepNo}" /></div>
                 <div>
@@ -195,16 +200,21 @@
                 </div>
             </div>
         </c:forEach>
-    </section>
+    </section>  
+        <%----------------------- 뷰페이지 세번째 박스 끝--%>
+
+
 
     <div class="d-flex justify-content-between align-items-center mb-5">
         <a href="${pageContext.request.contextPath}/recipe/list" class="btn btn-outline-secondary px-4">목록</a>
         <div class="d-flex gap-2">
             <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}" class="btn btn-outline-danger px-4">수정</a>
+            <%-- 최상위루트에서 /recipe/edit로 이동 +  recipe_id에 저장된 아이디값에 해당하는 레시피를 수정하는 화면으로 --%>
+            
             <form action="${pageContext.request.contextPath}/recipe/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
                 <button type="submit" class="btn btn-danger px-4">삭제</button>
-            </form>
+            </form> <%-- 레시피id를 들고  recipe/delete페이지로 이동하되 컨펌메시지를 먼저 확인 받고 삭제 --%>
         </div>
     </div>
 </div>
