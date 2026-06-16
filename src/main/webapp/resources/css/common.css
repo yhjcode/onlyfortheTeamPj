@@ -78,16 +78,7 @@ a:hover { text-decoration: none; }
     background: white;
     transition: box-shadow 0.2s;
 }
-.categoryrecipe input {
-	border: 2px solid var(--bggchef-primary);
-    border-radius: 30px;
-    padding: 11px 11px 11px 11px;
-    width: 90px;
-    font-size: 0.95rem;
-    background: white;
-    transition: box-shadow 0.2s;
-	text-align : center;
-}
+
 .categoryrecipe {
 	
 }
@@ -432,6 +423,52 @@ a:hover { text-decoration: none; }
     background: var(--bggchef-primary);
     color: white;
 }
+
+/* ============================================
+   카테고리 버튼
+   ============================================ */
+
+.categoryrecipe input {
+	border: 2px solid var(--bggchef-primary);
+    border-radius: 30px;
+    padding: 5px 11px 5px 11px;
+    width: 90px;
+    font-size: 0.95rem;
+    background: white;
+    transition: box-shadow 0.2s;
+	text-align : center;
+	height: 40px;
+}
+
+.categoryrecipe input.active, .categoryrecipe input:hover {
+	
+	color: white;
+	font-style : bold;
+	background-color: var(--bggchef-primary);
+	
+}
+.categorybutton input {
+	background: white;
+    color: var(--bggchef-muted);
+    border: 1px solid var(--bggchef-border);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.categorybutton input.active, .categorybutton input:hover {
+	
+	color: white;
+	font-style : bold;
+	background-color: var(--bggchef-primary);
+	
+}
+
+
 
 /* ============================================
    폼 (회원가입, 로그인, 작성)

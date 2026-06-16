@@ -33,22 +33,29 @@
 --%>
 
 <%-- 카테고리 리스트 페이지!!	상단에 카테고리 분류하고 리스트 조회수,최신순,평점순 버튼 만들것  --%>
-
+<br>
 <section>									<%-- 카테고리 섹션 --%>
-<hr><div align="center"><h3><b>나중에 카테고리 들어갈 자리</b></h3></div>
 <hr>
-
-
+<div class=categorybutton>
+<c:forEach var="cbutton" items="${button}">
+<input type="button" value="${cbutton.categoryL}" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${cbutton.categoryId}'"
+ class="${currentcategory eq cbutton.categoryId ? 'active' : ''}">
+</c:forEach>								<%-- 카테고리 버튼 끝 --%>
+</div>										
+<hr>
 </section>									<%-- 카테고리 섹션 끝 --%>
 <section>									<%-- 레시피 리스트 섹션 --%>
 <h2 class="mb-4">레시피 목록</h2>
 
 <div class="categoryrecipe" align="right">
-	<input type="button" value="최신순" class="active" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=desc'">
-	<input type="button" value="조회수순" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=view'">
-	<input type="button" value="평점순" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=avg'">
-
+	<input type="button" value="최신순" class="${empty param.sort || param.sort == 'desc' ? 'active' : ''}"
+	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=desc&categoryId=${currentcategory}'">
+	<input type="button" value="조회수순" class="${param.sort == 'view' ? 'active' : ''}"
+	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=view&categoryId=${currentcategory}'">
+	<input type="button" value="평점순" class="${param.sort == 'avg' ? 'active' : ''}"
+	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=avg&categoryId=${currentcategory}'">
 </div>
+<br>
 <div class="row g-3">
     <!-- TODO: c:forEach로 레시피 카드 반복  레시피카드 하나부터 만들어보고 반복문 돌리기.-->
     <%-- <p class="text-muted">레시피 카드 목록이 여기에 표시됩니다.</p>--%>
@@ -89,12 +96,32 @@
                 </div>
             </c:if>
     
-    		
-    		
-    		
     
-</div>
+</div></div>
 </section>									<%-- 레시피 리스트 섹션 끝 --%>
+<section>
+<div class="pagination-container" style="text-align: center; margin-top: 20px;">
+    
+    <c:if test="${paging.startPage > 1}">  
+        <a href="?page=${paging.startPage - 1}&sort=${currentsort}&categoryId=${currentcategory}">[이전]</a>
+    </c:if>
+
+    <c:forEach var="i" begin="${paging.startPage}" end="${paging.endPage}">
+        <c:choose>
+            <c:when test="${i == paging.currentPage}">
+                <strong style="color: red; margin: 0 5px;">${i}</strong>
+            </c:when>
+            <c:otherwise>	
+                <a href="?page=${i}&sort=${currentsort}&categoryId=${currentcategory}" style="margin: 0 5px;">${i}</a>
+            </c:otherwise>
+        </c:choose>
+    </c:forEach>
+
+    <c:if test="${paging.endPage < paging.totalPage}">  
+        <a href="?page=${paging.endPage + 1}&sort=${currentsort}&categoryId=${currentcategory}">[다음]</a>
+    </c:if>
+</div>
+</section>
 
 
 
