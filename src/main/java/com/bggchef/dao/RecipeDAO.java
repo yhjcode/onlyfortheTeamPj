@@ -2,7 +2,7 @@ package com.bggchef.dao;
 import java.sql.*;
 import java.util.*;
 
-import com.bggchef.dto.CategoryMDTO;
+import com.bggchef.dto.CategoryLDTO;
 import com.bggchef.dto.RecipeDTO;
 import com.bggchef.dto.RecipeIngredientDTO;
 import com.bggchef.dto.RecipeStepDTO;
@@ -33,6 +33,8 @@ public class RecipeDAO {
             closeConnection(conn);
         }
     }
+    
+    
 
     public void updateRecipe(RecipeDTO recipe, List<RecipeIngredientDTO> ingrList, List<RecipeStepDTO> stepList)
             throws SQLException {
@@ -89,10 +91,10 @@ public class RecipeDAO {
     public RecipeDTO selectRecipeById(long recipeId) throws SQLException {
         String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
                    + "       r.servings, r.cook_time, r.difficulty, r.view_count, r.avg_rating, "
-                   + "       r.is_deleted, r.created_at, u.nickname, cm.name AS category_name "
+                   + "       r.is_deleted, r.created_at, u.nickname, cl.name AS category_name "
                    + "  FROM RECIPE r "
                    + "  JOIN USERS u ON r.user_id = u.user_id "
-                   + "  JOIN CATEGORY_M cm ON r.category_id = cm.categorym_id "
+                   + "  JOIN CATEGORY_L cl ON r.category_id = cl.categoryl_id "
                    + " WHERE r.recipe_id = ? AND r.is_deleted = 0";
 
         Connection conn = null;
@@ -135,11 +137,11 @@ public class RecipeDAO {
         }
     }
 
-    public List<CategoryMDTO> selectCategoryList() throws SQLException {
-        String sql = "SELECT categorym_id, categoryl_id, name, type "
-                   + "  FROM CATEGORY_M "
-                   + " ORDER BY categorym_id";
-        List<CategoryMDTO> list = new ArrayList<>();
+    public List<CategoryLDTO> selectCategoryList() throws SQLException {
+        String sql = "SELECT categoryl_id, name, type "
+                   + "  FROM CATEGORY_L "
+                   + " ORDER BY categoryl_id";
+        List<CategoryLDTO> list = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -149,8 +151,7 @@ public class RecipeDAO {
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                CategoryMDTO category = new CategoryMDTO();
-                category.setCategorymId(rs.getInt("categorym_id"));
+                CategoryLDTO category = new CategoryLDTO();
                 category.setCategorylId(rs.getInt("categoryl_id"));
                 category.setName(rs.getString("name"));
                 category.setType(rs.getString("type"));

@@ -6,6 +6,51 @@ import com.bggchef.util.DBUtil;
 
 public class ReviewDAO {
 
+	
+	
+	//댓글 작성메서드
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//댓글 삭제메서드
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//댓글수정메서드
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
     /** 내가 작성한 댓글 목록 */
     public List<ReviewDTO> selectByUserId(String userId) throws SQLException {
         List<ReviewDTO> list = new ArrayList<>();

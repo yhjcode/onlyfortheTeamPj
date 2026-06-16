@@ -22,6 +22,8 @@ public class RecipeDTO {
     private String categoryName;
     private List<RecipeIngredientDTO> ingredients = new ArrayList<>();
     private List<RecipeStepDTO> steps = new ArrayList<>();
+    
+    
 
     public long getRecipeId() { return recipeId; }
     public void setRecipeId(long recipeId) { this.recipeId = recipeId; }
