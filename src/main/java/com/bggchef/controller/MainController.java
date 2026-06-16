@@ -30,10 +30,10 @@ public class MainController extends HttpServlet {
             RankingDAO rankingDAO = new RankingDAO();
             ThemeDAO themeDAO     = new ThemeDAO();
 
-            List<RecipeDTO>      topRatedRecipes = rankingDAO.selectRecipesByRating(4);
-            List<RecipeDTO>      latestRecipes   = recipeDAO.selectLatest(4);
-            List<ChefRankingDTO> chefRanking     = rankingDAO.selectChefsByAvgRating(4);
-            List<ThemeDTO>       themes          = themeDAO.selectTop(6);
+            List<RecipeDTO>      topRatedRecipes = rankingDAO.selectRecipesByRating(10);
+            List<RecipeDTO>      latestRecipes   = recipeDAO.selectLatest(10);
+            List<ChefRankingDTO> chefRanking     = rankingDAO.selectChefsByAvgRating(10);
+            List<ThemeDTO>       themes          = themeDAO.selectTop(10);
 
             req.setAttribute("topRatedRecipes", topRatedRecipes);
             req.setAttribute("latestRecipes",   latestRecipes);

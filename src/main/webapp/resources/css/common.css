@@ -293,6 +293,25 @@ a:hover { text-decoration: none; }
 }
 
 /* ============================================
+   캐러셀 슬라이더
+   ============================================ */
+.carousel-container {
+    position: relative;
+}
+.carousel-viewport {
+    overflow: hidden;
+}
+.carousel-track {
+    display: flex;
+    transition: transform 0.35s ease;
+}
+.slide-item {
+    flex: 0 0 25%;
+    padding: 0 8px;
+    box-sizing: border-box;
+}
+
+/* ============================================
    캐러셀 화살표
    ============================================ */
 .carousel-arrow {
