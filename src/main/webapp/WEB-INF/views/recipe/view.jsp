@@ -206,15 +206,18 @@
 
 
     <div class="d-flex justify-content-between align-items-center mb-5">
-        <a href="${pageContext.request.contextPath}/recipe/list" class="btn btn-outline-secondary px-4">목록</a>
+    <a href="${pageContext.request.contextPath}/recipe/list" class="btn btn-outline-secondary px-4">목록</a>
+    
+    <%-- 로그인 상태(sessionScope.loginUser가 비어있지 않을 때)일 때만 수정/삭제 버튼 박스를 출력 --%>
+    <c:if test="${not empty sessionScope.loginUser}">
         <div class="d-flex gap-2">
             <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}" class="btn btn-outline-danger px-4">수정</a>
-            <%-- 최상위루트에서 /recipe/edit로 이동 +  recipe_id에 저장된 아이디값에 해당하는 레시피를 수정하는 화면으로 --%>
             
             <form action="${pageContext.request.contextPath}/recipe/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
                 <button type="submit" class="btn btn-danger px-4">삭제</button>
-            </form> <%-- 레시피id를 들고  recipe/delete페이지로 이동하되 컨펌메시지를 먼저 확인 받고 삭제 --%>
+            </form>
         </div>
-    </div>
+    </c:if>
+</div>
 </div>

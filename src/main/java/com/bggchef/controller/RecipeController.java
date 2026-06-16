@@ -276,7 +276,7 @@ public class RecipeController extends HttpServlet {
 
     private RecipeDTO buildRecipe(HttpServletRequest req) { // 입력받은 데이터 레시피DTO에 저장
         RecipeDTO recipe = new RecipeDTO();
-        recipe.setCategoryId(parseInt(req.getParameter("category_id"), 0));
+        recipe.setCategoryId(parseInt(req.getParameter("categoryLId"), 0));
         recipe.setTitle(trimToEmpty(req.getParameter("title")));
         recipe.setDescription(trimToNull(req.getParameter("description")));
         recipe.setServings(parseInt(req.getParameter("servings"), 0));

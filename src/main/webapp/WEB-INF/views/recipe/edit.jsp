@@ -203,11 +203,11 @@
                 
                 
                     <div>
-                        <label for="category_id" class="recipe-label small">카테고리</label>
-                        <select class="form-select" id="category_id" name="category_id" required>
+                        <label for="categoryLId" class="recipe-label small">카테고리</label>
+                        <select class="form-select" id="categoryLId" name="categoryLId" required>
                             <option value="">선택</option>
                             <c:forEach var="category" items="${categoryList}">
-                                <option value="${category.categorymId}" ${recipe.categoryId == category.categorymId ? 'selected' : ''}><c:out value="${category.name}" /></option>
+                                <option value="${category.categorylId}" ${recipe.categoryId == category.categorylId ? 'selected' : ''}><c:out value="${category.name}" /></option>
                             </c:forEach>
                             <c:if test="${empty categoryList}">
                                 <option value="${recipe.categoryId}" selected><c:out value="${empty recipe.categoryName ? '기존 카테고리' : recipe.categoryName}" /></option>
