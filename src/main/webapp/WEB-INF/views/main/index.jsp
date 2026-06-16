@@ -164,7 +164,7 @@
 					<c:when test="${not empty chefRanking}">
 						<c:forEach var="chef" items="${chefRanking}" varStatus="status">
 							<div class="slide-item">
-								<a href="${pageContext.request.contextPath}/chef/profile?id=${chef.userId}">
+								<a href="${pageContext.request.contextPath}/chef/profile?userId=${chef.userId}">
 									<div class="chef-card">
 										<div class="chef-avatar-wrap">
 											<span class="chef-rank-badge">${status.count}</span>
