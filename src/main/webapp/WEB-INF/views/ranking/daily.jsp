@@ -500,3 +500,12 @@
     </div><!-- /chef-pane -->
 
 </div><!-- /mainRankTabContent -->
+
+<script>
+window.addEventListener('load', function () {
+    if (location.hash === '#chef') {
+        var tab = document.getElementById('chef-tab');
+        if (tab) bootstrap.Tab.getOrCreateInstance(tab).show();
+    }
+});
+</script>
