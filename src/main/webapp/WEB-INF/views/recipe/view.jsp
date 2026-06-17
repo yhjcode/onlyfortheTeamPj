@@ -227,7 +227,7 @@
 
 <!-- ================= [댓글 기능 구현 구역] ================= -->
 <div class="container mt-5" style="max-width: 800px;">
-    <h4 class="mb-4">📢 레시피 리뷰 / 댓글</h4>
+    <h4 class="mb-4">📢 레시피 리뷰 </h4>
     
     <!-- 댓글 작성 양식 -->
     <div class="card mb-4 shadow-sm">
@@ -236,7 +236,7 @@
             <div class="row g-2 mb-2">
                 <!-- 평점 선택 (1점 ~ 5점) -->
                 <div class="col-md-3">
-                    <select id="review-rating" class="form-select">
+                    <select id="review-rating" class="form-select">    <!--  평점 드롭다운 / review-rating아이디로 Ajax 연결    -->
                         <option value="5.0">⭐⭐⭐⭐⭐ (5점)</option>
                         <option value="4.0">⭐⭐⭐⭐ (4점)</option>
                         <option value="3.0">⭐⭐⭐ (3점)</option>
@@ -245,41 +245,47 @@
                     </select>
                 </div>
                 <!-- 댓글 내용 입력창 -->
-                <div class="col-md-9">
-                    <textarea id="review-content" class="form-control" rows="2" placeholder="이 레시피에 대한 솔직한 리뷰를 남겨주세요!"></textarea>
+                <div class="col-md-9">                            <!--  리뷰 내용 입력  / review-content아익디로 Ajax 연결 -->
+                    <textarea id="review-content" class="form-control" rows="2" placeholder="이 레시피에 대한 솔직한 리뷰를 남겨주세요!"></textarea> 
                 </div>
             </div>
             <div class="text-end">
-                <button type="button" id="btn-submit-review" class="btn btn-primary px-4">등록</button>
+                <button type="button" id="btn-submit-review" class="btn btn-primary px-4">등록</button><!-- btn-submit-review에의해 등록버튼을 클릭하는 순간 Ajax 함수 호출됨 -->
             </div>
         </div>
     </div>
     
-    <!-- 댓글 목록이 동적으로 출력될 단 하나의 영역 -->
-    <div id="review-list-container" class="mb-4">
-        <!-- Ajax 통신 후 자바스크립트가 여기에 댓글 카드를 채워 넣습니다. -->
+    <!-- json에서 파싱한 댓글목록을 이 div 박스에서 뿌림-->
+    <div id="review-list-container" class="mb-4">  <!--  review-list-container 아이디로 Ajax함수 리턴값을 수신. -->
+        
     </div>
 </div>
 
 <!-- 부트스트랩 아이콘 스타일시트 경로 정상 수정 완료 -->
-<link rel="stylesheet" href="https://jsdelivr.net">
+<!-- <link rel="stylesheet" href="https://jsdelivr.net">-->
+
+
+
+
+
+
 
 <script>
-// 페이지 로드가 완료되면 실행
-document.addEventListener("DOMContentLoaded", function() {
-    var currentRecipeId = "${recipe.recipeId}";
+
+document.addEventListener("DOMContentLoaded", function() {   // html페이지 로드가 완료되면  실행
+    var currentRecipeId = "${recipe.recipeId}"; // 댓글을 작성할 레시피의 id를 jsp서버로부터 받아서  var currentRecipeId 에 저장
     
-    // 1. 최초 목록 로드 호출
-    loadReviews(currentRecipeId);
     
-    // 2. 등록 버튼 클릭 이벤트 연결
-    var submitBtn = document.getElementById("btn-submit-review");
-    if (submitBtn) {
+    loadReviews(currentRecipeId);    // currentRecipeId에저장된 레시피id에 해당하는 댓글목록을 컨트롤러로부터 받아서 id= review-list-container인 태그로  발신
+    
+    
+    var submitBtn = document.getElementById("btn-submit-review"); // btn-submit-review아이디가 있는 태그에 submit이 있으면 그 객체(html태그)를 var submitBtn에 참조
+    if (submitBtn) {// 없으면 null
         submitBtn.addEventListener("click", function() {
-            var contentInput = document.getElementById("review-content");
+            var contentInput = document.getElementById("review-content");//  아이디review-content에 해당하는 html태그객체를 contentInput에 참조
             var ratingInput = document.getElementById("review-rating");
             
-            var content = contentInput.value.trim();
+            var content = contentInput.value.trim(); // 공백을 제거하고 값만 추출하여 content에 저장
             var rating = ratingInput.value;
             
             if (!content) {
@@ -289,23 +295,29 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             
             // 순수 자바스크립트 Form 데이터 조립
-            var params = new URLSearchParams();
-            params.append("recipe_id", currentRecipeId);
+            var params = new URLSearchParams(); // key=value&key=value형식으러 데이터를 저장하는 틀(Query String 또는 x-www-form-urlencoded 형식)
+            params.append("recipe_id", currentRecipeId); // recipe_id", currentRecipeId 한상을 Params에 저장
             params.append("content", content);
             params.append("rating", rating);
             
             // Fetch API를 이용한 Ajax POST 요청
-            fetch("${pageContext.request.contextPath}/review/list", {
-                method: "POST",
+            fetch("${pageContext.request.contextPath}/review/list", {  //form태그의 action속성(컨트롤러 매핑url)을 Ajax로 구현
+                method: "POST", //form의 메서드 속성과 동일
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
+                    "Content-Type": "application/x-www-form-urlencoded" // form형식의 타입임을 명시
                 },
-                body: params.toString()
+                body: params.toString() //바이너리 바이트 스트림 단위 문자열로 http바디에 데이터를 저장
             })
-            .then(function(response) { return response.text(); }) // 응답을 텍스트로 변환
-            .then(function(result) {
-                // 서블릿에서 넘어온 결과 텍스트의 공백 제거 후 비교
-                if (result.trim() === "success") {
+            
+            
+            //서버로부터 응답을 받으면 .then에 의해 이어서 실행( 비동기 처리,체이닝    )  --async / await로 리펙토링 여지 있음
+            
+            .then(function(response) { return response.text(); })        // 응답을 텍스트로 변환
+            .then(function(result) {                                           // 그 텍스트를 result라는 변수에 담는다
+                
+            	//브라우저가 실행
+            	
+                if (result.trim() === "success") {// 서블릿에서 넘어온 결과 텍스트의 공백 제거 후 비교
                     alert("리뷰가 등록되었습니다!");
                     contentInput.value = ""; // 입력창 비우기
                     loadReviews(currentRecipeId); // 목록 실시간 새로고침
@@ -320,17 +332,27 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+
+
+
+
+
 // 댓글 목록을 불러오는 함수 (Fetch API 버전)
 function loadReviews(recipeId) {
-    fetch("${pageContext.request.contextPath}/review/list?recipe_id=" + recipeId)
-        .then(function(response) { return response.json(); }) // 응답을 JSON 배열 객체로 변환
-        .then(function(responseList) {
+    fetch("${pageContext.request.contextPath}/review/list?recipe_id=" + recipeId)  // 매핑된 컨트롤러에 Query String방식으로 레시피id전달
+    
+        .then(function(response) { return response.json(); }) // 컨트롤러로부터 댓글DTO리스트의 모든 데이터를  DTO객체단위로 json형태로 바꿔서 브라우저에 응답,
+                                                                        // 응답을 response에 저장후 DTO객체 단위로 JS배열 객체로 파싱  (직렬화 역직렬화 개념정리)
+        .then(function(responseList) {                           
             var container = document.getElementById("review-list-container");
             var html = "";
             
-            if (responseList.length > 0) {
+            
+            /// 컨트롤러로부터 받은 모든댓글들을 자바스크립트배열로 나눠서 정리 + 댓글목록을 뿌릴 div박스를 참조하는 변수생성 + 댓글데이터를 저장할 html변수 생성= 댓글목록을 만들세팅 완료
+            
+            if (responseList.length > 0) { //댓글이 하나라도 있다면
                 // 순수 자바스크립트 반복문 처리
-                responseList.forEach(function(review) {
+                responseList.forEach(function(review) {  //   responseList= 객체배열, 배열의 크기만큼 반복하며 function(review)함수를 실행
                     html += '<div class="card mb-3 shadow-sm">';
                     html += '  <div class="card-body">';
                     html += '    <div class="d-flex justify-content-between align-items-center mb-2">';
@@ -345,19 +367,24 @@ function loadReviews(recipeId) {
                     html += '    </div>';
                     html += '    <p class="card-text text-dark" style="white-space: pre-wrap;">' + review.content + '</p>';
                     html += '  </div>';
-                    html += '</div>';
-                });
-            } else {
+                    html += '</div>';         //반복문으로 모든댓글목록에 해당하는 html태그(지금은 그냥 문자열인상태)를  html변수에 저장
+                });                              
+            
+            
+            } else {// 해당 레시피id 레시피페이지에 댓글이 없을경우
                 html += '<div class="text-center py-4 text-muted border rounded bg-light">';
                 html += '  <p class="mb-0">아직 작성된 리뷰가 없습니다. 첫 리뷰를 작성해 보세요!</p>';
                 html += '</div>';
             }
             
-            container.innerHTML = html; // 화면에 삽입
+            container.innerHTML = html; // innerHTML로 html변수에 저장된 모든 댓글목록을  container(<div id="review-list-container" class="mb-4"> 태그를 참조하는)에 저장해서 댓글목록을 뿌림
         })
+        
+        //예외처리
         .catch(function(error) {
             console.error("리뷰 목록 로딩 실패 원인: ", error);
-            document.getElementById("review-list-container").innerHTML = '<p class="text-danger">리뷰를 불러오는 중 오류가 발생했습니다.</p>';
+            document.getElementById("review-list-container").innerHTML = '<p class="text-danger">리뷰를 불러오는 중 오류가 발생했습니다.</p>'; 
+            //댓글목록을 뿌릴div박스에 오류메세지 출력
         });
 }
 </script>

@@ -50,7 +50,7 @@ public class ReviewDAO {
     public int insertReview(ReviewDTO dto) throws SQLException {
         String sql = "INSERT INTO REVIEW (review_id, user_id, recipe_id, rating, content, parent_review_id, is_deleted, created_at) "
                    + "VALUES (SEQ_REVIEW.NEXTVAL, ?, ?, ?, ?, NULL, 0, SYSDATE)";
-                   // ※ 만약 시퀀스명이 다르면 SEQ_REVIEW 대신 본인의 시퀀스명을 적어주세요.
+                  
                    
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -77,8 +77,7 @@ public class ReviewDAO {
 	
 	
 	
-	//
-	
+
 	
     /** 내가 작성한 댓글 목록 */
     public List<ReviewDTO> selectByUserId(String userId) throws SQLException {
