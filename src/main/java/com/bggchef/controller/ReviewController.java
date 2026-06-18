@@ -30,35 +30,43 @@ public class ReviewController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
+            throws ServletException, IOException {                                                 // 레시피 상세페이지에서 댓글목록 조회요청을 받았을 때
         
-        // 1. 브라우저가 Ajax로 보낸 recipe_id 받기
-        String recipeIdParam = req.getParameter("recipe_id");
+       
+        String recipeIdParam = req.getParameter("recipe_id");                                  // 레시피id 저장
         if (recipeIdParam == null || recipeIdParam.isEmpty()) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recipe_id");
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recipe_id");    // 레시피id가 null이거나 비어있으면 오류메시지 전송과 함께 종료
             return;
         }
         
-        long recipeId = Long.parseLong(recipeIdParam);
+        long recipeId = Long.parseLong(recipeIdParam);                                        // 레시피id를 long타입으로 형변환하여 저장
         
         try {
-            // 2. DB에서 해당 레시피의 댓글 목록 가져오기
-            List<ReviewDTO> list = reviewDAO.selectByRecipeId(recipeId);
+          
+            List<ReviewDTO> list = reviewDAO.selectByRecipeId(recipeId);                  //레시피id에 해당하는 모든 댓글dto(행)로 이루어진dto리스트를 리턴하여 저장
             
-            // 3. 브라우저에게 JSON 형식과 인코딩(UTF-8) 선언 (매우 중요!)
-            res.setContentType("application/json; charset=UTF-8");
-            PrintWriter out = res.getWriter();
+            
+            res.setContentType("application/json; charset=UTF-8");                            //브라우저에게 응답할 데이터의 타입이(댓글dto list)json형식이라고 명시
+            
+            PrintWriter out = res.getWriter();                                                       //브라우저로 json형식의 데이터를 보낼 단방향 스트림 생성
             
             // 4. Java 17 Text Blocks 기법을 활용한 수동 JSON 조립
-            StringBuilder json = new StringBuilder();
-            json.append("[");
+            StringBuilder json = new StringBuilder();                                             //StringBuilder 클래스로 하나의 문자열객체 안에 댓글DTO 리스트의 데이터들을 전부 저장하도록 세팅
+            json.append("[");                                                                           // [ 로 js가 인식할 json배열의 시작점 미리 세팅
             
             for (int i = 0; i < list.size(); i++) {
                 ReviewDTO dto = list.get(i);
                 
-                // 특수문자나 개행문자로 인해 JSON 문법이 깨지는 것을 방지하기 위해 치환 처리
+                
+                //////
+                /// gson.jar추가시
+                /// 
+                /// String jsonStr = new Gson().toJson(list); 
+                /// 스트링빌더클래스도 생략가능
+
+               
                 String safeContent = dto.getContent()
-                                        .replace("\\", "\\\\")
+                                        .replace("\\", "\\\\")                                      //json 줄바꿈 오류 방지작업
                                         .replace("\"", "\\\"")
                                         .replace("\n", "\\n")
                                         .replace("\r", "");
@@ -70,8 +78,8 @@ public class ReviewController extends HttpServlet {
                     "nickname": "%s",
                     "rating": %.1f,
                     "content": "%s",
-                    "createdAt": "%s"
-                }""".formatted(
+                    "createdAt": "%s"                                                                   
+                }""".formatted(            
                     dto.getReviewId(),
                     dto.getUserId(),
                     dto.getNickname(),
@@ -80,9 +88,9 @@ public class ReviewController extends HttpServlet {
                     dto.getCreatedAt().toString()
                 );
                 
-                json.append(jsonItem);
+                json.append(jsonItem);                                                               
                 
-                if (i < list.size() - 1) {
+                if (i < list.size() - 1) {                                                                    //마지막 댓글이 아니면 , 를 찍어라
                     json.append(",");
                 }
             }
@@ -91,13 +99,17 @@ public class ReviewController extends HttpServlet {
             // 5. 조립 완료된 JSON 텍스트 전송
             out.print(json.toString());
             out.flush();
-            out.close();
+            out.close();                                                                                    // 스트림 반납
             
         } catch (SQLException e) {
             e.printStackTrace();
             res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+    
+    
+    
+    
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
@@ -106,50 +118,50 @@ public class ReviewController extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         
         try {
-            // 1. 세션에서 로그인한 유저 객체 꺼내기
-            var session = req.getSession();
-            Object loginUser = session.getAttribute("loginUser"); 
             
-            String userId = null;
+            var session = req.getSession();                                                          //  세션에서 로그인한 유저 객체 꺼내기(쿠키)
+            Object loginUser = session.getAttribute("loginUser");                              //loginUser(키)의 값인 UserDTO 객체를   Object loginUser에 저장
             
-            // 💡 [에러 해결 포인트] loginUser가 String이 아니라 UserDTO 타입이므로 올바르게 형변환(Casting)을 진행합니다.
+            String userId = null;                                                                     
+            
+            
             if (loginUser != null) {
-                com.bggchef.dto.UserDTO userDto = (com.bggchef.dto.UserDTO) loginUser;
+                com.bggchef.dto.UserDTO userDto = (com.bggchef.dto.UserDTO) loginUser;// 이 프로젝트의 userDTO로 형변환하여 DTO타입 참조변수에 저장
                 
-                // ⚠️ 본인의 UserDTO 클래스 안에 있는 '유저아이디를 반환하는 Getter 메서드명'으로 확인해 보세요.
-                // 보통 getUserId() 또는 getId() 일 확률이 높습니다. 본인 메서드명에 맞게 소문자/대문자를 맞춰주세요.
+                
                 userId = userDto.getUserId(); 
             }
             
-            // 만약 로그인 세션이 풀렸거나 아이디를 못 가져온 경우 방어 코드
+           
             if (userId == null || userId.isEmpty()) {
                 res.getWriter().print("login_required");
                 return;
             }
 
-            // 2. 브라우저가 보낸 파라미터 받기
-            String recipeIdParam = req.getParameter("recipe_id");
+         
+            String recipeIdParam = req.getParameter("recipe_id");                                //  브라우저가 보낸 파라미터 받기
             String ratingParam = req.getParameter("rating");
             String content = req.getParameter("content");
             
             long recipeId = Long.parseLong(recipeIdParam);
-            double rating = Double.parseDouble(ratingParam);
+            double rating = Double.parseDouble(ratingParam);                                   // 댓글DTO필드타입에 맞도록 형변환
             
-            // 3. DTO 데이터 세팅
-            ReviewDTO dto = new ReviewDTO();
+           
+            ReviewDTO dto = new ReviewDTO();                                                     // DTO 데이터 세팅
             dto.setUserId(userId);
             dto.setRecipeId(recipeId);
             dto.setRating(rating);
             dto.setContent(content);
             
-            // 4. DB 저장 처리
-            int result = reviewDAO.insertReview(dto);
             
-            // 5. 성공 결과 전송
+            int result = reviewDAO.insertReview(dto);                                               // DB 저장 처리
+            
+         
             if (result > 0) {
                 res.getWriter().print("success");
             } else {
                 res.getWriter().print("fail_db");
+                 System.out.println("댓글,댓글정보를 db에 저장 실패");
             }
             
         } catch (Exception e) {
