@@ -12,7 +12,7 @@ public class ReviewDAO {
         String sql = "INSERT INTO REVIEW "
                    + "(REVIEW_ID, USER_ID, RECIPE_ID, RATING, CONTENT, PARENT_REVIEW_ID, IS_DELETED, CREATED_AT, THEME_ID) "
                    + "VALUES "
-                   + "(REVIEW_SEQ.NEXTVAL, ?, ?, ?, ?, NULL, 0, SYSDATE, NULL)";
+                   + "(REVIEW_SEQ.NEXTVAL, ?, ?, ?, ?, ?, 0, SYSDATE, NULL)";
 
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -28,6 +28,12 @@ public class ReviewDAO {
 
             ps.setString(4, dto.getContent());
 
+            if (dto.getParentReviewId() == null) {
+                ps.setNull(5, Types.NUMERIC);
+            } else {
+                ps.setLong(5, dto.getParentReviewId());
+            }
+
             return ps.executeUpdate();
         }
     }
@@ -37,12 +43,14 @@ public class ReviewDAO {
         List<ReviewDTO> list = new ArrayList<>();
 
         String sql = "SELECT r.review_id, r.user_id, r.recipe_id, r.rating, r.content, "
-                   + "r.created_at, r.is_deleted, u.nickname "
+                   + "r.parent_review_id, r.created_at, r.is_deleted, u.nickname "
                    + "FROM REVIEW r "
                    + "JOIN USERS u ON r.user_id = u.user_id "
-                   + "WHERE r.recipe_id = ? "
-                   + "AND r.is_deleted = 0 "
-                   + "ORDER BY r.created_at DESC";
+                   + "WHERE r.recipe_id = ? AND r.is_deleted = 0 "
+                   + "ORDER BY "
+                   + "NVL(r.parent_review_id, r.review_id), "
+                   + "CASE WHEN r.parent_review_id IS NULL THEN 0 ELSE 1 END, "
+                   + "r.created_at";
 
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -62,6 +70,13 @@ public class ReviewDAO {
                         dto.setRating(null);
                     } else {
                         dto.setRating(rating);
+                    }
+
+                    long parentId = rs.getLong("parent_review_id");
+                    if (rs.wasNull()) {
+                        dto.setParentReviewId(null);
+                    } else {
+                        dto.setParentReviewId(parentId);
                     }
 
                     dto.setContent(readClob(rs, "content"));
@@ -105,7 +120,6 @@ public class ReviewDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, reviewId);
-
             return ps.executeUpdate();
         }
     }
