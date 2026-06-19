@@ -269,24 +269,31 @@
 
 
 
-
 <script>
+// 세션의 로그인 유저 ID 동기화 처리
+const currentUserId = '${sessionScope.loginUser != null ? sessionScope.loginUser.userId : ""}';
 
-document.addEventListener("DOMContentLoaded", function() {   // html페이지 로드가 완료되면  실행
-    var currentRecipeId = "${recipe.recipeId}"; // 댓글을 작성할 레시피의 id를 jsp서버로부터 받아서  var currentRecipeId 에 저장
+document.addEventListener("DOMContentLoaded", function() {   // html페이지 로드가 완료되면 실행
+    var currentRecipeId = "${recipe.recipeId}"; 
     
+    // 댓글 목록 불러오기 실행
+    if (currentRecipeId) {
+        loadReviews(currentRecipeId);    
+    }
     
-    loadReviews(currentRecipeId);    // currentRecipeId에저장된 레시피id에 해당하는 댓글목록을 컨트롤러로부터 받아서 id= review-list-container인 태그로  발신
-    
-    
-    var submitBtn = document.getElementById("btn-submit-review"); // btn-submit-review아이디가 있는 태그에 submit이 있으면 그 객체(html태그)를 var submitBtn에 참조
-    if (submitBtn) {// 없으면 null
+    var submitBtn = document.getElementById("btn-submit-review"); 
+    if (submitBtn) {
         submitBtn.addEventListener("click", function() {
-            var contentInput = document.getElementById("review-content");//  아이디review-content에 해당하는 html태그객체를 contentInput에 참조
+            var contentInput = document.getElementById("review-content");
             var ratingInput = document.getElementById("review-rating");
             
-            var content = contentInput.value.trim(); // 공백을 제거하고 값만 추출하여 content에 저장
+            var content = contentInput.value.trim(); 
             var rating = ratingInput.value;
+            
+            if (!currentUserId) {
+                alert("로그인이 필요한 서비스입니다.");
+                return;
+            }
             
             if (!content) {
                 alert("리뷰 내용을 입력해주세요.");
@@ -294,33 +301,25 @@ document.addEventListener("DOMContentLoaded", function() {   // html페이지 �
                 return;
             }
             
-            // 순수 자바스크립트 Form 데이터 조립
-            var params = new URLSearchParams(); // key=value&key=value형식으러 데이터를 저장하는 틀(Query String 또는 x-www-form-urlencoded 형식)
-            params.append("recipe_id", currentRecipeId); // recipe_id", currentRecipeId 한상을 Params에 저장
+            var params = new URLSearchParams(); 
+            params.append("action", "insert"); // 등록 구분자 명시
+            params.append("recipe_id", currentRecipeId); 
             params.append("content", content);
             params.append("rating", rating);
             
-            // Fetch API를 이용한 Ajax POST 요청
-            fetch("${pageContext.request.contextPath}/review/list", {  //form태그의 action속성(컨트롤러 매핑url)을 Ajax로 구현
-                method: "POST", //form의 메서드 속성과 동일
+            fetch("${pageContext.request.contextPath}/review/list", {  
+                method: "POST", 
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded" // form형식의 타입임을 명시
+                    "Content-Type": "application/x-www-form-urlencoded" 
                 },
-                body: params.toString() //바이너리 바이트 스트림 단위 문자열로 http바디에 데이터를 저장
+                body: params.toString() 
             })
-            
-            
-            //서버로부터 응답을 받으면 .then에 의해 이어서 실행( 비동기 처리,체이닝    )  --async / await로 리펙토링 여지 있음
-            
-            .then(function(response) { return response.text(); })        // 응답을 텍스트로 변환
-            .then(function(result) {                                           // 그 텍스트를 result라는 변수에 담는다
-                
-            	//브라우저가 실행
-            	
-                if (result.trim() === "success") {// 서블릿에서 넘어온 결과 텍스트의 공백 제거 후 비교
+            .then(function(response) { return response.text(); })        
+            .then(function(result) {                                           
+                if (result.trim() === "success") {
                     alert("리뷰가 등록되었습니다!");
-                    contentInput.value = ""; // 입력창 비우기
-                    loadReviews(currentRecipeId); // 목록 실시간 새로고침
+                    contentInput.value = ""; 
+                    loadReviews(currentRecipeId); 
                 } else {
                     alert("등록에 실패했습니다. 서버 메시지: " + result);
                 }
@@ -332,28 +331,17 @@ document.addEventListener("DOMContentLoaded", function() {   // html페이지 �
     }
 });
 
-
-
-
-
-
-// 댓글 목록을 불러오는 함수 (Fetch API 버전)
+// 댓글 목록을 불러오는 함수
 function loadReviews(recipeId) {
-    fetch("${pageContext.request.contextPath}/review/list?recipe_id=" + recipeId)  // 매핑된 컨트롤러에 Query String방식으로 레시피id전달
-    
-        .then(function(response) { return response.json(); }) // 컨트롤러로부터 댓글DTO리스트의 모든 데이터를  DTO객체단위로 json형태로 바꿔서 브라우저에 응답,
-                                                                        // 응답을 response에 저장후 DTO객체 단위로 JS배열 객체로 파싱  (직렬화 역직렬화 개념정리)
+    fetch("${pageContext.request.contextPath}/review/list?recipe_id=" + recipeId)  
+        .then(function(response) { return response.json(); }) 
         .then(function(responseList) {                           
             var container = document.getElementById("review-list-container");
             var html = "";
             
-            
-            /// 컨트롤러로부터 받은 모든댓글들을 자바스크립트배열로 나눠서 정리 + 댓글목록을 뿌릴 div박스를 참조하는 변수생성 + 댓글데이터를 저장할 html변수 생성= 댓글목록을 만들세팅 완료
-            
-            if (responseList.length > 0) { //댓글이 하나라도 있다면
-                // 순수 자바스크립트 반복문 처리
-                responseList.forEach(function(review) {  //   responseList= 객체배열, 배열의 크기만큼 반복하며 function(review)함수를 실행
-                    html += '<div class="card mb-3 shadow-sm">';
+            if (responseList.length > 0) { 
+                responseList.forEach(function(review) {  
+                    html += '<div class="card mb-3 shadow-sm" id="review-card-' + review.reviewId + '">';
                     html += '  <div class="card-body">';
                     html += '    <div class="d-flex justify-content-between align-items-center mb-2">';
                     html += '      <div>';
@@ -362,30 +350,150 @@ function loadReviews(recipeId) {
                     html += '      </div>';
                     html += '      <small class="text-secondary">' + review.createdAt + '</small>';
                     html += '    </div>';
-                    html += '    <div class="mb-2 text-warning">';
-                    html += '       <i class="bi bi-star-fill"></i> 평점: ' + parseFloat(review.rating).toFixed(1);
+                    
+                    // 기본 텍스트 영역
+                    html += '    <div id="display-area-' + review.reviewId + '">';
+                    html += '      <div class="mb-2 text-warning">';
+                    html += '         <i class="bi bi-star-fill"></i> 평점: ' + parseFloat(review.rating).toFixed(1);
+                    html += '      </div>';
+                    html += '      <p class="card-text text-dark" style="white-space: pre-wrap;">' + review.content + '</p>';
                     html += '    </div>';
-                    html += '    <p class="card-text text-dark" style="white-space: pre-wrap;">' + review.content + '</p>';
+                    
+                    // 숨겨진 수정 폼 영역
+                    html += '    <div id="edit-area-' + review.reviewId + '" class="d-none mt-2">';
+                    html += '      <div class="row g-2 mb-2">';
+                    html += '        <div class="col-md-3">';
+                    html += '          <select id="edit-rating-' + review.reviewId + '" class="form-select form-select-sm">';
+                    html += '            <option value="5.0">⭐⭐⭐⭐⭐ (5점)</option>';
+                    html += '            <option value="4.0">⭐⭐⭐⭐ (4점)</option>';
+                    html += '            <option value="3.0">⭐⭐⭐ (3점)</option>';
+                    html += '            <option value="2.0">⭐⭐ (2점)</option>';
+                    html += '            <option value="1.0">⭐ (1점)</option>';
+                    html += '          </select>';
+                    html += '        </div>';
+                    html += '        <div class="col-md-9">';
+                    html += '          <textarea id="edit-content-' + review.reviewId + '" class="form-control form-control-sm" rows="2">' + review.content + '</textarea>';
+                    html += '        </div>';
+                    html += '      </div>';
+                    html += '      <div class="text-end">';
+                    html += '        <button type="button" class="btn btn-sm btn-success me-1 px-3" onclick="submitUpdate(' + review.reviewId + ', ' + recipeId + ')">수정완료</button>';
+                    html += '        <button type="button" class="btn btn-sm btn-secondary px-3" onclick="toggleEditMode(' + review.reviewId + ', false)">취소</button>';
+                    html += '      </div>';
+                    html += '    </div>';
+                    
+                    // 권한 비교 검증 조건문 (글자 그대로 일치 유도)
+                    if (currentUserId !== "" && currentUserId === review.userId) {
+                        html += '    <div class="text-end mt-2" id="btn-group-' + review.reviewId + '">';
+                        html += '      <button type="button" class="btn btn-sm btn-outline-secondary me-1 py-0 px-2" onclick="toggleEditMode(' + review.reviewId + ', true)">수정</button>';
+                        html += '      <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="deleteReview(' + review.reviewId + ', ' + recipeId + ')">삭제</button>';
+                        html += '    </div>';
+                    }
+                    
                     html += '  </div>';
-                    html += '</div>';         //반복문으로 모든댓글목록에 해당하는 html태그(지금은 그냥 문자열인상태)를  html변수에 저장
+                    html += '</div>';         
                 });                              
-            
-            
-            } else {// 해당 레시피id 레시피페이지에 댓글이 없을경우
+            } else {
                 html += '<div class="text-center py-4 text-muted border rounded bg-light">';
                 html += '  <p class="mb-0">아직 작성된 리뷰가 없습니다. 첫 리뷰를 작성해 보세요!</p>';
                 html += '</div>';
             }
             
-            container.innerHTML = html; // innerHTML로 html변수에 저장된 모든 댓글목록을  container(<div id="review-list-container" class="mb-4"> 태그를 참조하는)에 저장해서 댓글목록을 뿌림
+            container.innerHTML = html; 
         })
-        
-        //예외처리
         .catch(function(error) {
             console.error("리뷰 목록 로딩 실패 원인: ", error);
-            document.getElementById("review-list-container").innerHTML = '<p class="text-danger">리뷰를 불러오는 중 오류가 발생했습니다.</p>'; 
-            //댓글목록을 뿌릴div박스에 오류메세지 출력
         });
 }
+
+// 수정 모드 활성화/비활성화 토글
+function toggleEditMode(reviewId, isEdit) {
+    var displayArea = document.getElementById("display-area-" + reviewId);
+    var editArea = document.getElementById("edit-area-" + reviewId);
+    var btnGroup = document.getElementById("btn-group-" + reviewId);
+    
+    if (isEdit) {
+        displayArea.classList.add("d-none");
+        if(btnGroup) btnGroup.classList.add("d-none");
+        editArea.classList.remove("d-none");
+    } else {
+        displayArea.classList.remove("d-none");
+        if(btnGroup) btnGroup.classList.remove("d-none");
+        editArea.classList.add("d-none");
+    }
+}
+
+// 수정 완료 전송
+function submitUpdate(reviewId, recipeId) {
+    var contentInput = document.getElementById("edit-content-" + reviewId);
+    var ratingInput = document.getElementById("edit-rating-" + reviewId);
+    
+    var content = contentInput.value.trim();
+    var rating = ratingInput.value;
+    
+    if (!content) {
+        alert("수정할 내용을 입력해 주세요.");
+        contentInput.focus();
+        return;
+    }
+    
+    var params = new URLSearchParams();
+    params.append("action", "update"); // 수정 작업 표시
+    params.append("review_id", reviewId);
+    params.append("content", content);
+    params.append("rating", rating);
+    
+    fetch("${pageContext.request.contextPath}/review/list", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params.toString()
+    })
+    .then(function(response) { return response.text(); })
+    .then(function(result) {
+        if (result.trim() === "success") {
+            alert("리뷰가 수정되었습니다.");
+            loadReviews(recipeId); 
+        } else {
+            alert("수정에 실패했습니다. 서버 메시지: " + result);
+        }
+    })
+    .catch(function(error) {
+        console.error("리뷰 수정 오류: ", error);
+    });
+}
+
+// 삭제 처리 전송
+function deleteReview(reviewId, recipeId) {
+    if (!confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
+        return; 
+    }
+    
+    var params = new URLSearchParams();
+    params.append("action", "delete"); // 삭제 작업 표시
+    params.append("review_id", reviewId);
+    
+    fetch("${pageContext.request.contextPath}/review/list", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params.toString()
+    })
+    .then(function(response) { return response.text(); })
+    .then(function(result) {
+        if (result.trim() === "success") {
+            alert("리뷰가 삭제되었습니다.");
+            loadReviews(recipeId); 
+        } else {
+            alert("삭제에 실패했습니다. 서버 메시지: " + result);
+        }
+    })
+    .catch(function(error) {
+        console.error("리뷰 삭제 오류: ", error);
+    });
+}
 </script>
+
+
 <!-- ======================================================== -->

@@ -43,8 +43,46 @@ public class ReviewDAO {
 	
     
     
+    //수정삭제{
     
-    //
+    
+    
+    
+    
+    
+    
+    /**
+     * 특정 리뷰(댓글)의 내용과 평점을 수정합니다.
+     * @param reviewId 수정할 리뷰 번호
+     * @param content 수정할 내용 (CLOB)
+     * @param rating 수정할 평점 (NUMBER(3,1))
+     */
+    public int updateReview(long reviewId, String content, double rating) throws SQLException {
+        String sql = "UPDATE REVIEW SET CONTENT = ?, RATING = ? WHERE REVIEW_ID = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, content);
+            ps.setDouble(2, rating);
+            ps.setLong(3, reviewId);
+            return ps.executeUpdate();
+        }
+    }
+
+    /**
+     * 특정 리뷰(댓글)를 삭제 처리합니다. (IS_DELETED = 1 로 업데이트)
+     * @param reviewId 삭제할 리뷰 번호
+     */
+    public int deleteReview(long reviewId) throws SQLException {
+        String sql = "UPDATE REVIEW SET IS_DELETED = 1 WHERE REVIEW_ID = ?";
+        try (Connection con = DBUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, reviewId);
+            return ps.executeUpdate();
+        }
+    }
+
+
+    // }
     
     /** 새 리뷰/댓글 등록 */
     public int insertReview(ReviewDTO dto) throws SQLException {
