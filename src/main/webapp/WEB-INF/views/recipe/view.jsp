@@ -209,7 +209,19 @@
     <a href="${pageContext.request.contextPath}/recipe/list" class="btn btn-outline-secondary px-4">목록</a>
     
     <%-- 로그인 상태(sessionScope.loginUser가 비어있지 않을 때)일 때만 수정/삭제 버튼 박스를 출력 --%>
-    <c:if test="${not empty sessionScope.loginUser}">
+    <%-- 권한이 허가된 작성자 본인에게만 본문 수정/삭제 인터페이스 출력 --%>
+<c:if test="${isAuthor}">
+    <div class="d-flex gap-2">
+        <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}" class="btn btn-outline-danger px-4">수정</a>
+        
+        <form action="${pageContext.request.contextPath}/recipe/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
+            <button type="submit" class="btn btn-danger px-4">삭제</button>
+        </form>
+    </div>
+</c:if>
+    
+    <%-- <c:if test="${not empty sessionScope.loginUser}">
         <div class="d-flex gap-2">
             <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}" class="btn btn-outline-danger px-4">수정</a>
             
@@ -218,7 +230,7 @@
                 <button type="submit" class="btn btn-danger px-4">삭제</button>
             </form>
         </div>
-    </c:if>
+    </c:if>--%>
 </div>
 
 

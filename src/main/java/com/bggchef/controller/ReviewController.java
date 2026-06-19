@@ -122,7 +122,7 @@ public class ReviewController extends HttpServlet {
         }
 
         try {
-            // [기능 1] 댓글 등록 (action=insert)
+            // [기능 1] 댓글 등록 (action=insert) 
             if ("insert".equals(action)) {
                 String recipeIdParam = req.getParameter("recipe_id");                                
                 String ratingParam = req.getParameter("rating");

@@ -147,11 +147,46 @@ public class RecipeController extends HttpServlet {
             return;
         }
 
+        // ================= [최종 검증 완료된 권한 체크 구역] =================
+        javax.servlet.http.HttpSession session = req.getSession();
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        
+        boolean isAuthor = false;
+        
+        // 비회원(null) 방어 및 작성자 아이디(recipe.getUserId()) 일치 판별 완료
+        if (loginUser != null && loginUser.getUserId() != null && loginUser.getUserId().equals(recipe.getUserId())) {
+            isAuthor = true;
+        }
+        
+        req.setAttribute("isAuthor", isAuthor);
+        // ===================================================================
+
         req.setAttribute("recipe", recipe);
         req.setAttribute("ingredients", recipe.getIngredients());
         req.setAttribute("steps", recipe.getSteps());
         forward(req, res, "/WEB-INF/views/recipe/view.jsp");
     }
+
+//    private void showView(HttpServletRequest req, HttpServletResponse res)
+//            throws SQLException, ServletException, IOException {
+//        long recipeId = parseLong(req.getParameter("recipe_id"), parseLong(req.getParameter("id"), 0L));
+//        if (recipeId <= 0) {
+//            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+//            return;
+//        }
+//
+//        recipeDAO.increaseViewCount(recipeId);
+//        RecipeDTO recipe = recipeDAO.selectRecipeById(recipeId);
+//        if (recipe == null) {
+//            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+//            return;
+//        }
+//
+//        req.setAttribute("recipe", recipe);
+//        req.setAttribute("ingredients", recipe.getIngredients());
+//        req.setAttribute("steps", recipe.getSteps());
+//        forward(req, res, "/WEB-INF/views/recipe/view.jsp");
+//    }
     
     
     
