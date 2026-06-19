@@ -8,43 +8,55 @@ import com.bggchef.util.DBUtil;
 public class ReviewDAO {
 
     /** 테마 댓글/대댓글 등록 */
-    public int insertThemeReview(ReviewDTO dto, long themeId) throws SQLException {
-        String sql = "INSERT INTO REVIEW "
-                   + "(REVIEW_ID, USER_ID, RECIPE_ID, RATING, CONTENT, PARENT_REVIEW_ID, IS_DELETED, CREATED_AT, THEME_ID) "
-                   + "VALUES "
-                   + "(REVIEW_SEQ.NEXTVAL, ?, NULL, NULL, ?, ?, 0, SYSDATE, ?)";
+	public int insertThemeReview(ReviewDTO dto, long themeId) throws SQLException {
 
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+	    String sql =
+	        "INSERT INTO REVIEW "
+	      + "(REVIEW_ID, USER_ID, RECIPE_ID, RATING, CONTENT, PARENT_REVIEW_ID, IS_DELETED, CREATED_AT, THEME_ID) "
+	      + "VALUES "
+	      + "(REVIEW_SEQ.NEXTVAL, ?, NULL, ?, ?, ?, 0, SYSDATE, ?)";
 
-            ps.setString(1, dto.getUserId());
-            ps.setString(2, dto.getContent());
+	    try (Connection con = DBUtil.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
 
-            if (dto.getParentReviewId() == null || dto.getParentReviewId() == 0) {
-                ps.setNull(3, java.sql.Types.NUMERIC);
-            } else {
-                ps.setLong(3, dto.getParentReviewId());
-            }
+	        ps.setString(1, dto.getUserId());
 
-            ps.setLong(4, themeId);
+	        // 별점
+	        if (dto.getRating() == null) {
+	            ps.setNull(2, Types.NUMERIC);
+	        } else {
+	            ps.setDouble(2, dto.getRating());
+	        }
 
-            return ps.executeUpdate();
-        }
-    }
+	        // 내용
+	        ps.setString(3, dto.getContent());
 
+	        // 부모댓글
+	        if (dto.getParentReviewId() == null) {
+	            ps.setNull(4, Types.NUMERIC);
+	        } else {
+	            ps.setLong(4, dto.getParentReviewId());
+	        }
+
+	        // 테마ID
+	        ps.setLong(5, themeId);
+
+	        return ps.executeUpdate();
+	    }
+	}
     /** 테마 댓글/대댓글 목록 */
     public List<ReviewDTO> selectByThemeId(long themeId) throws SQLException {
         List<ReviewDTO> list = new ArrayList<>();
 
-        String sql = "SELECT r.review_id, r.user_id, r.content, r.parent_review_id, "
-                   + "r.created_at, r.is_deleted, u.nickname "
-                   + "FROM REVIEW r "
-                   + "JOIN USERS u ON r.user_id = u.user_id "
-                   + "WHERE r.theme_id = ? AND r.is_deleted = 0 "
-                   + "ORDER BY "
-                   + "NVL(r.parent_review_id, r.review_id), "
-                   + "CASE WHEN r.parent_review_id IS NULL THEN 0 ELSE 1 END, "
-                   + "r.created_at";
+        String sql = "SELECT r.review_id, r.user_id, r.content, r.rating, "
+                + "r.parent_review_id, r.created_at, r.is_deleted, u.nickname "
+                + "FROM REVIEW r "
+                + "JOIN USERS u ON r.user_id = u.user_id "
+                + "WHERE r.theme_id = ? AND r.is_deleted = 0 "
+                + "ORDER BY "
+                + "NVL(r.parent_review_id, r.review_id), "
+                + "CASE WHEN r.parent_review_id IS NULL THEN 0 ELSE 1 END, "
+                + "r.created_at";
 
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -59,8 +71,16 @@ public class ReviewDAO {
                 dto.setReviewId(rs.getLong("review_id"));
                 dto.setUserId(rs.getString("user_id"));
                 dto.setContent(readClob(rs, "content"));
+                double rating = rs.getDouble("rating");
+
+                if (rs.wasNull()) {
+                    dto.setRating(null);
+                } else {
+                    dto.setRating(rating);
+                }
 
                 long parentId = rs.getLong("parent_review_id");
+               
                 if (rs.wasNull()) {
                     dto.setParentReviewId(null);
                 } else {
@@ -137,7 +157,12 @@ public class ReviewDAO {
 
                 dto.setReviewId(rs.getLong("review_id"));
                 dto.setContent(readClob(rs, "content"));
-                dto.setRating(rs.getDouble("rating"));
+                double rating = rs.getDouble("rating");
+                if (rs.wasNull()) {
+                    dto.setRating(null);
+                } else {
+                    dto.setRating(rating);
+                }
                 dto.setCreatedAt(rs.getDate("created_at"));
                 dto.setRecipeTitle(rs.getString("recipe_title"));
                 dto.setRecipeId(rs.getLong("recipe_id"));
@@ -175,7 +200,14 @@ public class ReviewDAO {
 
                 dto.setReviewId(rs.getLong("review_id"));
                 dto.setContent(readClob(rs, "content"));
-                dto.setRating(rs.getDouble("rating"));
+
+                double rating = rs.getDouble("rating");
+                if (rs.wasNull()) {
+                    dto.setRating(null);
+                } else {
+                    dto.setRating(rating);
+                }
+
                 dto.setCreatedAt(rs.getDate("created_at"));
                 dto.setRecipeTitle(rs.getString("recipe_title"));
                 dto.setRecipeId(rs.getLong("recipe_id"));

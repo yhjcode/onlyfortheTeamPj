@@ -547,20 +547,21 @@ public class ThemeDAO {
         List<Map<String, Object>> list = new ArrayList<>();
 
         String sql =
-            "SELECT r.review_id AS comment_id, " +
-            "       r.user_id, " +
-            "       u.nickname, " +
-            "       r.content, " +
-            "       r.parent_review_id, " +
-            "       r.created_at " +
-            "FROM REVIEW r " +
-            "JOIN USERS u ON r.user_id = u.user_id " +
-            "WHERE r.theme_id = ? " +
-            "AND r.is_deleted = 0 " +
-            "ORDER BY " +
-            "    NVL(r.parent_review_id, r.review_id), " +
-            "    CASE WHEN r.parent_review_id IS NULL THEN 0 ELSE 1 END, " +
-            "    r.created_at ASC";
+        	    "SELECT r.review_id AS comment_id, " +
+        	    "       r.user_id, " +
+        	    "       u.nickname, " +
+        	    "       r.content, " +
+        	    "       r.rating, " +
+        	    "       r.parent_review_id, " +
+        	    "       r.created_at " +
+        	    "FROM REVIEW r " +
+        	    "JOIN USERS u ON r.user_id = u.user_id " +
+        	    "WHERE r.theme_id = ? " +
+        	    "AND r.is_deleted = 0 " +
+        	    "ORDER BY " +
+        	    "NVL(r.parent_review_id, r.review_id), " +
+        	    "CASE WHEN r.parent_review_id IS NULL THEN 0 ELSE 1 END, " +
+        	    "r.created_at ASC";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -576,7 +577,14 @@ public class ThemeDAO {
                     map.put("nickname", rs.getString("nickname"));
                     map.put("content", readClob(rs, "content"));
                     map.put("createdAt", rs.getDate("created_at"));
+                    
+                    double rating = rs.getDouble("rating");
 
+                    if (rs.wasNull()) {
+                        map.put("rating", null);
+                    } else {
+                        map.put("rating", rating);
+                    }
                     Long parentReviewId = null;
                     long parentId = rs.getLong("parent_review_id");
                     if (!rs.wasNull()) {

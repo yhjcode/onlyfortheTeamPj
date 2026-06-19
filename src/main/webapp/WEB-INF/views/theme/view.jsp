@@ -176,6 +176,45 @@
 
     <c:if test="${not empty loginUser}">
         <div class="mb-4">
+        <div class="mb-3">
+    <label class="form-label">별점</label>
+
+    <div style="display:flex; align-items:center; gap:15px;">
+
+    <div id="starRating"
+         style="font-size:32px; color:#ffc107;">
+        ★★★★★
+    </div>
+
+    <strong id="ratingText"
+            style="font-size:20px;">
+        5.0
+    </strong>
+
+    <div style="
+        display:flex;
+        flex-direction:column;
+        gap:2px;
+    ">
+        <button type="button"
+                onclick="changeRating(0.1)"
+                class="btn btn-secondary btn-sm"
+                style="width:40px;height:28px;padding:0;">
+            ▲
+        </button>
+
+        <button type="button"
+                onclick="changeRating(-0.1)"
+                class="btn btn-secondary btn-sm"
+                style="width:40px;height:28px;padding:0;">
+            ▼
+        </button>
+    </div>
+
+</div>
+
+    <input type="hidden" id="commentRating" value="5.0">
+</div>
             <textarea id="commentContent"
                       class="form-control"
                       rows="3"
@@ -204,6 +243,30 @@ window.onload = function() {
     loadThemeComments();
 };
 
+window.addEventListener("DOMContentLoaded", function() {
+    setStarRating(5);
+
+    document.querySelectorAll("#starRating span").forEach(function(star) {
+        star.addEventListener("click", function() {
+            const value = this.getAttribute("data-value");
+            setStarRating(value);
+        });
+    });
+});
+
+function setStarRating(value) {
+    document.getElementById("commentRating").value = value;
+
+    document.querySelectorAll("#starRating span").forEach(function(star) {
+        if (star.getAttribute("data-value") <= value) {
+            star.textContent = "★";
+            star.style.color = "#ffc107";
+        } else {
+            star.textContent = "☆";
+            star.style.color = "#ccc";
+        }
+    });
+}
 function loadThemeComments() {
     fetch(contextPath + "/theme/comment/list?themeId=" + themeId)
         .then(response => response.json())
@@ -211,19 +274,25 @@ function loadThemeComments() {
             let html = "";
 
             data.forEach(function(comment) {
-            	const isReply = comment.parentReviewId != null;
+                const isReply = comment.parentReviewId != null;
                 const marginStyle = isReply ? "margin-left:40px;" : "";
 
                 html +=
-                    '<div class="border-bottom py-3" style="' + marginStyle + '" id="comment-' + comment.commentId + '">' +
-                        '<div class="d-flex justify-content-between">' +
-                            '<strong>' + (isReply ? "↳ " : "") + comment.nickname + '</strong>' +
-                            '<small class="text-muted">' + comment.createdAt + '</small>' +
-                        '</div>' +
+                    '<div class="border-bottom py-3" style="' + marginStyle + '" id="comment-' + comment.commentId + '">';
 
-                        '<div class="mt-2" id="comment-content-' + comment.commentId + '">' +
-                            comment.content +
-                        '</div>';
+                if (!isReply && comment.rating != null) {
+                    html += '<div class="text-warning mb-1">⭐ ' + comment.rating + ' / 5.0</div>';
+                }
+
+                html +=
+                    '<div class="d-flex justify-content-between">' +
+                        '<strong>' + (isReply ? "↳ " : "") + comment.nickname + '</strong>' +
+                        '<small class="text-muted">' + comment.createdAt + '</small>' +
+                    '</div>' +
+
+                    '<div class="mt-2" id="comment-content-' + comment.commentId + '">' +
+                        comment.content +
+                    '</div>';
 
                 html += '<div class="mt-2">';
 
@@ -250,23 +319,26 @@ function loadThemeComments() {
 
                 html += '</div>';
 
-                html +=
-                    '<div id="reply-form-' + comment.commentId + '" class="mt-3" style="display:none;">' +
-                        '<textarea id="reply-content-' + comment.commentId + '" class="form-control" rows="2" placeholder="답글을 입력하세요"></textarea>' +
-                        '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="addReplyComment(' + comment.commentId + ')">답글 등록</button>' +
-                        '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="hideReplyForm(' + comment.commentId + ')">취소</button>' +
-                    '</div>';
+                if (!isReply) {
+                    html +=
+                        '<div id="reply-form-' + comment.commentId + '" class="mt-3" style="display:none;">' +
+                            '<textarea id="reply-content-' + comment.commentId + '" class="form-control" rows="2" placeholder="답글을 입력하세요"></textarea>' +
+                            '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="addReplyComment(' + comment.commentId + ')">답글 등록</button>' +
+                            '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="hideReplyForm(' + comment.commentId + ')">취소</button>' +
+                        '</div>';
+                }
 
                 html += '</div>';
             });
 
             document.getElementById("commentList").innerHTML = html;
         });
+
 }
 
 function addThemeComment() {
     const content = document.getElementById("commentContent").value.trim();
-
+    const rating = document.getElementById("commentRating").value;
     if (content === "") {
         alert("댓글을 입력하세요.");
         return;
@@ -277,7 +349,9 @@ function addThemeComment() {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
         },
-        body: "themeId=" + themeId + "&content=" + encodeURIComponent(content)
+        body: "themeId=" + themeId +
+        "&rating=" + encodeURIComponent(rating) +
+        "&content=" + encodeURIComponent(content)
     })
     .then(response => response.text())
     .then(result => {
@@ -382,5 +456,28 @@ function deleteThemeComment(commentId) {
             alert("댓글 삭제 실패");
         }
     });
+}
+function changeRating(amount) {
+    let rating = parseFloat(document.getElementById("commentRating").value);
+    rating = Math.round((rating + amount) * 10) / 10;
+
+    if (rating < 0.1) rating = 0.1;
+    if (rating > 5.0) rating = 5.0;
+
+    document.getElementById("commentRating").value = rating.toFixed(1);
+    document.getElementById("ratingText").innerText = rating.toFixed(1);
+
+    updateStars(rating);
+}
+
+function updateStars(rating) {
+    const fullStars = Math.floor(rating);
+    let stars = "";
+
+    for (let i = 1; i <= 5; i++) {
+        stars += i <= fullStars ? "★" : "☆";
+    }
+
+    document.getElementById("starRating").innerText = stars;
 }
 </script>

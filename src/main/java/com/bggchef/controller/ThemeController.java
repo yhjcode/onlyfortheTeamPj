@@ -190,7 +190,17 @@ public class ThemeController extends HttpServlet {
                     json.append("\"userId\":\"").append(escapeJson(String.valueOf(c.get("userId")))).append("\",");
                     json.append("\"nickname\":\"").append(escapeJson(String.valueOf(c.get("nickname")))).append("\",");
                     json.append("\"content\":\"").append(escapeJson(String.valueOf(c.get("content")))).append("\",");
+                    Object rating = c.get("rating");
 
+                    json.append("\"rating\":");
+
+                    if (rating == null) {
+                        json.append("null");
+                    } else {
+                        json.append(rating);
+                    }
+
+                    json.append(",");
                     json.append("\"parentReviewId\":");
                     if (parentReviewId == null) {
                         json.append("null");
@@ -220,7 +230,7 @@ public class ThemeController extends HttpServlet {
                 int themeId = getIntParam(req, "themeId");
                 int parentReviewId = getIntParam(req, "parentReviewId");
                 String content = req.getParameter("content");
-
+                String ratingStr = req.getParameter("rating");
                 if (content == null || content.trim().isEmpty()) {
                     res.setContentType("text/plain; charset=UTF-8");
                     res.getWriter().print("fail");
@@ -232,9 +242,18 @@ public class ThemeController extends HttpServlet {
                 dto.setContent(content);
 
                 if (parentReviewId > 0) {
+                    // 대댓글
                     dto.setParentReviewId((long) parentReviewId);
+                    dto.setRating(null);
                 } else {
+                    // 일반 댓글
                     dto.setParentReviewId(null);
+
+                    try {
+                        dto.setRating(Double.parseDouble(ratingStr));
+                    } catch (Exception e) {
+                        dto.setRating(5.0);
+                    }
                 }
 
                 reviewDAO.insertThemeReview(dto, themeId);
