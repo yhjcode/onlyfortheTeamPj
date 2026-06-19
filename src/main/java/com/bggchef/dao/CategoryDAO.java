@@ -40,6 +40,7 @@ public class CategoryDAO {
     }
 
     /** 특정 대분류에 속한 중분류 목록 조회 */
+    
     public List<CategoryMDTO> listMByLId(int categoryLId) throws SQLException {
         List<CategoryMDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM CATEGORY_M WHERE categoryl_id = ? ORDER BY categorym_id ASC";
@@ -60,4 +61,5 @@ public class CategoryDAO {
         }
         return list;
     }
+   
 }

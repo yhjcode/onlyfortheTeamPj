@@ -19,6 +19,7 @@
                             <c:choose>
                             <c:when test="${not empty theme.thumbnail}">
                                 <img src="${pageContext.request.contextPath}/resources/upload/theme/${theme.thumbnail}" class="recipe-card-img" alt="${theme.title}">
+                                
                             </c:when>
                             <c:otherwise>
                                 <img src="https://picsum.photos/seed/theme${theme.themeId}/400/300" class="recipe-card-img" alt="${theme.title}">
