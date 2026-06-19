@@ -203,6 +203,9 @@ public List<ListDTO> CategorySort(String sort, String categoryId, int currentPag
 				basesql += " AND R.CATEGORY_ID = ?";
 			}
 			
+			// 평균별점 버튼 여기 들어가야함.
+			
+			
 			if("desc".equals(sort)) {
 				basesql += " ORDER BY R.CREATED_AT DESC";
 			}else if("view".equals(sort)) {
@@ -286,5 +289,6 @@ public List<ListDTO> CategorySort(String sort, String categoryId, int currentPag
 	    	
 	    return totalCount;	
 		}
+	
 	
 }//listDAO end

@@ -283,6 +283,8 @@ a:hover { text-decoration: none; }
     font-weight: 700;
 }
 
+
+
 /* ============================================
    캐러셀 화살표
    ============================================ */
@@ -447,6 +449,9 @@ a:hover { text-decoration: none; }
 	background-color: var(--bggchef-primary);
 	
 }
+.categorybutton{
+	text-align: center;
+}
 .categorybutton input {
 	background: white;
     color: var(--bggchef-muted);
@@ -455,9 +460,8 @@ a:hover { text-decoration: none; }
     border-radius: 20px;
     font-size: 0.85rem;
     transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
     gap: 4px;
+    text-align: center;
 }
 
 .categorybutton input.active, .categorybutton input:hover {
@@ -467,9 +471,29 @@ a:hover { text-decoration: none; }
 	background-color: var(--bggchef-primary);
 	
 }
+.avgbutton{
+	text-align: center;
+}
+.avgbutton button {
+	
+	background: white;
+    color: var(--bggchef-muted);
+    border: 1px solid var(--bggchef-border);
+    padding: 5px 5px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    gap: 4px;
+	width: 9%;
+	text-align: center;
+	
+}
 
-
-
+.avgbutton input.active, .avgbutton button:hover {
+	
+	color: white;
+	font-style : bold;
+	background-color: var(--bggchef-primary);
 /* ============================================
    폼 (회원가입, 로그인, 작성)
    ============================================ */

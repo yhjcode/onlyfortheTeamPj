@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%-- 								카테고리 이전 틀
 <div class="container py-4">
@@ -44,6 +45,22 @@
 </div>										
 <hr>
 </section>									<%-- 카테고리 섹션 끝 --%>
+		
+<section>
+<div class="avgbutton">										<%-- 평점 버튼 섹션 --%>
+ <button><i class="bi bi-star-fill" style="color:#FFC107"></i> 5 ~ 4.5	</button>	
+<c:forEach var="avg" begin="1" end="8">
+  <button><i class="bi bi-star-fill" style="color:#FFC107"></i>
+  <fmt:formatNumber value="${4.9 - (avg * 0.5)}" pattern="0.0" />
+   ~ 
+  <fmt:formatNumber value="${5 - (avg / 2) - 0.5}" pattern="0.0" />
+</button>
+
+</c:forEach>
+ <button><i class="bi bi-star-fill" style="color:#FFC107"></i> 0.5 이하</button>
+</div>	
+</section>									<%-- 평점 버튼 섹션 끝 --%>
+
 <section>									<%-- 레시피 리스트 섹션 --%>
 <h2 class="mb-4">레시피 목록</h2>
 
@@ -63,7 +80,8 @@
     <div class="row g-4 mt-2">
             <c:forEach var="descRecipe" items="${descRe}">
                 <div class="col-md-4 col-lg-3">
-                    <div class="recipe-card shadow-soft" onclick="location.href='${pageContext.request.contextPath}/category/list?recipeId=${descRecipe.recipeId}'">
+                    
+                    <div class="recipe-card shadow-soft" onclick="location.href='${pageContext.request.contextPath}/recipe/view?=${descRecipe.recipeId}'">
                         <div class="recipe-card-img-wrap">
                             <c:choose> 
                             <c:when test="${not empty descRecipe.thumbnail}">
