@@ -41,26 +41,45 @@
 <c:forEach var="cbutton" items="${button}">
 <input type="button" value="${cbutton.categoryL}" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${cbutton.categoryId}'"
  class="${currentcategory eq cbutton.categoryId ? 'active' : ''}">
-</c:forEach>								<%-- 카테고리 버튼 끝 --%>
-</div>										
+</c:forEach>								
+<input type="button" value="전체" 
+           onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=0&ratingFilter=${currentRatingFilter}'"
+           class="${currentcategory == '0' || empty currentcategory ? 'active' : ''}">
+</div>										<%-- 카테고리 버튼 끝 --%>
 <hr>
 </section>									<%-- 카테고리 섹션 끝 --%>
 		
-<section>
-<div class="avgbutton">										<%-- 평점 버튼 섹션 --%>
- <button><i class="bi bi-star-fill" style="color:#FFC107"></i> 5 ~ 4.5	</button>	
+<section>									<%-- 평점 버튼 섹션 --%>
+<div class="avgbutton">						
+ <button type="button"
+  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=1'" 
+  class="${currentRatingFilter == '1' ? 'active' : ''}">
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> 5 ~ 4.5	</button>
+ 	
 <c:forEach var="avg" begin="1" end="8">
-  <button><i class="bi bi-star-fill" style="color:#FFC107"></i>
+<c:set var="targetFilter" value="${avg + 1}" />
+  <button type="button" 
+  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${avg+1 }'" 
+  class="${currentRatingFilter == targetFilter || currentRatingFilter eq targetFilter ? 'active' : ''}">
+  <i class="bi bi-star-fill" style="color:#FFC107"></i>
   <fmt:formatNumber value="${4.9 - (avg * 0.5)}" pattern="0.0" />
    ~ 
   <fmt:formatNumber value="${5 - (avg / 2) - 0.5}" pattern="0.0" />
 </button>
 
 </c:forEach>
- <button><i class="bi bi-star-fill" style="color:#FFC107"></i> 0.5 이하</button>
-</div>	
+ <button type="button"
+ onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=10'" 
+ class="${currentRatingFilter == '10' ? 'active' : ''}">
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> 0.5 이하</button>
+ 
+ <button type="button"
+ onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=0'" 
+ class="${currentRatingFilter == '0' || empty currentRatingFilter ? 'active' : ''}">
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> 전체</button>
+</div>
 </section>									<%-- 평점 버튼 섹션 끝 --%>
-
+<hr>
 <section>									<%-- 레시피 리스트 섹션 --%>
 <h2 class="mb-4">레시피 목록</h2>
 
@@ -69,8 +88,8 @@
 	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=desc&categoryId=${currentcategory}'">
 	<input type="button" value="조회수순" class="${param.sort == 'view' ? 'active' : ''}"
 	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=view&categoryId=${currentcategory}'">
-	<input type="button" value="평점순" class="${param.sort == 'avg' ? 'active' : ''}"
-	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=avg&categoryId=${currentcategory}'">
+<%--	<input type="button" value="평점순" class="${param.sort == 'avg' ? 'active' : ''}"
+	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=avg&categoryId=${currentcategory}'"> --%>
 </div>
 <br>
 <div class="row g-3">
@@ -81,7 +100,7 @@
             <c:forEach var="descRecipe" items="${descRe}">
                 <div class="col-md-4 col-lg-3">
                     
-                    <div class="recipe-card shadow-soft" onclick="location.href='${pageContext.request.contextPath}/recipe/view?=${descRecipe.recipeId}'">
+                    <div class="recipe-card shadow-soft" onclick="location.href='${pageContext.request.contextPath}/recipe/view?id=${descRecipe.recipeId}'">
                         <div class="recipe-card-img-wrap">
                             <c:choose> 
                             <c:when test="${not empty descRecipe.thumbnail}">
@@ -118,25 +137,31 @@
 </div></div>
 </section>									<%-- 레시피 리스트 섹션 끝 --%>
 <section>
-<div class="pagination-container" style="text-align: center; margin-top: 20px;">
+<div class="pagination-container" style="text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 5px; align-items: center;">
     
     <c:if test="${paging.startPage > 1}">  
-        <a href="?page=${paging.startPage - 1}&sort=${currentsort}&categoryId=${currentcategory}">[이전]</a>
+        <input type="button" value="이전" class="category-chip"
+               onclick="location.href='?page=${paging.startPage - 1}&sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${currentRatingFilter}'">
     </c:if>
 
     <c:forEach var="i" begin="${paging.startPage}" end="${paging.endPage}">
         <c:choose>
+            <%-- 현재 페이지일 때: 디자인에 따라 'active' 클래스를 주어 붉은색이나 강조 효과가 들어가게 만듭니다 --%>
             <c:when test="${i == paging.currentPage}">
-                <strong style="color: red; margin: 0 5px;">${i}</strong>
+                <input type="button" value="${i}" class="active" style="font-weight: bold;" disabled>
             </c:when>
+            
+            <%-- 다른 페이지 번호일 때: 클릭 시 이동 가능하도록 처리 --%>
             <c:otherwise>	
-                <a href="?page=${i}&sort=${currentsort}&categoryId=${currentcategory}" style="margin: 0 5px;">${i}</a>
+                <input type="button" value="${i}" 
+                       onclick="location.href='?page=${i}&sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${currentRatingFilter}'">
             </c:otherwise>
         </c:choose>
     </c:forEach>
 
     <c:if test="${paging.endPage < paging.totalPage}">  
-        <a href="?page=${paging.endPage + 1}&sort=${currentsort}&categoryId=${currentcategory}">[다음]</a>
+        <input type="button" value="다음" class="category-chip"
+               onclick="location.href='?page=${paging.endPage + 1}&sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${currentRatingFilter}'">
     </c:if>
 </div>
 </section>

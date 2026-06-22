@@ -484,16 +484,17 @@ a:hover { text-decoration: none; }
     font-size: 0.85rem;
     transition: all 0.2s;
     gap: 4px;
-	width: 9%;
+	width: 100px;
 	text-align: center;
 	
 }
 
-.avgbutton input.active, .avgbutton button:hover {
+.avgbutton button.active, .avgbutton button:hover {
 	
 	color: white;
 	font-style : bold;
 	background-color: var(--bggchef-primary);
+}
 /* ============================================
    폼 (회원가입, 로그인, 작성)
    ============================================ */

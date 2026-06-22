@@ -49,6 +49,7 @@ public class CategoryController extends HttpServlet {
             
             String sort = req.getParameter("sort");					// /list 일때 버튼누르면 팅기는거 방지하려고 가져옴
             String categoryId = req.getParameter("categoryId");
+            String ratingFilter = req.getParameter("ratingFilter");
             
             if(sort == null || sort.trim().isEmpty()) {
             	sort="desc";
@@ -57,14 +58,18 @@ public class CategoryController extends HttpServlet {
                 categoryId = "0";
             }
             
+            if (ratingFilter == null || ratingFilter.trim().isEmpty()) {
+                ratingFilter = "0";
+            }
+            
             ListDAO dao = new ListDAO();
             
             String strPage = req.getParameter("page");
             int currentPage = (strPage != null && !strPage.equals("")) ? Integer.parseInt(strPage) : 1;
-            int totalCount = dao.getTotalCount(categoryId);
+            int totalCount = dao.getTotalCount(categoryId, ratingFilter);
             
            // List<ListDTO> Recipestack = null;
-            List<ListDTO> Recipestack = dao.CategorySort(sort, categoryId, currentPage, totalCount);
+            List<ListDTO> Recipestack = dao.CategorySort(sort, categoryId,ratingFilter ,currentPage, totalCount);
             
             /*
             if("desc".equals(sort)) {
@@ -100,6 +105,7 @@ public class CategoryController extends HttpServlet {
             
             req.setAttribute("currentsort",sort);
             req.setAttribute("currentcategory",categoryId);
+            req.setAttribute("currentRatingFilter", ratingFilter);
             
             
             

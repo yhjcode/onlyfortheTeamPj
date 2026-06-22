@@ -182,7 +182,7 @@ public List<ListDTO> avgratingRecipe()throws SQLException{	// ------------------
 		return arr;
 	}// Categorybutton end
 	
-public List<ListDTO> CategorySort(String sort, String categoryId, int currentPage, int totalCount) throws SQLException{	// 카테고리 버튼 + 정렬 메소드 + 페이징
+public List<ListDTO> CategorySort(String sort, String categoryId, String ratingFilter,  int currentPage, int totalCount) throws SQLException{	// 카테고리 버튼 + 정렬 메소드 + 페이징
 		
 		
 		Connection con = null;
@@ -203,7 +203,19 @@ public List<ListDTO> CategorySort(String sort, String categoryId, int currentPag
 				basesql += " AND R.CATEGORY_ID = ?";
 			}
 			
-			// 평균별점 버튼 여기 들어가야함.
+			double minRating = 0.0;											//평점버튼 시작
+			double maxRating = 0.0;
+			if (ratingFilter != null && !ratingFilter.equals("0")) {
+			    int filterNum = Integer.parseInt(ratingFilter);
+			    if (filterNum == 10) {
+			        minRating = -0.1; 				// 0점대 레시피 포함
+			        maxRating = 0.5;
+			    } else {
+			        maxRating = 5.5 - (0.5 * filterNum);
+			        minRating = maxRating - 0.5;
+			    }
+			    basesql += " AND R.AVG_RATING > ? AND R.AVG_RATING <= ?";
+			}																		//평점버튼 끝
 			
 			
 			if("desc".equals(sort)) {
@@ -231,6 +243,13 @@ public List<ListDTO> CategorySort(String sort, String categoryId, int currentPag
 			if(categoryId != null && !categoryId.equals("0")) {	
 				pstmt.setInt(paramIndex++, Integer.parseInt(categoryId));
 			}
+			
+			// 평점 필터 물음표 바인딩
+			if (ratingFilter != null && !ratingFilter.equals("0")) {
+			    pstmt.setDouble(paramIndex++, minRating);
+			    pstmt.setDouble(paramIndex++, maxRating);
+			}
+			
 			pstmt.setInt(paramIndex++,paging.getEndRow());
 			pstmt.setInt(paramIndex,paging.getStartRow());
 		
@@ -262,33 +281,62 @@ public List<ListDTO> CategorySort(String sort, String categoryId, int currentPag
 		return arr;
 	}// 카테고리 버튼+정렬 메소드 끝
 	
-	public int getTotalCount(String categoryId) throws SQLException {
+	public int getTotalCount(String categoryId, String ratingFilter) throws SQLException {
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 	    int totalCount = 0;
+	    
 	    try {
 	        con = getConnection();
+	        // 바인딩 인덱스용 변수
+	        int paramIndex = 1; 
+	        
 	        String sql = "SELECT COUNT(*) FROM RECIPE WHERE IS_DELETED = 0";
 	        
+	        // 카테고리
 	        if(categoryId != null && !categoryId.equals("0")) {
 	            sql += " AND CATEGORY_ID = ?";
-	            
-	            pstmt = con.prepareStatement(sql);
-	            
-	            pstmt.setInt(1, Integer.parseInt(categoryId));
-	        } else {
-	            pstmt = con.prepareStatement(sql);
+	        }
+	
+	        // 평점버튼
+	        double minRating = 0.0;
+	        double maxRating = 0.0;
+	        if (ratingFilter != null && !ratingFilter.equals("0")) {
+	            int filterNum = Integer.parseInt(ratingFilter);
+	            if (filterNum == 10) {
+	                minRating = -0.1;
+	                maxRating = 0.5;
+	            } else {
+	                maxRating = 5.5 - (0.5 * filterNum);
+	                minRating = maxRating - 0.5;
+	            }
+	            sql += " AND AVG_RATING > ? AND AVG_RATING <= ?";
 	        }
 	        
+	        pstmt = con.prepareStatement(sql);
+	        
+	        if(categoryId != null && !categoryId.equals("0")) {
+	            pstmt.setInt(paramIndex++, Integer.parseInt(categoryId));
+	        }
+	        if (ratingFilter != null && !ratingFilter.equals("0")) {
+	            pstmt.setDouble(paramIndex++, minRating);
+	            pstmt.setDouble(paramIndex++, maxRating);
+	        }
+	        
+	        // 실행 및 결과 받기
 	        rs = pstmt.executeQuery();
-	        if(rs.next()) { totalCount = rs.getInt(1); }
-	    }catch(Exception e) { e.printStackTrace(); 
-	    }finally {
-	    	DBUtil.close(con, pstmt, rs); }
-	    	
-	    return totalCount;	
-		}
+	        if(rs.next()) { 
+	            totalCount = rs.getInt(1); 
+	        }
+	    } catch(Exception e) { 
+	        e.printStackTrace(); 
+	    } finally {
+	        DBUtil.close(con, pstmt, rs); 
+	    }
+	        
+	    return totalCount;   
+	}
 	
 	
 }//listDAO end
