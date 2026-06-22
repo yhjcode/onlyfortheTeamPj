@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%-- 								카테고리 이전 틀
@@ -60,7 +60,7 @@
                         <div class="recipe-card-img-wrap">
                             <c:choose> 
                             <c:when test="${not empty descRecipe.thumbnail}">
-                                <img src="${pageContext.request.contextPath}/resources/upload/recipe/${descRecipe.thumbnail}" class="recipe-card-img" alt="${descRecipe.title}">
+                                <img src="${pageContext.request.contextPath}${descRecipe.thumbnail}" class="recipe-card-img" alt="${descRecipe.title}">
                             </c:when>
                             <c:otherwise>
                                 <img src="https://picsum.photos/seed/theme${descRecipe.recipeId}/400/300" class="recipe-card-img" alt="${descRecipe.title}">

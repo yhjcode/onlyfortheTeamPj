@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:set var="menu" value="main" scope="request" />
@@ -43,7 +43,7 @@
 											<span class="rank-badge">TOP ${status.count}</span>
 											<c:choose>
 												<c:when test="${not empty r.thumbnail}">
-													<img class="recipe-card-img" src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}" alt="${r.title}">
+													<img class="recipe-card-img" src="${pageContext.request.contextPath}${r.thumbnail}" alt="${r.title}">
 												</c:when>
 												<c:otherwise>
 													<img class="recipe-card-img" src="https://placehold.co/400x400/dee2e6/6c757d?text=No+Image" alt="${r.title}">
@@ -106,7 +106,7 @@
 										<div class="recipe-card-img-wrap">
 											<c:choose>
 												<c:when test="${not empty r.thumbnail}">
-													<img class="recipe-card-img" src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}" alt="${r.title}">
+													<img class="recipe-card-img" src="${pageContext.request.contextPath}${r.thumbnail}" alt="${r.title}">
 												</c:when>
 												<c:otherwise>
 													<img class="recipe-card-img" src="https://placehold.co/400x400/dee2e6/6c757d?text=No+Image" alt="${r.title}">
@@ -170,7 +170,7 @@
 											<span class="chef-rank-badge">${status.count}</span>
 											<c:choose>
 												<c:when test="${not empty chef.profileImg}">
-													<img class="chef-avatar" src="${pageContext.request.contextPath}/resources/upload/profile/${chef.profileImg}" alt="${chef.nickname}">
+													<img class="chef-avatar" src="${pageContext.request.contextPath}${chef.profileImg}" alt="${chef.nickname}">
 												</c:when>
 												<c:otherwise>
 													<img class="chef-avatar" src="https://placehold.co/180x180/dee2e6/6c757d?text=Chef" alt="${chef.nickname}">

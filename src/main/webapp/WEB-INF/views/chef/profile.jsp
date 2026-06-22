@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     com.bggchef.dto.UserDTO chefUser =
@@ -7,7 +7,7 @@
     String ctx = request.getContextPath();
 
     String profileImg = (chefUser.getProfileImg() != null && !chefUser.getProfileImg().isEmpty())
-        ? ctx + "/resources/upload/profile/" + chefUser.getProfileImg()
+        ? ctx + chefUser.getProfileImg()
         : "https://via.placeholder.com/80x80?text=User";
 
     String medal = chefUser.getMedalGrade() != null ? chefUser.getMedalGrade() : "브론즈";
@@ -120,7 +120,7 @@
             <div class="mp-grid">
                 <c:forEach var="r" items="${chefRecipes}">
                     <a href="<%= ctx %>/recipe/view?id=${r.recipeId}" class="mp-card">
-                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}"
+                        <img src="${pageContext.request.contextPath}${r.thumbnail}"
                              alt="${r.title}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">
