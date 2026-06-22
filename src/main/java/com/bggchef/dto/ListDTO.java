@@ -16,6 +16,7 @@ public class ListDTO {
 	private String nickname;
 	private String profileImg;
 	private String medalgrade;
+	private String CategoryL;
 	
 	
 	public long getRecipeId() {
@@ -96,6 +97,14 @@ public class ListDTO {
 	public void setMedalgrade(String medalgrade) {
 		this.medalgrade = medalgrade;
 	}
+	public String getCategoryL() {
+		return CategoryL;
+	}
+	public void setCategoryL(String categoryL) {
+		CategoryL = categoryL;
+	}
+	
+	
 	
 	
 	

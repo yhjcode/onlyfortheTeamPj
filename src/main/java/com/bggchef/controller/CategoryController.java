@@ -1,5 +1,5 @@
 package com.bggchef.controller;
-
+import com.bggchef.util.PagingUtil;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -26,7 +26,8 @@ import com.bggchef.dto.ListDTO;
 public class CategoryController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private CategoryDAO categoryDAO = new CategoryDAO();
-
+    
+   
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -46,12 +47,31 @@ public class CategoryController extends HttpServlet {
             req.setAttribute("mapM", mapM);
             //sort로 버튼기능 구현
             
-            String sort = req.getParameter("sort");
+            String sort = req.getParameter("sort");					// /list 일때 버튼누르면 팅기는거 방지하려고 가져옴
+            String categoryId = req.getParameter("categoryId");
+            String ratingFilter = req.getParameter("ratingFilter");
+            
+            if(sort == null || sort.trim().isEmpty()) {
+            	sort="desc";
+            }
+            if (categoryId == null || categoryId.trim().isEmpty()) {
+                categoryId = "0";
+            }
+            
+            if (ratingFilter == null || ratingFilter.trim().isEmpty()) {
+                ratingFilter = "0";
+            }
             
             ListDAO dao = new ListDAO();
             
-            List<ListDTO> Recipestack = null;
+            String strPage = req.getParameter("page");
+            int currentPage = (strPage != null && !strPage.equals("")) ? Integer.parseInt(strPage) : 1;
+            int totalCount = dao.getTotalCount(categoryId, ratingFilter);
             
+           // List<ListDTO> Recipestack = null;
+            List<ListDTO> Recipestack = dao.CategorySort(sort, categoryId,ratingFilter ,currentPage, totalCount);
+            
+            /*
             if("desc".equals(sort)) {
             	Recipestack = dao.descRecipe();
             }else if("view".equals(sort)) {
@@ -62,7 +82,9 @@ public class CategoryController extends HttpServlet {
             	Recipestack = dao.descRecipe();
             }
             
-            /*
+            
+            
+            
 			List<ListDTO> descRe = dao.descRecipe();
 			List<ListDTO> viewcountRe = dao.viewcountRecipe();
 			List<ListDTO> avgratingRe = dao.avgratingRecipe();
@@ -72,7 +94,21 @@ public class CategoryController extends HttpServlet {
 			req.setAttribute("avgratingRe", avgratingRe);
             */
             
+            List<ListDTO> button = dao.CategoryButton();
+            
+            req.setAttribute("button", button);
+            
+            
+            req.setAttribute("paging", new PagingUtil(currentPage, totalCount));
             req.setAttribute("descRe", Recipestack);
+            
+            
+            req.setAttribute("currentsort",sort);
+            req.setAttribute("currentcategory",categoryId);
+            req.setAttribute("currentRatingFilter", ratingFilter);
+            
+            
+            
             
             req.setAttribute("contentPage", "/WEB-INF/views/category/list.jsp");
             req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, res);

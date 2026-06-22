@@ -107,26 +107,21 @@
         
         <%-- 페이징 번호 --%>
         </div> <% if (totalCount > 0) { // 검색 결과가 있을 때만 버튼그리기 %>
-            <div class="d-flex justify-content-center mt-5">
-                <nav>
-                    <ul class="pagination">
-                        <%
-                            // 1페이지부터 계산된 총 페이지 수(pageCount)까지 루프를 돌며 버튼 생성
-                            for (int i = 1; i <= pageCount; i++) {
-                                // 현재 보고있는 페이지 강조(active)
-                                String activeClass = (i == currentPage) ? "active" : "";
-                        %>
-                            <li class="page-item <%= activeClass %>">
-                                <a class="page-link" href="?searchType=<%= serchType %>&keyword=<%= keyword %>&page=<%= i %>">
-                                    <%= i %>
-                                </a>
-                            </li>
-                        <%
+            <div class="pagination-container" style="text-align: center; margin-top: 40px; display: flex; justify-content: center; gap: 5px; align-items: center;">
+                    <%
+                        for (int i = 1; i <= pageCount; i++) {
+                            if (i == currentPage) {
+                    %>
+                                <input type="button" value="<%= i %>" class="active" style="font-weight: bold;" disabled>
+                    <%
+                            } else {
+                    %>
+                                <input type="button" value="<%= i %>" onclick="location.href='?searchType=<%= serchType %>&keyword=<%= keyword %>&page=<%= i %>'">
+                    <%
                             }
-                        %>
-                    </ul>
-                </nav>
-            </div>
+                        }
+                    %>
+                </div>
         <% } %>
     </section>
 
@@ -198,26 +193,21 @@
 	            
 	        </div>
 	        <% if (totalCount > 0) { // 검색 결과가 있을 때만 버튼그리기 %>
-            <div class="d-flex justify-content-center mt-5">
-                <nav>
-                    <ul class="pagination">
-                        <%
-                            // 1페이지부터 계산된 총 페이지 수(pageCount)까지 루프를 돌며 버튼 생성
-                            for (int i = 1; i <= pageCount; i++) {
-                                // 현재 보고있는 페이지 강조(active)
-                                String activeClass = (i == currentPage) ? "active" : "";
-                        %>
-                            <li class="page-item <%= activeClass %>">
-                                <a class="page-link" href="?searchType=<%= serchType %>&keyword=<%= keyword %>&page=<%= i %>">
-                                    <%= i %>
-                                </a>
-                            </li>
-                        <%
+           <div class="pagination-container" style="text-align: center; margin-top: 40px; display: flex; justify-content: center; gap: 5px; align-items: center;">
+                    <%
+                        for (int i = 1; i <= pageCount; i++) {
+                            if (i == currentPage) {
+                    %>
+                                <input type="button" value="<%= i %>" class="active" style="font-weight: bold;" disabled>
+                    <%
+                            } else {
+                    %>
+                                <input type="button" value="<%= i %>" onclick="location.href='?searchType=<%= serchType %>&keyword=<%= keyword %>&page=<%= i %>'">
+                    <%
                             }
-                        %>
-                    </ul>
-                </nav>
-            </div>
+                        }
+                    %>
+                </div>
         <% } %>
 	        
 	    </section>
@@ -300,26 +290,21 @@
                 %>
             </div>
              <% if (totalCount > 0) { // 검색 결과가 있을 때만 버튼그리기 %>
-            <div class="d-flex justify-content-center mt-5">
-                <nav>
-                    <ul class="pagination">
-                        <%
-                            // 1페이지부터 계산된 총 페이지 수(pageCount)까지 루프를 돌며 버튼 생성
-                            for (int i = 1; i <= pageCount; i++) {
-                                // 현재 보고있는 페이지 강조(active)
-                                String activeClass = (i == currentPage) ? "active" : "";
-                        %>
-                            <li class="page-item <%= activeClass %>">
-                                <a class="page-link" href="?searchType=<%= serchType %>&keyword=<%= keyword %>&page=<%= i %>">
-                                    <%= i %>
-                                </a>
-                            </li>
-                        <%
+           <div class="pagination-container" style="text-align: center; margin-top: 40px; display: flex; justify-content: center; gap: 5px; align-items: center;">
+                    <%
+                        for (int i = 1; i <= pageCount; i++) {
+                            if (i == currentPage) {
+                    %>
+                                <input type="button" value="<%= i %>" class="active" style="font-weight: bold;" disabled>
+                    <%
+                            } else {
+                    %>
+                                <input type="button" value="<%= i %>" onclick="location.href='?searchType=<%= serchType %>&keyword=<%= keyword %>&page=<%= i %>'">
+                    <%
                             }
-                        %>
-                    </ul>
-                </nav>
-            </div>
+                        }
+                    %>
+                </div>
         <% } %> </section> <%
         } // user 검색 종료
     } // user키워드검색 종료
