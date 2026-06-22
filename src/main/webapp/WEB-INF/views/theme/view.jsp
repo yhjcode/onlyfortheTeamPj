@@ -10,7 +10,7 @@
     <%-- 테마 대표 이미지는 있을 때만 출력 --%>
     <c:if test="${not empty theme.thumbnail}">
         <div class="text-center mb-4">
-            <img src="${pageContext.request.contextPath}${theme.thumbnail}"
+            <img src="${pageContext.request.contextPath}/resources/upload/theme/${theme.thumbnail}"
                  alt="${theme.title}"
                  style="max-width: 500px; border-radius: 15px;">
         </div>
@@ -20,69 +20,8 @@
         <h4 class="text-secondary mb-3">${theme.subtitle}</h4>
     </c:if>
 
-    <div class="section-card mb-5">
-        <h3 class="section-title mb-4"><i class="bi bi-list-ul text-danger me-2"></i> レシピ詳細一覧</h3>
-        <div class="mb-5 p-4 bg-light rounded-4">
-            <p class="mb-0 text-secondary" style="font-size: 18px; text-align: center;">${not empty theme.description ? theme.description : 'テーマの説明は準備中です。'}</p>
-        </div>
-
-        <c:forEach var="recipe" items="${recipeList}" varStatus="status">
-            <div class="mb-5 pb-5 position-relative" style="border-bottom: 2px solid #eaeaea !important;">
-
-                <div class="text-center mb-4">
-                    <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}">
-                        <c:choose>
-                            <c:when test="${not empty recipe.thumbnail}">
-                                <img src="${pageContext.request.contextPath}${recipe.thumbnail}"
-                                     alt="${recipe.title}"
-                                     style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                            </c:when>
-                            <c:otherwise>
-                                <div style="width: 300px; height: 200px; background-color: #eee; margin: 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 15px;">
-                                    画像なし
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                    </a>
-                </div>
-
-                <c:if test="${not empty loginUser && loginUser.userId == recipe.userId}">
-                    <div class="position-absolute" style="top: 0; right: 0;">
-                        <button type="button" class="btn btn-sm btn-outline-secondary me-2"
-                                onclick="location.href='${pageContext.request.contextPath}/theme/editRecipeInfo?themeId=${theme.themeId}&recipeId=${recipe.recipeId}'">紹介文を編集</button>
-
-                        <form action="${pageContext.request.contextPath}/theme/removeRecipe" method="post" class="d-inline">
-                            <input type="hidden" name="themeId" value="${theme.themeId}">
-                            <input type="hidden" name="recipeId" value="${recipe.recipeId}">
-                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('このレシピをテーマから削除しますか？');">X 削除</button>
-                        </form>
-                    </div>
-                </c:if>
-
-                <div class="text-center">
-                    <h4>
-                        <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}" class="text-decoration-none text-dark">
-                            ${recipe.title}
-                        </a>
-                    </h4>
-                    <p class="text-muted mt-3" style="font-size: 1.1rem; white-space: pre-wrap;">
-                        ${not empty recipe.description ? recipe.description : '紹介文はまだありません。'}
-                    </p>
-
-                    <div class="mt-3 d-flex justify-content-center gap-2">
-                        <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}"
-                           class="btn btn-outline-primary btn-sm px-3">レシピへ移動</a>
-
-                        <c:if test="${not empty recipe.recipeLink}">
-                            <a href="${recipe.recipeLink}" target="_blank"
-                               class="btn btn-outline-success btn-sm px-3">詳細レシピを見る</a>
-                        </c:if>
-                    </div>
-                </div>
-            </div>
-        </c:forEach>
     <div class="d-flex justify-content-center align-items-center gap-3 text-muted">
-        <span><i class="bi bi-eye"></i> 閲覧数 ${theme.viewCount}</span>
+        <span><i class="bi bi-eye"></i> 조회수 ${theme.viewCount}</span>
         <span><i class="bi bi-calendar3"></i> ${theme.createdAt}</span>
     </div>
 </div>
@@ -94,24 +33,24 @@
             <a href="${pageContext.request.contextPath}/theme/update?themeId=${theme.themeId}"
                class="btn px-4"
                style="background-color: white; border: 1px solid #ced4da; color: black;">
-                編集
+                수정
             </a>
 
             <a href="${pageContext.request.contextPath}/theme/delete?themeId=${theme.themeId}"
                class="btn btn-danger px-4"
-               onclick="return confirm('本当に削除しますか？');">
-                削除
+               onclick="return confirm('정말 삭제하시겠습니까?');">
+                삭제
             </a>
         </div>
     </c:if>
 </div>
 
-<!-- 레시피 상세 목록 -->
+<!-- 요리 상세 목록 -->
 <div class="section-card mb-5">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="section-title mb-0">
-            <i class="bi bi-list-ul text-danger me-2"></i> レシピ詳細一覧
+            <i class="bi bi-list-ul text-danger me-2"></i> 요리 상세 목록
         </h3>
 
         <%-- 로그인한 사람은 누구나 자기 레시피 추가 가능 --%>
@@ -121,7 +60,7 @@
                     onclick="window.open('${pageContext.request.contextPath}/theme/myRecipeList?themeId=${theme.themeId}',
                                          'recipePopup',
                                          'width=700,height=600,scrollbars=yes')">
-                マイレシピを追加
+                내 레시피 추가
             </button>
         </c:if>
     </div>
@@ -133,7 +72,7 @@
                 ${theme.description}
             </c:when>
             <c:otherwise>
-                テーマの説明は準備中です。
+                테마 소개글을 준비 중입니다.
             </c:otherwise>
         </c:choose>
     </div>
@@ -141,8 +80,8 @@
     <!-- 레시피가 없을 때 -->
     <c:if test="${empty recipeList}">
         <div class="text-center text-muted py-5">
-            まだレシピが追加されていません。<br>
-            マイレシピを追加ボタンを押してレシピを追加してください。
+            아직 추가된 레시피가 없습니다.<br>
+            내 레시피 추가 버튼을 눌러 레시피를 추가해보세요.
         </div>
     </c:if>
 
@@ -155,7 +94,7 @@
             <c:if test="${not empty recipe.thumbnail}">
                 <div class="text-center mb-4">
                     <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}">
-                        <img src="${pageContext.request.contextPath}${recipe.thumbnail}"
+                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
                              alt="${recipe.title}"
                              style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     </a>
@@ -168,7 +107,7 @@
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary me-2"
                             onclick="location.href='${pageContext.request.contextPath}/theme/editRecipeInfo?themeId=${theme.themeId}&recipeId=${recipe.recipeId}'">
-                        紹介文を編集
+                        소개 수정
                     </button>
 
                     <form action="${pageContext.request.contextPath}/theme/removeRecipe"
@@ -179,8 +118,8 @@
 
                         <button type="submit"
                                 class="btn btn-sm btn-outline-danger"
-                                onclick="return confirm('このレシピをテーマから削除しますか？');">
-                            X 削除
+                                onclick="return confirm('이 요리를 테마에서 제거하시겠습니까?');">
+                            X 삭제
                         </button>
                     </form>
                 </div>
@@ -202,7 +141,7 @@
                             ${recipe.description}
                         </c:when>
                         <c:otherwise>
-                            紹介文はまだありません。
+                            작성된 소개글이 없습니다.
                         </c:otherwise>
                     </c:choose>
                 </p>
@@ -210,14 +149,14 @@
                 <div class="mt-3 d-flex justify-content-center gap-2">
                     <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
                      class="btn btn-outline-primary btn-sm px-3">
-                     レシピへ移動
+                     레시피로 이동
                      </a>
 
                     <c:if test="${not empty recipe.recipeLink}">
                         <a href="${recipe.recipeLink}"
                            target="_blank"
                            class="btn btn-outline-success btn-sm px-3">
-                            詳細レシピを見る
+                            상세 레시피 바로가기
                         </a>
                     </c:if>
                 </div>
@@ -232,13 +171,13 @@
 
     <h4 class="mb-4">
         <i class="bi bi-chat-dots text-danger me-2"></i>
-        コメント
+        댓글
     </h4>
 
     <c:if test="${not empty loginUser}">
         <div class="mb-4">
         <div class="mb-3">
-    <label class="form-label">評価</label>
+    <label class="form-label">별점</label>
 
     <div style="display:flex; align-items:center; gap:15px;">
 
@@ -279,18 +218,18 @@
             <textarea id="commentContent"
                       class="form-control"
                       rows="3"
-                      placeholder="コメントを入力してください"></textarea>
+                      placeholder="댓글을 입력하세요"></textarea>
 
             <button type="button"
                     class="btn btn-danger mt-2"
                     onclick="addThemeComment()">
-                コメントを投稿
+                댓글 등록
             </button>
         </div>
     </c:if>
 
     <div id="commentList">
-        <%-- AJAX 댓글 출력 --%>
+        <!-- AJAX 댓글 출력 -->
     </div>
 
 </div>
@@ -355,13 +294,14 @@ function loadThemeComments() {
                         comment.content +
                     '</div>';
 
+                html += '<div class="mt-2">';
                 html += '<div class="mt-2" id="button-area-' + comment.commentId + '">';
 
                 if (loginUserId !== "" && !isReply) {
                     html +=
                         '<button type="button" class="btn btn-sm btn-outline-primary me-2" ' +
                             'onclick="showReplyForm(' + comment.commentId + ')">' +
-                            '返信' +
+                            '답글' +
                         '</button>';
                 }
 
@@ -369,12 +309,12 @@ function loadThemeComments() {
                     html +=
                         '<button type="button" class="btn btn-sm btn-outline-secondary me-2" ' +
                             'onclick="showEditComment(' + comment.commentId + ')">' +
-                            '編集' +
+                            '수정' +
                         '</button>' +
 
                         '<button type="button" class="btn btn-sm btn-outline-danger" ' +
                             'onclick="deleteThemeComment(' + comment.commentId + ')">' +
-                            '削除' +
+                            '삭제' +
                         '</button>';
                 }
 
@@ -383,9 +323,9 @@ function loadThemeComments() {
                 if (!isReply) {
                     html +=
                         '<div id="reply-form-' + comment.commentId + '" class="mt-3" style="display:none;">' +
-                            '<textarea id="reply-content-' + comment.commentId + '" class="form-control" rows="2" placeholder="返信を入力してください"></textarea>' +
-                            '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="addReplyComment(' + comment.commentId + ')">返信する</button>' +
-                            '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="hideReplyForm(' + comment.commentId + ')">キャンセル</button>' +
+                            '<textarea id="reply-content-' + comment.commentId + '" class="form-control" rows="2" placeholder="답글을 입력하세요"></textarea>' +
+                            '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="addReplyComment(' + comment.commentId + ')">답글 등록</button>' +
+                            '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="hideReplyForm(' + comment.commentId + ')">취소</button>' +
                         '</div>';
                 }
 
@@ -401,7 +341,7 @@ function addThemeComment() {
     const content = document.getElementById("commentContent").value.trim();
     const rating = document.getElementById("commentRating").value;
     if (content === "") {
-        alert("コメントを入力してください。");
+        alert("댓글을 입력하세요.");
         return;
     }
 
@@ -420,7 +360,7 @@ function addThemeComment() {
             document.getElementById("commentContent").value = "";
             loadThemeComments();
         } else {
-            alert("コメントの投稿に失敗しました。");
+            alert("댓글 등록 실패");
         }
     });
 }
@@ -437,7 +377,7 @@ function addReplyComment(parentReviewId) {
     const content = document.getElementById("reply-content-" + parentReviewId).value.trim();
 
     if (content === "") {
-        alert("返信を入力してください。");
+        alert("답글을 입력하세요.");
         return;
     }
 
@@ -455,7 +395,7 @@ function addReplyComment(parentReviewId) {
         if (result.trim() === "success") {
             loadThemeComments();
         } else {
-            alert("返信の投稿に失敗しました。");
+            alert("답글 등록 실패");
         }
     });
 }
@@ -470,14 +410,17 @@ function showEditComment(commentId) {
     contentDiv.innerHTML =
         '<textarea id="edit-comment-' + commentId + '" class="form-control" rows="3">' +
             oldContent +
+        '</textarea>' +
+        '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="updateThemeComment(' + commentId + ')">저장</button>' +
+        '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="loadThemeComments()">취소</button>';
         '</textarea>';
 
     buttonDiv.innerHTML =
         '<button type="button" class="btn btn-sm btn-danger me-2" onclick="updateThemeComment(' + commentId + ')">' +
-            '保存' +
+            '저장' +
         '</button>' +
         '<button type="button" class="btn btn-sm btn-secondary" onclick="loadThemeComments()">' +
-            'キャンセル' +
+            '취소' +
         '</button>';
 }
 
@@ -485,7 +428,7 @@ function updateThemeComment(commentId) {
     const content = document.getElementById("edit-comment-" + commentId).value.trim();
 
     if (content === "") {
-        alert("コメントを入力してください。");
+        alert("댓글을 입력하세요.");
         return;
     }
 
@@ -501,13 +444,13 @@ function updateThemeComment(commentId) {
         if (result.trim() === "success") {
             loadThemeComments();
         } else {
-            alert("コメントの編集に失敗しました。");
+            alert("댓글 수정 실패");
         }
     });
 }
 
 function deleteThemeComment(commentId) {
-    if (!confirm("コメントを削除しますか？")) {
+    if (!confirm("댓글을 삭제하시겠습니까?")) {
         return;
     }
 
@@ -523,7 +466,7 @@ function deleteThemeComment(commentId) {
         if (result.trim() === "success") {
             loadThemeComments();
         } else {
-            alert("コメントの削除に失敗しました。");
+            alert("댓글 삭제 실패");
         }
     });
 }
@@ -550,4 +493,3 @@ function updateStars(rating) {
 
     document.getElementById("starRating").innerText = stars;
 }
-</script>

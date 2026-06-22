@@ -210,7 +210,7 @@
     </section>
 
     <div class="d-flex justify-content-between align-items-center mb-5">
-        <a href="${pageContext.request.contextPath}/recipe/list"
+        <a href="${pageContext.request.contextPath}/category/list"
            class="btn btn-outline-secondary px-4">
             一覧
         </a>

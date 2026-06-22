@@ -220,7 +220,7 @@ public class RecipeController extends HttpServlet {
     //4
     private void showList(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        forward(req, res, "/WEB-INF/views/recipe/list.jsp");
+        forward(req, res, "/WEB-INF/views/category/list.jsp");////////////////////////////////////////////수정함
     }
 
 
