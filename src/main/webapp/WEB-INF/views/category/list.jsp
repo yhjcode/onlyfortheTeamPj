@@ -52,28 +52,27 @@
 <section>									<%-- 평점 버튼 섹션 --%>
 <div class="avgbutton">						
  <button type="button"
-  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=1'" 
-  class="${currentRatingFilter == '1' ? 'active' : ''}">
- <i class="bi bi-star-fill" style="color:#FFC107"></i> 5 ~ 4.5	</button>
- 	
-<c:forEach var="avg" begin="1" end="8">
-<c:set var="targetFilter" value="${avg + 1}" />
-  <button type="button" 
-  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${avg+1 }'" 
-  class="${currentRatingFilter == targetFilter || currentRatingFilter eq targetFilter ? 'active' : ''}">
-  <i class="bi bi-star-fill" style="color:#FFC107"></i>
-  <fmt:formatNumber value="${4.9 - (avg * 0.5)}" pattern="0.0" />
-   ~ 
-  <fmt:formatNumber value="${5 - (avg / 2) - 0.5}" pattern="0.0" />
-</button>
-
-</c:forEach>
- <button type="button"
  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=10'" 
  class="${currentRatingFilter == '10' ? 'active' : ''}">
  <i class="bi bi-star-fill" style="color:#FFC107"></i> 0.5 이하</button>
- 
+ 	
+ <c:forEach var="avg" begin="1" end="8">
+   <c:set var="targetFilter" value="${10 - avg}" />
+   <button type="button" 
+   onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${targetFilter}'" 
+   class="${currentRatingFilter == targetFilter || currentRatingFilter eq targetFilter ? 'active' : ''}">
+   <i class="bi bi-star-fill" style="color:#FFC107"></i>
+   <fmt:formatNumber value="${0.5 + (avg * 0.5)}" pattern="0.0" />
+    ~ 
+   <fmt:formatNumber value="${0.5 + (avg * 0.5) + 0.4}" pattern="0.0" />
+ </button>
+ </c:forEach>
+
  <button type="button"
+  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=1'" 
+  class="${currentRatingFilter == '1' ? 'active' : ''}">
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> 5 ~ 4.5 </button>
+  <button type="button"
  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=0'" 
  class="${currentRatingFilter == '0' || empty currentRatingFilter ? 'active' : ''}">
  <i class="bi bi-star-fill" style="color:#FFC107"></i> 전체</button>
@@ -119,7 +118,7 @@
                                         <i class="bi bi-star-fill"></i> 
                                         ${descRecipe.avgRating}
                                     </span> 
-                                    <span><i class="bi bi-eye"></i> ${descRecipe.viewCount}</span> 
+                                    <span><i class="bi bi-eye"></i> ${descRecipe.viewCount == null || empty descRecipe.viewCount ? '0' : descRecipe.viewCount }</span> 
                                     <span><i class="bi bi-person-fill"></i>${descRecipe.nickname }</span>
                                 </div>
                         </div>
