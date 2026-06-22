@@ -3,7 +3,7 @@
 
 <div class="container py-4">
     <div class="d-flex justify-content-end mb-3">
-        <a href="${pageContext.request.contextPath}/theme/write" class="btn btn-outline-primary">레시피 작성</a>
+        <a href="${pageContext.request.contextPath}/theme/write" class="btn btn-outline-primary">추천테마 작성</a>
     </div>
     <div class="section-card mb-4">
         <h2 class="section-title">

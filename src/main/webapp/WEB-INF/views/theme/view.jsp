@@ -294,7 +294,7 @@ function loadThemeComments() {
                         comment.content +
                     '</div>';
 
-                html += '<div class="mt-2">';
+                html += '<div class="mt-2" id="button-area-' + comment.commentId + '">';
 
                 if (loginUserId !== "" && !isReply) {
                     html +=
@@ -400,15 +400,24 @@ function addReplyComment(parentReviewId) {
 }
 
 function showEditComment(commentId) {
+
     const contentDiv = document.getElementById("comment-content-" + commentId);
+    const buttonDiv = document.getElementById("button-area-" + commentId);
+
     const oldContent = contentDiv.innerText;
 
     contentDiv.innerHTML =
         '<textarea id="edit-comment-' + commentId + '" class="form-control" rows="3">' +
             oldContent +
-        '</textarea>' +
-        '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="updateThemeComment(' + commentId + ')">저장</button>' +
-        '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="loadThemeComments()">취소</button>';
+        '</textarea>';
+
+    buttonDiv.innerHTML =
+        '<button type="button" class="btn btn-sm btn-danger me-2" onclick="updateThemeComment(' + commentId + ')">' +
+            '저장' +
+        '</button>' +
+        '<button type="button" class="btn btn-sm btn-secondary" onclick="loadThemeComments()">' +
+            '취소' +
+        '</button>';
 }
 
 function updateThemeComment(commentId) {
