@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <% request.setCharacterEncoding("UTF-8"); %>
 
 <%@ page import="com.bggchef.dao.SearchDAO" %>
@@ -72,7 +72,7 @@
                     for (RecipeDTO recipe : arrRecipe) {
                         String imgUrl = "https://picsum.photos/seed/recipe/400/400";		
                         if (recipe.getThumbnail() != null && !recipe.getThumbnail().trim().isEmpty()) {
-                            imgUrl = recipe.getThumbnail();	
+                            imgUrl = request.getContextPath() + recipe.getThumbnail();	
                         }
                         
                         String ratingStr = "0.0";	
@@ -163,7 +163,7 @@
 	                    for (ThemeDTO theme : arrTheme) {
 	                        String imgUrl = "https://picsum.photos/seed/recipe/400/400";		
 	                        if (theme.getThumbnail() != null && !theme.getThumbnail().trim().isEmpty()) {
-	                            imgUrl = theme.getThumbnail();	
+	                            imgUrl = request.getContextPath() + "/resources/upload/theme/" + theme.getThumbnail();	
                         	}
 	                        
 	                        String viewStr = "0";	
@@ -256,7 +256,7 @@
                         for (UserDTO user : arrUser) {
                             String imgUrl = "https://picsum.photos/seed/recipe/400/400";		
                             if (user.getProfileImg() != null && !user.getProfileImg().trim().isEmpty()) {
-                                imgUrl = user.getProfileImg();	
+                                imgUrl = request.getContextPath() + user.getProfileImg();	
                         	}
                             
                             String ratingStr = "0.0";														

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     com.bggchef.dto.UserDTO loginUser =
@@ -7,7 +7,7 @@
     String ctx = request.getContextPath();
 
     String profileImg = (loginUser.getProfileImg() != null && !loginUser.getProfileImg().isEmpty())
-        ? ctx + "/resources/upload/profile/" + loginUser.getProfileImg()
+        ? ctx + loginUser.getProfileImg()
         : "https://via.placeholder.com/80x80?text=User";
 
     String medal = loginUser.getMedalGrade() != null ? loginUser.getMedalGrade() : "브론즈";
@@ -147,7 +147,7 @@
             <div class="mp-grid">
                 <c:forEach var="r" items="${myRecipes}">
                     <a href="<%= ctx %>/recipe/view?id=${r.recipeId}" class="mp-card">
-                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}"
+                        <img src="${pageContext.request.contextPath}${r.thumbnail}"
                              alt="${r.title}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">
@@ -243,7 +243,7 @@
             <div class="mp-grid">
                 <c:forEach var="f" items="${myFavorites}">
                     <a href="<%= ctx %>/recipe/view?id=${f.recipeId}" class="mp-card">
-                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${f.thumbnail}"
+                        <img src="${pageContext.request.contextPath}${f.thumbnail}"
                              alt="${f.recipeTitle}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="container py-4">
@@ -13,7 +13,7 @@
         <div class="card p-4 shadow-sm">
             <div class="mb-4 text-center">
                 <label class="form-label d-block text-start">기존 사진</label>
-                <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}" 
+                <img src="${pageContext.request.contextPath}${recipe.thumbnail}" 
                      style="max-width: 200px; border-radius: 10px;" class="mb-3">
                 <input type="file" name="thumbnail" class="form-control">
                 <small class="text-muted">새 사진을 선택하지 않으면 기존 사진이 유지됩니다.</small>

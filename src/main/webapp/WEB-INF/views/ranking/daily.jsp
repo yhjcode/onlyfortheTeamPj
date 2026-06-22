@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -256,7 +256,7 @@
                                         <div class="recipe-thumb">
                                             <c:choose>
                                                 <c:when test="${not empty r.thumbnail}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}"
+                                                    <img src="${pageContext.request.contextPath}${r.thumbnail}"
                                                          alt="${r.title}">
                                                 </c:when>
                                                 <c:otherwise>
@@ -316,7 +316,7 @@
                                         <div class="recipe-thumb">
                                             <c:choose>
                                                 <c:when test="${not empty r.thumbnail}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}"
+                                                    <img src="${pageContext.request.contextPath}${r.thumbnail}"
                                                          alt="${r.title}">
                                                 </c:when>
                                                 <c:otherwise>
@@ -404,7 +404,7 @@
                                         <div class="chef-avatar-sm">
                                             <c:choose>
                                                 <c:when test="${not empty c.profileImg}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/profile/${c.profileImg}"
+                                                    <img src="${pageContext.request.contextPath}${c.profileImg}"
                                                          alt="${c.nickname}">
                                                 </c:when>
                                                 <c:otherwise>
@@ -464,7 +464,7 @@
                                         <div class="chef-avatar-sm">
                                             <c:choose>
                                                 <c:when test="${not empty c.profileImg}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/profile/${c.profileImg}"
+                                                    <img src="${pageContext.request.contextPath}${c.profileImg}"
                                                          alt="${c.nickname}">
                                                 </c:when>
                                                 <c:otherwise>

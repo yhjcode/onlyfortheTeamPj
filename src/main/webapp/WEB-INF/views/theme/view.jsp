@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="container py-4">
@@ -41,7 +41,7 @@
                     <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}">
                         <c:choose>
                             <c:when test="${not empty recipe.thumbnail}">
-                                <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}" 
+                                <img src="${pageContext.request.contextPath}${recipe.thumbnail}" 
                                      alt="${recipe.title}" 
                                      style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                             </c:when>
