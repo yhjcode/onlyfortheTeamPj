@@ -18,7 +18,7 @@ import java.sql.SQLException;
 public class DBUtil {
 
     // Oracle 11g XE 기본
-    private static final String URL  = "jdbc:oracle:thin:@localhost:1521:XE";
+    private static final String URL  = "jdbc:oracle:thin:@localhost:1521:orcl";
     // Oracle 19c는 보통: "jdbc:oracle:thin:@localhost:1521:orcl"
     private static final String USER = "bggchef";
     private static final String PWD  = "bggchef1234";
