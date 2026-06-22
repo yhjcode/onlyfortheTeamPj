@@ -59,7 +59,7 @@
                
                 <div class="col-md-7 col-12">
                   
-                    <form action="${pageContext.request.contextPath}/search/search.jsp" method="get" class="bggchef-search"><%-- onsubmit="return checkSearch()" --%>
+                    <form action="${pageContext.request.contextPath}/search" method="get" class="bggchef-search"><%-- onsubmit="return checkSearch()" --%>
                     <div class="select d-flex align-items-center">
                    <select name="searchType" class="form-select bggchef-select">
                     		<option value="recipe" ${param.searchType eq 'recipe' ? 'selected' : ''}>레시피</option>
