@@ -159,7 +159,7 @@
 <div class="recipe-write-wrap">
     <h2 class="recipe-write-title">레시피 수정</h2>
 
-    <form id="recipeForm" action="${pageContext.request.contextPath}/recipe/edit" method="post" enctype="multipart/form-data">
+    <form id="recipeForm" action="${pageContext.request.contextPath}/recipe/edit" method="post" enctype="multipart/form-data"> 
         <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
         <input type="hidden" name="thumbnail" value="${recipe.thumbnail}">
 
@@ -170,6 +170,7 @@
                     <div class="mb-4">
                         <label for="title" class="recipe-label">레시피 제목</label>
                         <input type="text" class="form-control" id="title" name="title" maxlength="200" value="${fn:escapeXml(recipe.title)}" required>
+                        
                     </div>
                     <div class="mb-4">
                         <label for="description" class="recipe-label">레시피 소개</label>
@@ -183,6 +184,7 @@
                         <c:choose>
                             <c:when test="${not empty recipe.thumbnail}">
                                 <img id="thumbnailPreview" class="photo-preview is-visible" src="${pageContext.request.contextPath}${recipe.thumbnail}" alt="대표 이미지 미리보기">
+                               
                             </c:when>
                             <c:otherwise>
                                 <span class="photo-plus">+</span>
@@ -198,12 +200,14 @@
             <div class="mt-4">
                 <label class="recipe-label d-block">카테고리 / 요리정보</label>
                 <div class="category-grid">
+                
+                
                     <div>
-                        <label for="category_id" class="recipe-label small">카테고리</label>
-                        <select class="form-select" id="category_id" name="category_id" required>
+                        <label for="categoryLId" class="recipe-label small">카테고리</label>
+                        <select class="form-select" id="categoryLId" name="categoryLId" required>
                             <option value="">선택</option>
                             <c:forEach var="category" items="${categoryList}">
-                                <option value="${category.categorymId}" ${recipe.categoryId == category.categorymId ? 'selected' : ''}><c:out value="${category.name}" /></option>
+                                <option value="${category.categorylId}" ${recipe.categoryId == category.categorylId ? 'selected' : ''}><c:out value="${category.name}" /></option>
                             </c:forEach>
                             <c:if test="${empty categoryList}">
                                 <option value="${recipe.categoryId}" selected><c:out value="${empty recipe.categoryName ? '기존 카테고리' : recipe.categoryName}" /></option>
@@ -312,6 +316,8 @@
             <div class="d-flex gap-2">
                 <button type="submit" class="  btn btn-outline-danger px-4   <%-- btn btn-danger btn-lg px-5--%>">수정</button>
                 <button type="submit" form="deleteRecipeForm" class=" btn btn-danger px-4"<%--btn btn-outline-danger btn-lg px-4--%>" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                <%--  form="deleteRecipeForm 로  외부 form 연결--%>
+                
             </div>
         </div>
     </form>

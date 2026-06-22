@@ -2,7 +2,7 @@ package com.bggchef.dao;
 import java.sql.*;
 import java.util.*;
 
-import com.bggchef.dto.CategoryMDTO;
+import com.bggchef.dto.CategoryLDTO;
 import com.bggchef.dto.RecipeDTO;
 import com.bggchef.dto.RecipeIngredientDTO;
 import com.bggchef.dto.RecipeStepDTO;
@@ -10,6 +10,8 @@ import com.bggchef.util.DBUtil;
 
 public class RecipeDAO {
 
+	
+	//1    //레시피정보, 재료묶음 데이터, 스텝묶음 데이터를 db에 저장하고 커밋, 해당 레시피의 시퀀스 번호를 발급받고 컨트롤러에 리턴하는 메서드
     public long insertRecipe(RecipeDTO recipe, List<RecipeIngredientDTO> ingrList, List<RecipeStepDTO> stepList)
             throws SQLException {
         Connection conn = null;
@@ -20,7 +22,7 @@ public class RecipeDAO {
             long recipeId = nextLong(conn, "SELECT SEQ_RECIPE.NEXTVAL FROM DUAL");
             recipe.setRecipeId(recipeId);
 
-            insertRecipeOnly(conn, recipe);
+            insertRecipeOnly(conn, recipe); 
             insertIngredients(conn, recipeId, ingrList);
             insertSteps(conn, recipeId, stepList);
 
@@ -33,7 +35,9 @@ public class RecipeDAO {
             closeConnection(conn);
         }
     }
-
+    
+    
+//2  레시피 정보 수정 메서드  (추가수정필요)@@@@@
     public void updateRecipe(RecipeDTO recipe, List<RecipeIngredientDTO> ingrList, List<RecipeStepDTO> stepList)
             throws SQLException {
         Connection conn = null;
@@ -59,7 +63,7 @@ public class RecipeDAO {
             }
 
             deleteChildren(conn, recipe.getRecipeId());
-            insertIngredients(conn, recipe.getRecipeId(), ingrList);
+            insertIngredients(conn, recipe.getRecipeId(), ingrList); 
             insertSteps(conn, recipe.getRecipeId(), stepList);
 
             conn.commit();
@@ -71,6 +75,7 @@ public class RecipeDAO {
         }
     }
 
+    //3   // is_deleted 를 1로  수정해서 레시피를 삭제처리하는 메서드(레시피id, 유저id로 식별)
     public void deleteRecipe(long recipeId, String userId) throws SQLException {
         String sql = "UPDATE RECIPE SET is_deleted = 1 WHERE recipe_id = ? AND user_id = ? AND is_deleted = 0";
         Connection conn = null;
@@ -86,13 +91,15 @@ public class RecipeDAO {
         }
     }
 
+    
+    //4  레시피id로 작성유저정보,카테고리L 정보
     public RecipeDTO selectRecipeById(long recipeId) throws SQLException {
         String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
                    + "       r.servings, r.cook_time, r.difficulty, r.view_count, r.avg_rating, "
-                   + "       r.is_deleted, r.created_at, u.nickname, cm.name AS category_name "
+                   + "       r.is_deleted, r.created_at, u.nickname, cl.name AS category_name "
                    + "  FROM RECIPE r "
                    + "  JOIN USERS u ON r.user_id = u.user_id "
-                   + "  JOIN CATEGORY_M cm ON r.category_id = cm.categorym_id "
+                   + "  JOIN CATEGORY_L cl ON r.category_id = cl.categoryl_id "
                    + " WHERE r.recipe_id = ? AND r.is_deleted = 0";
 
         Connection conn = null;
@@ -104,8 +111,8 @@ public class RecipeDAO {
             pstmt.setLong(1, recipeId);
             rs = pstmt.executeQuery();
             if (rs.next()) {
-                RecipeDTO recipe = mapRecipe(rs);
-                recipe.setIngredients(selectIngredientsByRecipeId(conn, recipeId));
+                RecipeDTO recipe = mapRecipe(rs);// rs에 있는 select결과를 컬럼별로 레시피dto 각 필드에 저장하여 RecipeDTO recipe 에 저장
+                recipe.setIngredients(selectIngredientsByRecipeId(conn, recipeId)); // 
                 recipe.setSteps(selectStepsByRecipeId(conn, recipeId));
                 return recipe;
             }
@@ -115,6 +122,8 @@ public class RecipeDAO {
         }
     }
 
+    
+    //5
     public List<RecipeIngredientDTO> selectIngredientsByRecipeId(long recipeId) throws SQLException {
         Connection conn = null;
         try {
@@ -125,6 +134,8 @@ public class RecipeDAO {
         }
     }
 
+    
+    //6
     public List<RecipeStepDTO> selectStepsByRecipeId(long recipeId) throws SQLException {
         Connection conn = null;
         try {
@@ -134,12 +145,14 @@ public class RecipeDAO {
             closeConnection(conn);
         }
     }
-
-    public List<CategoryMDTO> selectCategoryList() throws SQLException {
-        String sql = "SELECT categorym_id, categoryl_id, name, type "
-                   + "  FROM CATEGORY_M "
-                   + " ORDER BY categorym_id";
-        List<CategoryMDTO> list = new ArrayList<>();
+    
+    
+//7
+    public List<CategoryLDTO> selectCategoryList() throws SQLException {
+        String sql = "SELECT categoryl_id, name, type "
+                   + "  FROM CATEGORY_L "
+                   + " ORDER BY categoryl_id";
+        List<CategoryLDTO> list = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -149,8 +162,7 @@ public class RecipeDAO {
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                CategoryMDTO category = new CategoryMDTO();
-                category.setCategorymId(rs.getInt("categorym_id"));
+                CategoryLDTO category = new CategoryLDTO();
                 category.setCategorylId(rs.getInt("categoryl_id"));
                 category.setName(rs.getString("name"));
                 category.setType(rs.getString("type"));
@@ -162,6 +174,8 @@ public class RecipeDAO {
         }
     }
 
+    
+    //8
     public void increaseViewCount(long recipeId) throws SQLException {
         String sql = "UPDATE RECIPE SET view_count = view_count + 1 WHERE recipe_id = ? AND is_deleted = 0";
         Connection conn = null;
@@ -176,6 +190,9 @@ public class RecipeDAO {
         }
     }
 
+    
+    
+    //9
     private void insertRecipeOnly(Connection conn, RecipeDTO recipe) throws SQLException {
         String sql = "INSERT INTO RECIPE "
                    + "(recipe_id, user_id, category_id, title, thumbnail, description, "
@@ -196,6 +213,8 @@ public class RecipeDAO {
         }
     }
 
+    
+   //10  (2번메서드 내부호출)
     private void insertIngredients(Connection conn, long recipeId, List<RecipeIngredientDTO> ingrList)
             throws SQLException {
         if (ingrList == null) return;
@@ -217,7 +236,10 @@ public class RecipeDAO {
             }
         }
     }
-
+    
+    
+    
+//11  (2번메서드 내부호출)
     private void insertSteps(Connection conn, long recipeId, List<RecipeStepDTO> stepList)
             throws SQLException {
         if (stepList == null) return;
@@ -241,6 +263,10 @@ public class RecipeDAO {
         }
     }
 
+    
+    
+    
+    //12
     private int findOrCreateIngredient(Connection conn, String name, String unit) throws SQLException {
         String selectSql = "SELECT ingredient_id, unit FROM INGREDIENT WHERE name = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
@@ -267,6 +293,8 @@ public class RecipeDAO {
         return ingredientId;
     }
 
+    
+    //13
     private void updateIngredientUnit(Connection conn, int ingredientId, String unit) throws SQLException {
         String sql = "UPDATE INGREDIENT SET unit = ? WHERE ingredient_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -276,6 +304,12 @@ public class RecipeDAO {
         }
     }
 
+    
+    
+    
+    
+    //14  //4번메서드 내부 호출(레시피 아이디로 레시피 재료테이블, 재료테이블의 정보를 조회>>모든 튜블의 정보를 컬럼별로 레시피재료DTO에 저장>>그걸 레시피재료DTO 리스트에 저장
+    //  >> 리스트를 리턴
     private List<RecipeIngredientDTO> selectIngredientsByRecipeId(Connection conn, long recipeId)
             throws SQLException {
         String sql = "SELECT ri.recipe_ingr_id, ri.ingredient_id, ri.recipe_id, ri.amount, "
@@ -304,6 +338,10 @@ public class RecipeDAO {
         return list;
     }
 
+    
+    
+    
+    //15
     private List<RecipeStepDTO> selectStepsByRecipeId(Connection conn, long recipeId)
             throws SQLException {
         String sql = "SELECT step_id, recipe_id, step_no, image_url, content "
@@ -329,6 +367,8 @@ public class RecipeDAO {
         return list;
     }
 
+    
+    //16  (2번메서드 내부호출)
     private void deleteChildren(Connection conn, long recipeId) throws SQLException {
         try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM RECIPE_INGREDIENTS WHERE recipe_id = ?")) {
             pstmt.setLong(1, recipeId);
@@ -340,6 +380,9 @@ public class RecipeDAO {
         }
     }
 
+    
+    
+    //17    (4번메서드 내부호출)  // 4번메서드 내부 쿼리문(select문)의 결과가 저장된 rs를 레시피DTO 각 필드에 저장
     private RecipeDTO mapRecipe(ResultSet rs) throws SQLException {
         RecipeDTO recipe = new RecipeDTO();
         recipe.setRecipeId(rs.getLong("recipe_id"));
@@ -360,6 +403,8 @@ public class RecipeDAO {
         return recipe;
     }
 
+    
+    //18
     private long nextLong(Connection conn, String sql) throws SQLException {
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -370,10 +415,17 @@ public class RecipeDAO {
         }
     }
 
+    
+    
+    //19
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
 
+    
+    
+    
+    //20
     private void rollback(Connection conn) {
         try {
             if (conn != null) conn.rollback();
@@ -382,6 +434,10 @@ public class RecipeDAO {
         }
     }
 
+    
+    
+    
+    //21
     private void closeConnection(Connection conn) {
         try {
             if (conn != null) conn.close();
@@ -426,6 +482,10 @@ public class RecipeDAO {
         }
     }
 
+    
+    
+    
+    //22
     public List<RecipeDTO> selectByUserId(String userId) throws SQLException {
         List<RecipeDTO> list = new ArrayList<>();
         String sql = "SELECT recipe_id, title, thumbnail, avg_rating, view_count, created_at " +

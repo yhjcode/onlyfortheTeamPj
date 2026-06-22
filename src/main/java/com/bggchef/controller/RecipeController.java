@@ -63,6 +63,13 @@ public class RecipeController extends HttpServlet {
             throw new ServletException(e);
         }
     }
+    
+    
+    
+    //////////////////
+    /// 
+    /// 
+    /// 
 
 
 
@@ -94,6 +101,10 @@ public class RecipeController extends HttpServlet {
 
 
 
+    
+    
+    
+    
 //1
     private void showWriteForm(HttpServletRequest req, HttpServletResponse res)
             throws SQLException, ServletException, IOException {
@@ -103,6 +114,9 @@ public class RecipeController extends HttpServlet {
         req.setAttribute("categoryList", recipeDAO.selectCategoryList()); // 카테고리 리스트를 불러와서 req에 저장
         forward(req, res, "/WEB-INF/views/recipe/write.jsp");  // req에 담긴 카테고리 리스트로  write.do.jsp화면을 조립해서 사용자 브라우저에 전달
     }
+    
+    
+ //2
 
 
  //2
@@ -125,6 +139,12 @@ public class RecipeController extends HttpServlet {
         req.setAttribute("categoryList", recipeDAO.selectCategoryList());
         forward(req, res, "/WEB-INF/views/recipe/edit.jsp");
     }
+    
+    
+    
+    
+    
+   //3
 
 
 
@@ -225,6 +245,15 @@ public class RecipeController extends HttpServlet {
         //발급받고 리턴
         res.sendRedirect(req.getContextPath() + "/recipe/view?recipe_id=" + recipeId); //레시피id에 해당하는 레시피상세페이지를 조립해서 브라우저에 응답
     }
+    
+    
+    
+    
+    
+    
+    
+    
+//6
 
 
 
@@ -291,10 +320,10 @@ public class RecipeController extends HttpServlet {
         recipe.setDifficulty(parseInt(req.getParameter("difficulty"), 0));
         return recipe; 
     }
-
-
-
-
+    
+    
+    
+    
    //9
     private List<RecipeIngredientDTO> buildIngredientList(HttpServletRequest req) {
         String[] names = req.getParameterValues("ingredient_name"); //재료이름을 names에 저장 // 배열값을 가져오는 메서드 참고
@@ -317,10 +346,10 @@ public class RecipeController extends HttpServlet {
         }
         return list;//  가장큰 사이즈의 배열size만큼 반복하며 DTO리스트를 만들고 리스트를 리턴
     }
-
-
-
-
+    
+    
+    
+    
 //10
     private List<RecipeStepDTO> buildStepList(HttpServletRequest req, String[] oldImageUrls) //req로 스텝,파일의 정보들을 가져옴
             throws IOException, ServletException {
@@ -369,9 +398,9 @@ public class RecipeController extends HttpServlet {
         part.write(realDir + File.separator + savedName);
         return uploadDir + "/" + savedName; // 웹용 디렉터리+랜덤문자열+확장자명의 url주소 생성
     }
-
-
-
+    
+    
+    
     //12
     private List<Part> findParts(Collection<Part> parts, String name) {
         List<Part> result = new ArrayList<>();
@@ -382,10 +411,10 @@ public class RecipeController extends HttpServlet {
         }
         return result;
     }
-
-
-
-
+    
+    
+    
+    
   //13
     private UserDTO requireLogin(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
@@ -397,9 +426,9 @@ public class RecipeController extends HttpServlet {
         res.sendRedirect(req.getContextPath() + "/user/login"); //없으면 로그인페이지로 응답 확정
         return null;
     }
-
-
-
+    
+    
+    
   //14
     private void forward(HttpServletRequest req, HttpServletResponse res, String contentPage)
             throws ServletException, IOException {
@@ -407,9 +436,9 @@ public class RecipeController extends HttpServlet {
         req.setAttribute("contentPage", contentPage);
         req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, res);
     }
-
-
-
+    
+    
+    
    //15
     private int parseInt(String value, int defaultValue) {
         try {
@@ -418,9 +447,9 @@ public class RecipeController extends HttpServlet {
             return defaultValue;
         }
     }
-
-
-
+    
+    
+    
 //16
     private long parseLong(String value, long defaultValue) {
         try {
@@ -430,33 +459,33 @@ public class RecipeController extends HttpServlet {
         }
     }
 
-
-
-
+    
+    
+    
     //17
     private int length(String[] values) {
         return values == null ? 0 : values.length;
     }
 
-
+    
     //18
     private String getAt(String[] values, int index) {
         return values != null && index >= 0 && index < values.length ? values[index] : null;
     }
 
-
+    
     //19
     private String trimToEmpty(String value) {
         return value == null ? "" : value.trim();
     }
 
-
+    
     //20
     private String trimToNull(String value) {
         return isBlank(value) ? null : value.trim();
     }
 
-
+    
     //21
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
