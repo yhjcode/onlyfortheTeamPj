@@ -159,7 +159,7 @@
 <div class="recipe-write-wrap">
     <h2 class="recipe-write-title">레시피 수정</h2>
 
-    <form id="recipeForm" action="${pageContext.request.contextPath}/recipe/edit" method="post" enctype="multipart/form-data"> <%-- 다양한 형태의 데이터를 보낼것이다 --%>
+    <form id="recipeForm" action="${pageContext.request.contextPath}/recipe/edit" method="post" enctype="multipart/form-data"> 
         <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
         <input type="hidden" name="thumbnail" value="${recipe.thumbnail}">
 
@@ -170,11 +170,11 @@
                     <div class="mb-4">
                         <label for="title" class="recipe-label">레시피 제목</label>
                         <input type="text" class="form-control" id="title" name="title" maxlength="200" value="${fn:escapeXml(recipe.title)}" required>
-                        <%-- name에 해당하고 기본값을 recipe.title값으로 하되 문자열 값으로만 가져오겟다.  --%>
+                        
                     </div>
                     <div class="mb-4">
                         <label for="description" class="recipe-label">레시피 소개</label>
-                        <textarea class="form-control" id="description" name="description" rows="5">${fn:escapeXml(recipe.description)}</textarea><%--여러줄의 텍스트/기본5줄 --%>
+                        <textarea class="form-control" id="description" name="description" rows="5">${fn:escapeXml(recipe.description)}</textarea>
                     </div>
                 </div>
                 <div class="col-lg-5">

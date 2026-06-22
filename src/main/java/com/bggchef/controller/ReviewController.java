@@ -1,7 +1,6 @@
 
 
 
-
 package com.bggchef.controller;
 
 import java.io.IOException;
@@ -14,79 +13,79 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.bggchef.dao.ReviewDAO;
 import com.bggchef.dto.ReviewDTO;
 import com.bggchef.dto.UserDTO;
 
 /**
- * 리뷰/대댓글 (REQ_REC_012)
+ * 리뷰/대댓글
  * URL: /review/list
  */
 @WebServlet("/review/list")
 public class ReviewController extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
+
     private ReviewDAO reviewDAO = new ReviewDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {                                                 
-        
-        String recipeIdParam = req.getParameter("recipe_id");                                  
-        if (recipeIdParam == null || recipeIdParam.isEmpty()) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recipe_id");    
+            throws ServletException, IOException {
+
+        String recipeIdParam = req.getParameter("recipe_id");
+
+        if (recipeIdParam == null || recipeIdParam.trim().isEmpty()) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recipe_id");
             return;
         }
-        
-        long recipeId = Long.parseLong(recipeIdParam);                                        
-        
+
+        long recipeId = Long.parseLong(recipeIdParam);
+
         try {
-            List<ReviewDTO> list = reviewDAO.selectByRecipeId(recipeId);                  
-            
-            res.setContentType("application/json; charset=UTF-8");                            
-            PrintWriter out = res.getWriter();                                                       
-            
-            StringBuilder json = new StringBuilder();                                             
-            json.append("[");                                                                           
-            
+            List<ReviewDTO> list = reviewDAO.selectByRecipeId(recipeId);
+
+            res.setContentType("application/json; charset=UTF-8");
+
+            PrintWriter out = res.getWriter();
+            StringBuilder json = new StringBuilder();
+
+            json.append("[");
+
             for (int i = 0; i < list.size(); i++) {
                 ReviewDTO dto = list.get(i);
-               
-                String safeContent = dto.getContent() != null ? dto.getContent()
-                                        .replace("\\", "\\\\")                                      
-                                        .replace("\"", "\\\"")
-                                        .replace("\n", "\\n")
-                                        .replace("\r", "") : "";
-                
-                String jsonItem = """
-                {
-                    "reviewId": %d,
-                    "userId": "%s",
-                    "nickname": "%s",
-                    "rating": %.1f,
-                    "content": "%s",
-                    "createdAt": "%s"                                                                   
-                }""".formatted(            
-                    dto.getReviewId(),
-                    dto.getUserId(),
-                    dto.getNickname(),
-                    dto.getRating(),
-                    safeContent,
-                    dto.getCreatedAt().toString()
-                );
-                
-                json.append(jsonItem);                                                               
-                
-                if (i < list.size() - 1) {                                                                    
+
+                if (i > 0) {
                     json.append(",");
                 }
+
+                String ratingJson =
+                        dto.getRating() == null
+                                ? "null"
+                                : String.format("%.1f", dto.getRating());
+
+                String parentReviewIdJson =
+                        dto.getParentReviewId() == null
+                                ? "null"
+                                : String.valueOf(dto.getParentReviewId());
+
+                json.append("{");
+                json.append("\"reviewId\":").append(dto.getReviewId()).append(",");
+                json.append("\"userId\":\"").append(escapeJson(dto.getUserId())).append("\",");
+                json.append("\"nickname\":\"").append(escapeJson(dto.getNickname())).append("\",");
+                json.append("\"rating\":").append(ratingJson).append(",");
+                json.append("\"parentReviewId\":").append(parentReviewIdJson).append(",");
+                json.append("\"content\":\"").append(escapeJson(dto.getContent())).append("\",");
+                json.append("\"createdAt\":\"").append(dto.getCreatedAt()).append("\"");
+                json.append("}");
             }
+
             json.append("]");
-            
+
             out.print(json.toString());
             out.flush();
-            out.close();                                                                                    
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
             res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error");
@@ -96,88 +95,343 @@ public class ReviewController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
+
         req.setCharacterEncoding("UTF-8");
         res.setContentType("text/plain; charset=UTF-8");
+
         PrintWriter out = res.getWriter();
-        
-        // 어떤 작업을 할지 action 파라미터로 구분 (기본값은 등록)
+
         String action = req.getParameter("action");
-        if (action == null) {
+
+        if (action == null || action.trim().isEmpty()) {
             action = "insert";
         }
-        
-        // 1. 로그인 유저 검증
-        var session = req.getSession();                                                          
-        Object loginUser = session.getAttribute("loginUser");                              
-        
-        String userId = null;                                                                     
-        if (loginUser != null) {
-            UserDTO userDto = (UserDTO) loginUser;
-            userId = userDto.getUserId(); 
+
+        HttpSession session = req.getSession();
+        Object loginUserObj = session.getAttribute("loginUser");
+
+        String userId = null;
+
+        if (loginUserObj != null) {
+            UserDTO loginUser = (UserDTO) loginUserObj;
+            userId = loginUser.getUserId();
         }
-        
-        if (userId == null || userId.isEmpty()) {
+
+        if (userId == null || userId.trim().isEmpty()) {
             out.print("login_required");
             return;
         }
 
         try {
-            // [기능 1] 댓글 등록 (action=insert) 
             if ("insert".equals(action)) {
-                String recipeIdParam = req.getParameter("recipe_id");                                
-                String ratingParam = req.getParameter("rating");
-                String content = req.getParameter("content");
-                
-                long recipeId = Long.parseLong(recipeIdParam);
-                double rating = Double.parseDouble(ratingParam);                                   
-                
-                ReviewDTO dto = new ReviewDTO();                                                     
-                dto.setUserId(userId);
-                dto.setRecipeId(recipeId);
-                dto.setRating(rating);
-                dto.setContent(content);
-                
-                int result = reviewDAO.insertReview(dto);                                               
-                
-                if (result > 0) out.print("success");
-                else out.print("fail_db");
-            } 
-            
-            // [기능 2] 댓글 수정 (action=update)
-            else if ("update".equals(action)) {
-                String reviewIdParam = req.getParameter("review_id");
-                String ratingParam = req.getParameter("rating");
-                String content = req.getParameter("content");
-                
-                long reviewId = Long.parseLong(reviewIdParam);
-                double rating = Double.parseDouble(ratingParam);
-                
-                int result = reviewDAO.updateReview(reviewId, content, rating);
-                
-                if (result > 0) out.print("success");
-                else out.print("fail_db");
-            } 
-            
-            // [기능 3] 댓글 삭제 (action=delete)
-            else if ("delete".equals(action)) {
-                String reviewIdParam = req.getParameter("review_id");
-                long reviewId = Long.parseLong(reviewIdParam);
-                
-                int result = reviewDAO.deleteReview(reviewId);
-                
-                if (result > 0) out.print("success");
-                else out.print("fail_db");
+                insertReview(req, out, userId);
+            } else if ("update".equals(action)) {
+                updateReview(req, out);
+            } else if ("delete".equals(action)) {
+                deleteReview(req, out);
+            } else {
+                out.print("unknown_action");
             }
-            
+
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
             out.print("error: " + e.getMessage());
         } finally {
             out.flush();
             out.close();
         }
     }
+
+    private void insertReview(HttpServletRequest req, PrintWriter out, String userId)
+            throws Exception {
+
+        String recipeIdParam = req.getParameter("recipe_id");
+        String ratingParam = req.getParameter("rating");
+        String parentReviewIdParam = req.getParameter("parentReviewId");
+        String content = req.getParameter("content");
+
+        if (recipeIdParam == null || recipeIdParam.trim().isEmpty()
+                || content == null || content.trim().isEmpty()) {
+            out.print("fail");
+            return;
+        }
+
+        long recipeId = Long.parseLong(recipeIdParam);
+
+        ReviewDTO dto = new ReviewDTO();
+        dto.setUserId(userId);
+        dto.setRecipeId(recipeId);
+        dto.setContent(content);
+
+        // 대댓글이면 별점 없음
+        if (parentReviewIdParam != null && !parentReviewIdParam.trim().isEmpty()) {
+            dto.setParentReviewId(Long.parseLong(parentReviewIdParam));
+            dto.setRating(null);
+        }
+        // 일반 댓글이면 별점 있음
+        else {
+            dto.setParentReviewId(null);
+
+            if (ratingParam == null || ratingParam.trim().isEmpty()) {
+                dto.setRating(5.0);
+            } else {
+                dto.setRating(Double.parseDouble(ratingParam));
+            }
+        }
+
+        int result = reviewDAO.insertReview(dto);
+
+        if (result > 0) {
+            out.print("success");
+        } else {
+            out.print("fail_db");
+        }
+    }
+
+    private void updateReview(HttpServletRequest req, PrintWriter out)
+            throws Exception {
+
+        String reviewIdParam = req.getParameter("review_id");
+        String ratingParam = req.getParameter("rating");
+        String content = req.getParameter("content");
+
+        if (reviewIdParam == null || reviewIdParam.trim().isEmpty()
+                || content == null || content.trim().isEmpty()) {
+            out.print("fail");
+            return;
+        }
+
+        long reviewId = Long.parseLong(reviewIdParam);
+
+        double rating = 5.0;
+
+        if (ratingParam != null && !ratingParam.trim().isEmpty()) {
+            rating = Double.parseDouble(ratingParam);
+        }
+
+        int result = reviewDAO.updateReview(reviewId, content, rating);
+
+        if (result > 0) {
+            out.print("success");
+        } else {
+            out.print("fail_db");
+        }
+    }
+
+    private void deleteReview(HttpServletRequest req, PrintWriter out)
+            throws Exception {
+
+        String reviewIdParam = req.getParameter("review_id");
+
+        if (reviewIdParam == null || reviewIdParam.trim().isEmpty()) {
+            out.print("fail");
+            return;
+        }
+
+        long reviewId = Long.parseLong(reviewIdParam);
+
+        int result = reviewDAO.deleteReview(reviewId);
+
+        if (result > 0) {
+            out.print("success");
+        } else {
+            out.print("fail_db");
+        }
+    }
+
+    private String escapeJson(String str) {
+        if (str == null) {
+            return "";
+        }
+
+        return str.replace("\\", "\\\\")
+                  .replace("\"", "\\\"")
+                  .replace("\r", "")
+                  .replace("\n", "\\n");
+    }
 }
+
+
+
+//
+//
+//
+//package com.bggchef.controller;
+//
+//import java.io.IOException;
+//import java.io.PrintWriter;
+//import java.sql.SQLException;
+//import java.util.List;
+//
+//import javax.servlet.ServletException;
+//import javax.servlet.annotation.WebServlet;
+//import javax.servlet.http.HttpServlet;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
+//
+//import com.bggchef.dao.ReviewDAO;
+//import com.bggchef.dto.ReviewDTO;
+//import com.bggchef.dto.UserDTO;
+//
+///**
+// * 리뷰/대댓글 (REQ_REC_012)
+// * URL: /review/list
+// */
+//@WebServlet("/review/list")
+//public class ReviewController extends HttpServlet {
+//    private static final long serialVersionUID = 1L;
+//    private ReviewDAO reviewDAO = new ReviewDAO();
+//
+//    @Override
+//    protected void doGet(HttpServletRequest req, HttpServletResponse res)
+//            throws ServletException, IOException {                                                 
+//        
+//        String recipeIdParam = req.getParameter("recipe_id");                                  
+//        if (recipeIdParam == null || recipeIdParam.isEmpty()) {
+//            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recipe_id");    
+//            return;
+//        }
+//        
+//        long recipeId = Long.parseLong(recipeIdParam);                                        
+//        
+//        try {
+//            List<ReviewDTO> list = reviewDAO.selectByRecipeId(recipeId);                  
+//            
+//            res.setContentType("application/json; charset=UTF-8");                            
+//            PrintWriter out = res.getWriter();                                                       
+//            
+//            StringBuilder json = new StringBuilder();                                             
+//            json.append("[");                                                                           
+//            
+//            for (int i = 0; i < list.size(); i++) {
+//                ReviewDTO dto = list.get(i);
+//               
+//                String safeContent = dto.getContent() != null ? dto.getContent()
+//                                        .replace("\\", "\\\\")                                      
+//                                        .replace("\"", "\\\"")
+//                                        .replace("\n", "\\n")
+//                                        .replace("\r", "") : "";
+//                
+//                String jsonItem = """
+//                {
+//                    "reviewId": %d,
+//                    "userId": "%s",
+//                    "nickname": "%s",
+//                    "rating": %.1f,
+//                    "content": "%s",
+//                    "createdAt": "%s"                                                                   
+//                }""".formatted(            
+//                    dto.getReviewId(),
+//                    dto.getUserId(),
+//                    dto.getNickname(),
+//                    dto.getRating(),
+//                    safeContent,
+//                    dto.getCreatedAt().toString()
+//                );
+//                
+//                json.append(jsonItem);                                                               
+//                
+//                if (i < list.size() - 1) {                                                                    
+//                    json.append(",");
+//                }
+//            }
+//            json.append("]");
+//            
+//            out.print(json.toString());
+//            out.flush();
+//            out.close();                                                                                    
+//            
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error");
+//        }
+//    }
+//
+//    @Override
+//    protected void doPost(HttpServletRequest req, HttpServletResponse res)
+//            throws ServletException, IOException {
+//        req.setCharacterEncoding("UTF-8");
+//        res.setContentType("text/plain; charset=UTF-8");
+//        PrintWriter out = res.getWriter();
+//        
+//        // 어떤 작업을 할지 action 파라미터로 구분 (기본값은 등록)
+//        String action = req.getParameter("action");
+//        if (action == null) {
+//            action = "insert";
+//        }
+//        
+//        // 1. 로그인 유저 검증
+//        var session = req.getSession();                                                          
+//        Object loginUser = session.getAttribute("loginUser");                              
+//        
+//        String userId = null;                                                                     
+//        if (loginUser != null) {
+//            UserDTO userDto = (UserDTO) loginUser;
+//            userId = userDto.getUserId(); 
+//        }
+//        
+//        if (userId == null || userId.isEmpty()) {
+//            out.print("login_required");
+//            return;
+//        }
+//
+//        try {
+//            // [기능 1] 댓글 등록 (action=insert) 
+//            if ("insert".equals(action)) {
+//                String recipeIdParam = req.getParameter("recipe_id");                                
+//                String ratingParam = req.getParameter("rating");
+//                String content = req.getParameter("content");
+//                
+//                long recipeId = Long.parseLong(recipeIdParam);
+//                double rating = Double.parseDouble(ratingParam);                                   
+//                
+//                ReviewDTO dto = new ReviewDTO();                                                     
+//                dto.setUserId(userId);
+//                dto.setRecipeId(recipeId);
+//                dto.setRating(rating);
+//                dto.setContent(content);
+//                
+//                int result = reviewDAO.insertReview(dto);                                               
+//                
+//                if (result > 0) out.print("success");
+//                else out.print("fail_db");
+//            } 
+//            
+//            // [기능 2] 댓글 수정 (action=update)
+//            else if ("update".equals(action)) {
+//                String reviewIdParam = req.getParameter("review_id");
+//                String ratingParam = req.getParameter("rating");
+//                String content = req.getParameter("content");
+//                
+//                long reviewId = Long.parseLong(reviewIdParam);
+//                double rating = Double.parseDouble(ratingParam);
+//                
+//                int result = reviewDAO.updateReview(reviewId, content, rating);
+//                
+//                if (result > 0) out.print("success");
+//                else out.print("fail_db");
+//            } 
+//            
+//            // [기능 3] 댓글 삭제 (action=delete)
+//            else if ("delete".equals(action)) {
+//                String reviewIdParam = req.getParameter("review_id");
+//                long reviewId = Long.parseLong(reviewIdParam);
+//                
+//                int result = reviewDAO.deleteReview(reviewId);
+//                
+//                if (result > 0) out.print("success");
+//                else out.print("fail_db");
+//            }
+//            
+//        } catch (Exception e) {
+//            e.printStackTrace(); 
+//            out.print("error: " + e.getMessage());
+//        } finally {
+//            out.flush();
+//            out.close();
+//        }
+//    }
+//}
 
 
 //package com.bggchef.controller;
