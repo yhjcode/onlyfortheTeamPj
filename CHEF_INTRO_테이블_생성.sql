@@ -1,9 +1,0 @@
-
-CREATE TABLE CHEF_INTRO (
-    user_id     VARCHAR2(50)    NOT NULL,
-    intro       VARCHAR2(1000),
-    updated_at  DATE            DEFAULT SYSDATE NOT NULL,
-    CONSTRAINT PK_CHEF_INTRO    PRIMARY KEY (user_id),
-    CONSTRAINT FK_CHEF_INTRO_USER FOREIGN KEY (user_id)
-        REFERENCES USERS(user_id)
-);
