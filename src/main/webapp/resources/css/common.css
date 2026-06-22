@@ -44,6 +44,7 @@ a:hover { text-decoration: none; }
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
 }
 .bggchef-logo:hover { color: var(--bggchef-primary-hover) !important; }
 .bggchef-logo .logo-icon { font-size: 1.9rem; }

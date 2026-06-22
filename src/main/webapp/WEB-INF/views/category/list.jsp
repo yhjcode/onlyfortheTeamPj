@@ -42,7 +42,7 @@
 <input type="button" value="${cbutton.categoryL}" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${cbutton.categoryId}'"
  class="${currentcategory eq cbutton.categoryId ? 'active' : ''}">
 </c:forEach>								
-<input type="button" value="전체" 
+<input type="button" value="すべて"
            onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=0&ratingFilter=${currentRatingFilter}'"
            class="${currentcategory == '0' || empty currentcategory ? 'active' : ''}">
 </div>										<%-- 카테고리 버튼 끝 --%>
@@ -71,22 +71,22 @@
  <button type="button"
  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=10'" 
  class="${currentRatingFilter == '10' ? 'active' : ''}">
- <i class="bi bi-star-fill" style="color:#FFC107"></i> 0.5 이하</button>
- 
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> 0.5以下</button>
+
  <button type="button"
- onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=0'" 
+ onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=0'"
  class="${currentRatingFilter == '0' || empty currentRatingFilter ? 'active' : ''}">
- <i class="bi bi-star-fill" style="color:#FFC107"></i> 전체</button>
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> すべて</button>
 </div>
 </section>									<%-- 평점 버튼 섹션 끝 --%>
 <hr>
 <section>									<%-- 레시피 리스트 섹션 --%>
-<h2 class="mb-4">레시피 목록</h2>
+<h2 class="mb-4">レシピ一覧</h2>
 
 <div class="categoryrecipe" align="right">
-	<input type="button" value="최신순" class="${empty param.sort || param.sort == 'desc' ? 'active' : ''}"
+	<input type="button" value="最新順" class="${empty param.sort || param.sort == 'desc' ? 'active' : ''}"
 	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=desc&categoryId=${currentcategory}'">
-	<input type="button" value="조회수순" class="${param.sort == 'view' ? 'active' : ''}"
+	<input type="button" value="閲覧数順" class="${param.sort == 'view' ? 'active' : ''}"
 	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=view&categoryId=${currentcategory}'">
 <%--	<input type="button" value="평점순" class="${param.sort == 'avg' ? 'active' : ''}"
 	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=avg&categoryId=${currentcategory}'"> --%>
@@ -129,7 +129,7 @@
             
             <c:if test="${empty descRe}">
                 <div class="col-12 text-center py-5">
-                    <p class="text-muted">등록된 레시피가 없습니다.</p>
+                    <p class="text-muted">レシピがありません。</p>
                 </div>
             </c:if>
     
@@ -139,8 +139,8 @@
 <section>
 <div class="pagination-container" style="text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 5px; align-items: center;">
     
-    <c:if test="${paging.startPage > 1}">  
-        <input type="button" value="이전" class="category-chip"
+    <c:if test="${paging.startPage > 1}">
+        <input type="button" value="前へ" class="category-chip"
                onclick="location.href='?page=${paging.startPage - 1}&sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${currentRatingFilter}'">
     </c:if>
 
@@ -159,8 +159,8 @@
         </c:choose>
     </c:forEach>
 
-    <c:if test="${paging.endPage < paging.totalPage}">  
-        <input type="button" value="다음" class="category-chip"
+    <c:if test="${paging.endPage < paging.totalPage}">
+        <input type="button" value="次へ" class="category-chip"
                onclick="location.href='?page=${paging.endPage + 1}&sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${currentRatingFilter}'">
     </c:if>
 </div>

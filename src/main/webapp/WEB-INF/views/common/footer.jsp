@@ -6,8 +6,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start">
-                    <h5 style="color: white; font-weight: 700;">🍳 방구석셰프들</h5>
-                    <small>우리집만의 레시피를 공유하는 동적 웹사이트</small>
+                    <h5 style="color: white; font-weight: 700;">🍳 おうちシェフ</h5>
+                    <small>おうちのレシピをシェアするWebサイト</small>
                 </div>
                 <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
                     <small>

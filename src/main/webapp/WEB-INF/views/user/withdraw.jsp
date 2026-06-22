@@ -23,16 +23,16 @@
 <div class="bgg-card">
     <div class="bgg-logo-area">
         <span style="font-size:2rem;">⚠️</span>
-        <div style="font-size:20px;font-weight:500;margin-top:6px;">회원탈퇴</div>
-        <div style="font-size:13px;color:#888;margin-top:4px;"><%= loginUser.getNickname() %>님, 정말 탈퇴하시겠어요?</div>
+        <div style="font-size:20px;font-weight:500;margin-top:6px;">退会</div>
+        <div style="font-size:13px;color:#888;margin-top:4px;"><%= loginUser.getNickname() %>さん、本当に退会しますか？</div>
     </div>
 
     <div class="bgg-warn-box">
-        <strong>탈퇴 전 꼭 확인하세요</strong>
+        <strong>退会前にご確認ください</strong>
         <ul>
-            <li>탈퇴 시 모든 개인정보가 삭제됩니다.</li>
-            <li>작성한 레시피와 댓글은 그대로 유지됩니다.</li>
-            <li>탈퇴 후 동일 아이디로 재가입이 불가합니다.</li>
+            <li>退会すると、すべての個人情報が削除されます。</li>
+            <li>投稿したレシピとコメントはそのまま残ります。</li>
+            <li>退会後、同じIDでの再登録はできません。</li>
         </ul>
     </div>
 
@@ -42,15 +42,15 @@
 
     <form action="${pageContext.request.contextPath}/user/withdraw" method="post">
         <div class="mb-3">
-            <label class="bgg-label">비밀번호 확인</label>
-            <input type="password" name="password" class="bgg-input" placeholder="현재 비밀번호를 입력하세요" required>
+            <label class="bgg-label">パスワード確認</label>
+            <input type="password" name="password" class="bgg-input" placeholder="現在のパスワードを入力してください" required>
         </div>
         <button type="submit" class="bgg-btn-danger"
-                onclick="return confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')">
-            탈퇴하기
+                onclick="return confirm('本当に退会しますか？この操作は取り消せません。')">
+            退会する
         </button>
         <a href="${pageContext.request.contextPath}/user/mypage">
-            <button type="button" class="bgg-btn-cancel">취소</button>
+            <button type="button" class="bgg-btn-cancel">キャンセル</button>
         </a>
     </form>
 </div>

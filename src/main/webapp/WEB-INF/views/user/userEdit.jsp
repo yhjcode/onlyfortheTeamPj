@@ -23,7 +23,7 @@
 <div class="bgg-card">
     <div class="bgg-logo-area">
         <span style="font-size:2rem;">🍳</span>
-        <div style="font-size:20px;font-weight:500;margin-top:6px;">회원정보 수정</div>
+        <div style="font-size:20px;font-weight:500;margin-top:6px;">会員情報の編集</div>
     </div>
 
     <c:if test="${not empty errorMsg}">
@@ -32,38 +32,38 @@
 
     <form action="${pageContext.request.contextPath}/user/edit" method="post" enctype="multipart/form-data">
         <div class="mb-3">
-            <label class="bgg-label">아이디 (변경 불가)</label>
+            <label class="bgg-label">ユーザーID（変更不可）</label>
             <input type="text" class="bgg-input" value="<%= loginUser.getUserId() %>" disabled>
         </div>
         <div class="bgg-row mb-3">
             <div>
-                <label class="bgg-label">닉네임</label>
+                <label class="bgg-label">ニックネーム</label>
                 <input type="text" name="nickname" class="bgg-input" value="<%= loginUser.getNickname() %>" required>
             </div>
             <div>
-                <label class="bgg-label">연락처</label>
+                <label class="bgg-label">電話番号</label>
                 <input type="tel" name="phone" class="bgg-input" value="<%= loginUser.getPhone() != null ? loginUser.getPhone() : "" %>">
             </div>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">이메일</label>
+            <label class="bgg-label">メール</label>
             <input type="email" name="email" class="bgg-input" value="<%= loginUser.getEmail() %>" required>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">생년월일</label>
+            <label class="bgg-label">生年月日</label>
             <input type="date" name="birthday" class="bgg-input" value="<%= loginUser.getBirthday() != null ? loginUser.getBirthday().toString() : "" %>">
         </div>
         <div class="mb-3">
-            <label class="bgg-label">프로필 사진</label>
+            <label class="bgg-label">プロフィール写真</label>
             <input type="file" name="profileImg" class="bgg-input" accept="image/*" style="padding:7px 12px;">
         </div>
-        <button type="submit" class="bgg-btn">수정 완료</button>
+        <button type="submit" class="bgg-btn">変更を保存</button>
     </form>
 
     <div class="bgg-danger-zone">
-        <p>더 이상 방구석셰프들을 이용하지 않으시나요?</p>
+        <p>おうちシェフのご利用を終了しますか？</p>
         <a href="${pageContext.request.contextPath}/user/withdraw">
-            <button type="button" class="bgg-withdraw-btn">회원탈퇴</button>
+            <button type="button" class="bgg-withdraw-btn">退会する</button>
         </a>
     </div>
 </div>

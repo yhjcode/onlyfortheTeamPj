@@ -19,8 +19,8 @@
 <div class="bgg-card">
     <div class="bgg-logo-area">
         <span class="bgg-logo-icon">🍳</span>
-        <div class="bgg-logo-title">방구석셰프들</div>
-        <div class="bgg-logo-sub">우리집만의 레시피 공유</div>
+        <div class="bgg-logo-title">おうちシェフ</div>
+        <div class="bgg-logo-sub">おうちのレシピをシェア</div>
     </div>
 
     <c:if test="${not empty errorMsg}">
@@ -29,17 +29,17 @@
 
     <form action="${pageContext.request.contextPath}/user/login" method="post">
         <div class="mb-3">
-            <label class="bgg-label">아이디</label>
-            <input type="text" name="userId" class="bgg-input" placeholder="아이디를 입력하세요" value="${param.userId}" required>
+            <label class="bgg-label">ユーザーID</label>
+            <input type="text" name="userId" class="bgg-input" placeholder="ユーザーIDを入力してください" value="${param.userId}" required>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">비밀번호</label>
-            <input type="password" name="password" class="bgg-input" placeholder="비밀번호를 입력하세요" required>
+            <label class="bgg-label">パスワード</label>
+            <input type="password" name="password" class="bgg-input" placeholder="パスワードを入力してください" required>
         </div>
-        <button type="submit" class="bgg-btn">로그인</button>
+        <button type="submit" class="bgg-btn">ログイン</button>
     </form>
 
     <div class="bgg-links">
-        <a href="${pageContext.request.contextPath}/user/join">회원가입</a>
+        <a href="${pageContext.request.contextPath}/user/join">会員登録</a>
     </div>
 </div>

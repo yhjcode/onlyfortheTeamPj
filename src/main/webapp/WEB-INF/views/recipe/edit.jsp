@@ -13,21 +13,10 @@
         margin-bottom: 18px;
     }
     .recipe-form-section h3 {
-    
-    
-    
-    
-      color: var(--bggchef-primary);
+        color: var(--bggchef-primary);
         font-size: 1.25rem;
         font-weight: 800;
         margin-bottom: 24px;
-    
-    
-    
-        <%--color: #24a043;
-        font-size: 1.25rem;
-        font-weight: 800;
-        margin-bottom: 24px;--%>
     }
     .recipe-label { font-weight: 700; margin-bottom: 8px; }
     .help-text { color: #8b95a1; font-size: 0.86rem; }
@@ -110,31 +99,15 @@
         font-weight: 800;
         line-height: 1;
     }
-    .add-soft-btn {      
-    
-    
-        border: 1px solid var(--bggchef-primary);  
-        color: var(--bggchef-primary); 
+    .add-soft-btn {
+        border: 1px solid var(--bggchef-primary);
+        color: var(--bggchef-primary);
         background: #fff;
         border-radius: 28px;
         padding: 12px 48px;
         font-weight: 800;
-    
-    
-    
-                                           
-       <%-- border: 1px solid #2fb344;
-        color: #2fb344;
-        background: #fff;
-        border-radius: 28px;
-        padding: 12px 48px;
-        font-weight: 800;            제료묶음추가 버튼 색상변경@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@--%>
-    } 
-    
-    .add-soft-btn:hover {background: var(--bggchef-primary-light);
-        color: var(--bggchef-primary-hover);}                        <%--{ background: #f0fff4; color: #22963a; }--%>
-    
-    
+    }
+    .add-soft-btn:hover { background: var(--bggchef-primary-light); color: var(--bggchef-primary-hover); }
     .step-content { min-height: 160px; resize: vertical; }
     .step-file-row {
         display: grid;
@@ -157,94 +130,90 @@
 </style>
 
 <div class="recipe-write-wrap">
-    <h2 class="recipe-write-title">레시피 수정</h2>
+    <h2 class="recipe-write-title">レシピを編集する</h2>
 
-    <form id="recipeForm" action="${pageContext.request.contextPath}/recipe/edit" method="post" enctype="multipart/form-data"> 
+    <form id="recipeForm" action="${pageContext.request.contextPath}/recipe/edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
         <input type="hidden" name="thumbnail" value="${recipe.thumbnail}">
 
         <section class="recipe-form-section">
-            <h3>기본정보</h3>
+            <h3>基本情報</h3>
             <div class="row g-4">
                 <div class="col-lg-7">
                     <div class="mb-4">
-                        <label for="title" class="recipe-label">레시피 제목</label>
+                        <label for="title" class="recipe-label">レシピタイトル</label>
                         <input type="text" class="form-control" id="title" name="title" maxlength="200" value="${fn:escapeXml(recipe.title)}" required>
-                        
                     </div>
                     <div class="mb-4">
-                        <label for="description" class="recipe-label">레시피 소개</label>
+                        <label for="description" class="recipe-label">レシピ紹介</label>
                         <textarea class="form-control" id="description" name="description" rows="5">${fn:escapeXml(recipe.description)}</textarea>
                     </div>
                 </div>
                 <div class="col-lg-5">
-                    <label for="thumbnail_file" class="recipe-label">대표 이미지</label>
+                    <label for="thumbnail_file" class="recipe-label">メイン画像</label>
                     <label class="photo-box" for="thumbnail_file">
-                        <span class="photo-badge"><i class="bi bi-camera"></i> 대표사진</span>
+                        <span class="photo-badge"><i class="bi bi-camera"></i> メイン写真</span>
                         <c:choose>
                             <c:when test="${not empty recipe.thumbnail}">
-                                <img id="thumbnailPreview" class="photo-preview is-visible" src="${pageContext.request.contextPath}${recipe.thumbnail}" alt="대표 이미지 미리보기">
-                               
+                                <img id="thumbnailPreview" class="photo-preview is-visible" src="${pageContext.request.contextPath}${recipe.thumbnail}" alt="メイン画像プレビュー">
                             </c:when>
                             <c:otherwise>
                                 <span class="photo-plus">+</span>
-                                <img id="thumbnailPreview" class="photo-preview" alt="대표 이미지 미리보기">
+                                <img id="thumbnailPreview" class="photo-preview" alt="メイン画像プレビュー">
                             </c:otherwise>
                         </c:choose>
                     </label>
                     <input type="file" class="form-control mt-2" id="thumbnail_file" name="thumbnail_file" accept="image/*">
-                    <div class="help-text mt-1">새 파일을 선택하면 기존 대표 이미지가 교체됩니다.</div>
+                    <div class="help-text mt-1">新しいファイルを選択すると、既存のメイン画像が置き換えられます。</div>
                 </div>
             </div>
 
             <div class="mt-4">
-                <label class="recipe-label d-block">카테고리 / 요리정보</label>
+                <label class="recipe-label d-block">カテゴリ / 料理情報</label>
                 <div class="category-grid">
-                
-                
                     <div>
-                        <label for="categoryLId" class="recipe-label small">카테고리</label>
+                        <label for="categoryLId" class="recipe-label small">カテゴリ</label>
                         <select class="form-select" id="categoryLId" name="categoryLId" required>
-                            <option value="">선택</option>
+                            <option value="">選択</option>
                             <c:forEach var="category" items="${categoryList}">
                                 <option value="${category.categorylId}" ${recipe.categoryId == category.categorylId ? 'selected' : ''}><c:out value="${category.name}" /></option>
                             </c:forEach>
                             <c:if test="${empty categoryList}">
-                                <option value="${recipe.categoryId}" selected><c:out value="${empty recipe.categoryName ? '기존 카테고리' : recipe.categoryName}" /></option>
+                                <option value="${recipe.categoryId}" selected><c:out value="${empty recipe.categoryName ? '既存カテゴリ' : recipe.categoryName}" /></option>
                             </c:if>
                         </select>
                     </div>
                     <div>
-                        <label for="servings" class="recipe-label small">인원</label>
+                        <label for="servings" class="recipe-label small">人数</label>
                         <select class="form-select" id="servings" name="servings" required>
-                            <option value="">선택</option>
-                            <option value="1" ${recipe.servings == 1 ? 'selected' : ''}>1인분</option>
-                            <option value="2" ${recipe.servings == 2 ? 'selected' : ''}>2인분</option>
-                            <option value="3" ${recipe.servings == 3 ? 'selected' : ''}>3인분</option>
-                            <option value="4" ${recipe.servings == 4 ? 'selected' : ''}>4인분</option>
-                            <option value="5" ${recipe.servings == 5 ? 'selected' : ''}>5인분</option>
-                            <option value="6" ${recipe.servings >= 6 ? 'selected' : ''}>6인분 이상</option>
+                            <option value="">選択</option>
+                            <option value="1" ${recipe.servings == 1 ? 'selected' : ''}>1人前</option>
+                            <option value="2" ${recipe.servings == 2 ? 'selected' : ''}>2人前</option>
+                            <option value="3" ${recipe.servings == 3 ? 'selected' : ''}>3人前</option>
+                            <option value="4" ${recipe.servings == 4 ? 'selected' : ''}>4人前</option>
+                            <option value="5" ${recipe.servings == 5 ? 'selected' : ''}>5人前</option>
+                            <option value="6" ${recipe.servings >= 6 ? 'selected' : ''}>6人前以上</option>
                         </select>
                     </div>
                     <div>
-                        <label for="cook_time" class="recipe-label small">요리시간</label>
+                        <label for="cook_time" class="recipe-label small">調理時間</label>
                         <select class="form-select" id="cook_time" name="cook_time" required>
-                            <option value="">선택</option>
-                            <option value="10" ${recipe.cookTime == 10 ? 'selected' : ''}>10분 이내</option>
-                            <option value="20" ${recipe.cookTime == 20 ? 'selected' : ''}>20분 이내</option>
-                            <option value="30" ${recipe.cookTime == 30 ? 'selected' : ''}>30분 이내</option>
-                            <option value="60" ${recipe.cookTime == 60 ? 'selected' : ''}>60분 이내</option>
-                            <option value="90" ${recipe.cookTime == 90 ? 'selected' : ''}>90분 이내</option>
-                            <option value="120" ${recipe.cookTime >= 120 ? 'selected' : ''}>2시간 이상</option>
+                            <option value="">選択</option>
+                            <option value="10" ${recipe.cookTime == 10 ? 'selected' : ''}>10分以内</option>
+                            <option value="20" ${recipe.cookTime == 20 ? 'selected' : ''}>20分以内</option>
+                            <option value="30" ${recipe.cookTime == 30 ? 'selected' : ''}>30分以内</option>
+                            <option value="60" ${recipe.cookTime == 60 ? 'selected' : ''}>60分以内</option>
+                            <option value="90" ${recipe.cookTime == 90 ? 'selected' : ''}>90分以内</option>
+                            <option value="120" ${recipe.cookTime >= 120 ? 'selected' : ''}>2時間以上</option>
                         </select>
                     </div>
                     <div>
-                        <label for="difficulty" class="recipe-label small">난이도</label>
+                        <label for="difficulty" class="recipe-label small">難易度</label>
                         <select class="form-select" id="difficulty" name="difficulty" required>
-                            <option value="">선택</option>
-                            <option value="1" ${recipe.difficulty == 1 ? 'selected' : ''}>쉬움</option>
-                            <option value="2" ${recipe.difficulty == 2 ? 'selected' : ''}>보통</option>
-                            <option value="3" ${recipe.difficulty == 3 ? 'selected' : ''}>어려움</option>
+                            <option value="">選択</option>
+                            <option value="1" ${recipe.difficulty == 1 ? 'selected' : ''}>簡単</option>
+                            <option value="2" ${recipe.difficulty == 2 ? 'selected' : ''}>普通</option>
+                            <option value="3" ${recipe.difficulty == 3 ? 'selected' : ''}>難しい</option>
                         </select>
                     </div>
                 </div>
@@ -252,53 +221,53 @@
         </section>
 
         <section class="recipe-form-section">
-            <h3>재료정보</h3>
+            <h3>食材情報</h3>
             <div id="ingredientGroups">
                 <div class="ingredient-group" data-server-group="true">
                     <div class="ingredient-group-head">
-                        <strong class="ingredient-group-title">재료 묶음 1</strong>
-                        <button type="button" class="remove-btn" title="재료 묶음 삭제">-</button>
+                        <strong class="ingredient-group-title">食材グループ 1</strong>
+                        <button type="button" class="remove-btn" title="食材グループを削除">-</button>
                     </div>
                     <div class="ingredient-body">
                         <c:forEach var="ingredient" items="${ingredients}">
                             <div class="ingredient-row">
-                                <input type="text" name="ingredient_name" class="form-control" maxlength="100" value="${fn:escapeXml(ingredient.name)}" placeholder="예) 양배추" required>
-                                <input type="text" name="ingredient_amount" class="form-control" maxlength="50" value="${fn:escapeXml(ingredient.amount)}" placeholder="예) 200g, 2개" required>
-                                <button type="button" class="remove-btn" title="재료 삭제">-</button>
+                                <input type="text" name="ingredient_name" class="form-control" maxlength="100" value="${fn:escapeXml(ingredient.name)}" placeholder="例）キャベツ" required>
+                                <input type="text" name="ingredient_amount" class="form-control" maxlength="50" value="${fn:escapeXml(ingredient.amount)}" placeholder="例）200g、2個" required>
+                                <button type="button" class="remove-btn" title="食材を削除">-</button>
                             </div>
                         </c:forEach>
                     </div>
                     <div class="text-center mt-3">
-                        <button type="button" class="btn btn-outline-danger btn-sm add-ingredient-row-btn">+ 재료 추가하기</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm add-ingredient-row-btn">+ 食材を追加</button>
                     </div>
                 </div>
             </div>
             <div class="text-center mt-4">
                 <button type="button" class="add-soft-btn" id="addIngredientGroupBtn">
-                    <i class="bi bi-layers"></i> 재료 묶음 추가
+                    <i class="bi bi-layers"></i> 食材グループを追加
                 </button>
             </div>
         </section>
 
         <section class="recipe-form-section">
-            <h3>요리순서</h3>
+            <h3>調理手順</h3>
             <div class="notice-box">
-                요리의 맛이 좌우될 수 있는 중요한 부분은 빠짐없이 적어주세요.
-                <div class="help-text mt-1">예) 10분간 익혀주세요. -> 10분간 약한불로 익혀주세요.</div>
+                味を左右する重要なポイントは漏れなく書きましょう。
+                <div class="help-text mt-1">例）10分間加熱してください。→ 10分間弱火で加熱してください。</div>
             </div>
             <div id="stepList">
                 <c:forEach var="step" items="${steps}">
                     <div class="step-item" data-server-step="true">
                         <div class="step-head">
                             <strong class="step-title">Step${step.stepNo}</strong>
-                            <button type="button" class="remove-btn" title="순서 삭제">-</button>
+                            <button type="button" class="remove-btn" title="手順を削除">-</button>
                         </div>
                         <input type="hidden" name="step_image_url" value="${step.imageUrl}">
                         <textarea name="step_content" class="form-control step-content" required>${fn:escapeXml(step.content)}</textarea>
                         <div class="step-file-row">
                             <input type="file" name="step_file" class="form-control" accept="image/*">
                             <c:if test="${not empty step.imageUrl}">
-                                <div class="help-text">기존 이미지: ${step.imageUrl}</div>
+                                <div class="help-text">既存画像: ${step.imageUrl}</div>
                             </c:if>
                         </div>
                     </div>
@@ -306,18 +275,16 @@
             </div>
             <div class="text-center mt-4">
                 <button type="button" class="add-soft-btn" id="addStepBtn">
-                    <i class="bi bi-layers"></i> 순서 추가
+                    <i class="bi bi-layers"></i> 手順を追加
                 </button>
             </div>
         </section>
 
         <div class="d-flex justify-content-between align-items-center mb-5">
-            <a href="${pageContext.request.contextPath}/recipe/view?recipe_id=${recipe.recipeId}" class=" btn btn-outline-secondary px-4<%--btn btn-outline-secondary btn-lg px-4--%>">수정취소</a>
+            <a href="${pageContext.request.contextPath}/recipe/view?recipe_id=${recipe.recipeId}" class="btn btn-outline-secondary px-4">キャンセル</a>
             <div class="d-flex gap-2">
-                <button type="submit" class="  btn btn-outline-danger px-4   <%-- btn btn-danger btn-lg px-5--%>">수정</button>
-                <button type="submit" form="deleteRecipeForm" class=" btn btn-danger px-4"<%--btn btn-outline-danger btn-lg px-4--%>" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
-                <%--  form="deleteRecipeForm 로  외부 form 연결--%>
-                
+                <button type="submit" class="btn btn-outline-danger px-4">保存</button>
+                <button type="submit" form="deleteRecipeForm" class="btn btn-danger px-4" onclick="return confirm('本当に削除しますか？');">削除</button>
             </div>
         </div>
     </form>
@@ -346,7 +313,7 @@
 
     function renumberIngredientGroups() {
         ingredientGroups.querySelectorAll('.ingredient-group').forEach((group, index) => {
-            group.querySelector('.ingredient-group-title').textContent = '재료 묶음 ' + (index + 1);
+            group.querySelector('.ingredient-group-title').textContent = '食材グループ ' + (index + 1);
         });
     }
 
@@ -364,7 +331,7 @@
         nameInput.type = 'text';
         nameInput.name = 'ingredient_name';
         nameInput.className = 'form-control';
-        nameInput.placeholder = '예) 양배추';
+        nameInput.placeholder = '例）キャベツ';
         nameInput.maxLength = 100;
         nameInput.required = true;
         nameInput.value = nameValue;
@@ -373,12 +340,12 @@
         amountInput.type = 'text';
         amountInput.name = 'ingredient_amount';
         amountInput.className = 'form-control';
-        amountInput.placeholder = '예) 200g, 2개';
+        amountInput.placeholder = '例）200g、2個';
         amountInput.maxLength = 50;
         amountInput.required = true;
         amountInput.value = amountValue;
 
-        const removeBtn = createButton('remove-btn', '-', '재료 삭제');
+        const removeBtn = createButton('remove-btn', '-', '食材を削除');
         removeBtn.addEventListener('click', () => removeIngredientRow(row, groupBody));
 
         row.append(nameInput, amountInput, removeBtn);
@@ -417,7 +384,7 @@
 
         const title = document.createElement('strong');
         title.className = 'ingredient-group-title';
-        const removeGroupBtn = createButton('remove-btn', '-', '재료 묶음 삭제');
+        const removeGroupBtn = createButton('remove-btn', '-', '食材グループを削除');
         head.append(title, removeGroupBtn);
 
         const body = document.createElement('div');
@@ -426,7 +393,7 @@
 
         const addRowWrap = document.createElement('div');
         addRowWrap.className = 'text-center mt-3';
-        const addRowBtn = createButton('btn btn-outline-danger btn-sm add-ingredient-row-btn', '+ 재료 추가하기');
+        const addRowBtn = createButton('btn btn-outline-danger btn-sm add-ingredient-row-btn', '+ 食材を追加');
         addRowWrap.appendChild(addRowBtn);
 
         group.append(head, body, addRowWrap);
@@ -452,13 +419,13 @@
         head.className = 'step-head';
         const title = document.createElement('strong');
         title.className = 'step-title';
-        const removeBtn = createButton('remove-btn', '-', '순서 삭제');
+        const removeBtn = createButton('remove-btn', '-', '手順を削除');
         head.append(title, removeBtn);
 
         const textarea = document.createElement('textarea');
         textarea.name = 'step_content';
         textarea.className = 'form-control step-content';
-        textarea.placeholder = '예) 그 사이 양파와 버섯, 대파도 썰어서 준비해주세요.';
+        textarea.placeholder = '例）その間に玉ねぎとキノコ、ネギも切って準備してください。';
         textarea.required = true;
         textarea.value = contentValue;
 

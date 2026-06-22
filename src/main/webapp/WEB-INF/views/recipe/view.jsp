@@ -150,26 +150,26 @@
             <div class="text-muted">
                 by <strong><c:out value="${recipe.nickname}" /></strong>
                 <span class="mx-2">|</span>
-                조회수 <c:out value="${recipe.viewCount}" />
+                閲覧数 <c:out value="${recipe.viewCount}" />
             </div>
 
             <div class="recipe-meta-list">
                 <div class="recipe-meta-item">
                     <i class="bi bi-people"></i>
-                    <c:out value="${recipe.servings}" />인분
+                    <c:out value="${recipe.servings}" />人前
                 </div>
 
                 <div class="recipe-meta-item">
                     <i class="bi bi-clock"></i>
-                    <c:out value="${recipe.cookTime}" />분
+                    <c:out value="${recipe.cookTime}" />分
                 </div>
 
                 <div class="recipe-meta-item">
                     <i class="bi bi-bar-chart"></i>
                     <c:choose>
-                        <c:when test="${recipe.difficulty == 1}">쉬움</c:when>
-                        <c:when test="${recipe.difficulty == 2}">보통</c:when>
-                        <c:otherwise>어려움</c:otherwise>
+                        <c:when test="${recipe.difficulty == 1}">簡単</c:when>
+                        <c:when test="${recipe.difficulty == 2}">普通</c:when>
+                        <c:otherwise>難しい</c:otherwise>
                     </c:choose>
                 </div>
             </div>
@@ -177,7 +177,7 @@
     </article>
 
     <section class="recipe-view-section">
-        <h3>재료</h3>
+        <h3>食材</h3>
 
         <div class="ingredient-list">
             <c:forEach var="ingredient" items="${ingredients}">
@@ -190,7 +190,7 @@
     </section>
 
     <section class="recipe-view-section">
-        <h3>조리순서</h3>
+        <h3>調理手順</h3>
 
         <c:forEach var="step" items="${steps}">
             <div class="step-item">
@@ -202,7 +202,7 @@
                     <c:if test="${not empty step.imageUrl}">
                         <img class="step-img"
                              src="${pageContext.request.contextPath}${step.imageUrl}"
-                             alt="Step ${step.stepNo} 이미지">
+                             alt="Step ${step.stepNo} 画像">
                     </c:if>
                 </div>
             </div>
@@ -212,7 +212,7 @@
     <div class="d-flex justify-content-between align-items-center mb-5">
         <a href="${pageContext.request.contextPath}/recipe/list"
            class="btn btn-outline-secondary px-4">
-            목록
+            一覧
         </a>
 
         <c:if test="${not empty sessionScope.loginUser}">
@@ -220,17 +220,17 @@
                 <div class="d-flex gap-2">
                     <a href="${pageContext.request.contextPath}/recipe/edit?recipe_id=${recipe.recipeId}"
                        class="btn btn-outline-danger px-4">
-                        수정
+                        編集
                     </a>
 
                     <form action="${pageContext.request.contextPath}/recipe/delete"
                           method="post"
-                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                          onsubmit="return confirm('本当に削除しますか？');">
 
                         <input type="hidden" name="recipe_id" value="${recipe.recipeId}">
 
                         <button type="submit" class="btn btn-danger px-4">
-                            삭제
+                            削除
                         </button>
                     </form>
                 </div>
@@ -244,13 +244,13 @@
 
     <h4 class="mb-4">
         <i class="bi bi-chat-dots text-danger me-2"></i>
-        댓글
+        コメント
     </h4>
 
     <c:if test="${not empty sessionScope.loginUser}">
         <div class="mb-4">
             <div class="mb-3">
-                <label class="form-label">별점</label>
+                <label class="form-label">評価</label>
 
                 <div style="display:flex; align-items:center; gap:15px;">
                     <div id="starRating" style="font-size:32px; color:#ffc107;">
@@ -284,18 +284,18 @@
             <textarea id="commentContent"
                       class="form-control"
                       rows="3"
-                      placeholder="댓글을 입력하세요"></textarea>
+                      placeholder="コメントを入力してください"></textarea>
 
             <button type="button"
                     class="btn btn-danger mt-2"
                     onclick="addRecipeComment()">
-                댓글 등록
+                コメントを投稿
             </button>
         </div>
     </c:if>
 
     <div id="commentList">
-        <!-- AJAX 댓글 출력 -->
+        <%-- AJAX 댓글 출력 --%>
     </div>
 </div>
 
@@ -341,7 +341,7 @@ function loadRecipeComments() {
                     html +=
                         '<button type="button" class="btn btn-sm btn-outline-primary me-2" ' +
                             'onclick="showReplyForm(' + comment.reviewId + ')">' +
-                            '답글' +
+                            '返信' +
                         '</button>';
                 }
 
@@ -349,12 +349,12 @@ function loadRecipeComments() {
                     html +=
                         '<button type="button" class="btn btn-sm btn-outline-secondary me-2" ' +
                             'onclick="showEditComment(' + comment.reviewId + ')">' +
-                            '수정' +
+                            '編集' +
                         '</button>' +
 
                         '<button type="button" class="btn btn-sm btn-outline-danger" ' +
                             'onclick="deleteRecipeComment(' + comment.reviewId + ')">' +
-                            '삭제' +
+                            '削除' +
                         '</button>';
                 }
 
@@ -363,9 +363,9 @@ function loadRecipeComments() {
                 if (!isReply) {
                     html +=
                         '<div id="reply-form-' + comment.reviewId + '" class="mt-3" style="display:none;">' +
-                            '<textarea id="reply-content-' + comment.reviewId + '" class="form-control" rows="2" placeholder="답글을 입력하세요"></textarea>' +
-                            '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="addReplyComment(' + comment.reviewId + ')">답글 등록</button>' +
-                            '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="hideReplyForm(' + comment.reviewId + ')">취소</button>' +
+                            '<textarea id="reply-content-' + comment.reviewId + '" class="form-control" rows="2" placeholder="返信を入力してください"></textarea>' +
+                            '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="addReplyComment(' + comment.reviewId + ')">返信する</button>' +
+                            '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="hideReplyForm(' + comment.reviewId + ')">キャンセル</button>' +
                         '</div>';
                 }
 
@@ -381,7 +381,7 @@ function addRecipeComment() {
     const rating = document.getElementById("commentRating").value;
 
     if (content === "") {
-        alert("댓글을 입력하세요.");
+        alert("コメントを入力してください。");
         return;
     }
 
@@ -401,7 +401,7 @@ function addRecipeComment() {
             document.getElementById("commentContent").value = "";
             loadRecipeComments();
         } else {
-            alert("댓글 등록 실패: " + result);
+            alert("コメントの投稿に失敗しました：" + result);
         }
     });
 }
@@ -418,7 +418,7 @@ function addReplyComment(parentReviewId) {
     const content = document.getElementById("reply-content-" + parentReviewId).value.trim();
 
     if (content === "") {
-        alert("답글을 입력하세요.");
+        alert("返信を入力してください。");
         return;
     }
 
@@ -437,7 +437,7 @@ function addReplyComment(parentReviewId) {
         if (result.trim() === "success") {
             loadRecipeComments();
         } else {
-            alert("답글 등록 실패: " + result);
+            alert("返信の投稿に失敗しました：" + result);
         }
     });
 }
@@ -450,15 +450,15 @@ function showEditComment(reviewId) {
         '<textarea id="edit-comment-' + reviewId + '" class="form-control" rows="3">' +
             oldContent +
         '</textarea>' +
-        '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="updateRecipeComment(' + reviewId + ')">저장</button>' +
-        '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="loadRecipeComments()">취소</button>';
+        '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="updateRecipeComment(' + reviewId + ')">保存</button>' +
+        '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="loadRecipeComments()">キャンセル</button>';
 }
 
 function updateRecipeComment(reviewId) {
     const content = document.getElementById("edit-comment-" + reviewId).value.trim();
 
     if (content === "") {
-        alert("댓글을 입력하세요.");
+        alert("コメントを入力してください。");
         return;
     }
 
@@ -477,13 +477,13 @@ function updateRecipeComment(reviewId) {
         if (result.trim() === "success") {
             loadRecipeComments();
         } else {
-            alert("댓글 수정 실패: " + result);
+            alert("コメントの編集に失敗しました：" + result);
         }
     });
 }
 
 function deleteRecipeComment(reviewId) {
-    if (!confirm("댓글을 삭제하시겠습니까?")) {
+    if (!confirm("コメントを削除しますか？")) {
         return;
     }
 
@@ -499,7 +499,7 @@ function deleteRecipeComment(reviewId) {
         if (result.trim() === "success") {
             loadRecipeComments();
         } else {
-            alert("댓글 삭제 실패: " + result);
+            alert("コメントの削除に失敗しました：" + result);
         }
     });
 }

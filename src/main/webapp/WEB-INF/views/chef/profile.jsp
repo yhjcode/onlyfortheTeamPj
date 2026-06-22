@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     com.bggchef.dto.UserDTO chefUser =
@@ -10,7 +10,7 @@
         ? ctx + chefUser.getProfileImg()
         : "https://via.placeholder.com/80x80?text=User";
 
-    String medal = chefUser.getMedalGrade() != null ? chefUser.getMedalGrade() : "브론즈";
+    String medal = chefUser.getMedalGrade() != null ? chefUser.getMedalGrade() : "ブロンズ";
 %>
 
 <style>
@@ -67,53 +67,52 @@
 .mp-mypage-link:hover { text-decoration:underline; }
 </style>
 
-<!-- 히어로 배너 -->
+<!-- ヒーローバナー -->
 <div class="page-hero chef">
-    <h1><i class="bi bi-award-fill me-2"></i>셰프 페이지</h1>
-    <p><%= chefUser.getNickname() %> 셰프의 레시피와 테마를 만나보세요</p>
+    <h1><i class="bi bi-award-fill me-2"></i>シェフページ</h1>
+    <p><%= chefUser.getNickname() %> シェフのレシピとテーマをご覧ください</p>
 </div>
 
-<!-- 프로필 카드 -->
+<!-- プロフィールカード -->
 <div class="mp-profile-card">
-    <img src="<%= profileImg %>" class="mp-avatar" alt="프로필"
+    <img src="<%= profileImg %>" class="mp-avatar" alt="プロフィール"
          onerror="this.src='https://via.placeholder.com/80x80?text=User'">
     <div style="flex:1;min-width:0;">
         <div class="mp-name"><%= chefUser.getNickname() %></div>
         <div class="mp-email"><%= chefUser.getEmail() %></div>
         <span class="mp-medal">🏅 <%= medal %></span>
-        <!-- 셰프 소개글 (읽기 전용) -->
+        <!-- シェフ紹介文（読み取り専用） -->
         <div class="mp-intro-wrap">
             <c:choose>
                 <c:when test="${not empty chefIntro}">
                     <span class="mp-intro-text">${chefIntro}</span>
                 </c:when>
                 <c:otherwise>
-                    <span class="mp-intro-empty">소개글이 없습니다.</span>
+                    <span class="mp-intro-empty">自己紹介はまだありません。</span>
                 </c:otherwise>
             </c:choose>
-            <%-- 본인이 자신의 프로필을 볼 때만 마이페이지로 이동 링크 표시 --%>
             <c:if test="${isOwner}">
                 <a href="<%= ctx %>/user/mypage" class="mp-mypage-link">
-                    <i class="bi bi-pencil"></i> 소개글 수정 (마이페이지)
+                    <i class="bi bi-pencil"></i> 自己紹介を編集（マイページ）
                 </a>
             </c:if>
         </div>
     </div>
 </div>
 
-<!-- 탭 버튼 -->
+<!-- タブボタン -->
 <div class="mp-tabs" id="cpTabs">
-    <button type="button" class="mp-tab-btn active" data-pane="cp-pane-recipe">레시피</button>
-    <button type="button" class="mp-tab-btn"        data-pane="cp-pane-theme">테마</button>
+    <button type="button" class="mp-tab-btn active" data-pane="cp-pane-recipe">レシピ</button>
+    <button type="button" class="mp-tab-btn"        data-pane="cp-pane-theme">テーマ</button>
 </div>
 
-<!-- ─── 레시피 ─── -->
+<!-- ─── レシピ ─── -->
 <div class="mp-pane active" id="cp-pane-recipe">
     <c:choose>
         <c:when test="${empty chefRecipes}">
             <div class="mp-empty">
                 <span class="mp-empty-icon">🍳</span>
-                아직 작성한 레시피가 없어요
+                まだレシピがありません
             </div>
         </c:when>
         <c:otherwise>
@@ -137,20 +136,20 @@
     </c:choose>
 </div>
 
-<!-- ─── 테마 ─── -->
+<!-- ─── テーマ ─── -->
 <div class="mp-pane" id="cp-pane-theme">
     <c:choose>
         <c:when test="${empty chefThemes}">
             <div class="mp-empty">
                 <span class="mp-empty-icon">🎨</span>
-                아직 만든 테마가 없어요
+                まだテーマがありません
             </div>
         </c:when>
         <c:otherwise>
             <div class="mp-grid">
                 <c:forEach var="t" items="${chefThemes}">
                     <div class="mp-card">
-                        <img src="${pageContext.request.contextPath}/resources/upload/theme/${t.thumbnail}"
+                        <img src="${pageContext.request.contextPath}${t.thumbnail}"
                              alt="${t.title}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">

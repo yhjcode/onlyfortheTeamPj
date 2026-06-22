@@ -360,7 +360,7 @@ public class ThemeController extends HttpServlet {
                     String fileName = System.currentTimeMillis() + "_" + originName.replaceAll("\\s", "_");
 
                     item.write(new File(themeSaveDirectory + File.separator + fileName));
-                    dto.setThumbnail(fileName);
+                    dto.setThumbnail("/resources/upload/theme/" + fileName);
                 }
 
                 else if ("recipeImages".equals(name)) {
@@ -369,7 +369,7 @@ public class ThemeController extends HttpServlet {
                         String fileName = System.currentTimeMillis() + "_" + originName.replaceAll("\\s", "_");
 
                         item.write(new File(recipeSaveDirectory + File.separator + fileName));
-                        recipeImages.add(fileName);
+                        recipeImages.add("/resources/upload/recipe/" + fileName);
                     } else {
                         recipeImages.add(null);
                     }
@@ -486,7 +486,7 @@ public class ThemeController extends HttpServlet {
                 String fileName = System.currentTimeMillis() + "_" + originName.replaceAll("\\s", "_");
 
                 item.write(new File(saveDirectory + File.separator + fileName));
-                dto.setThumbnail(fileName);
+                dto.setThumbnail("/resources/upload/recipe/" + fileName);
             }
         }
 

@@ -10,22 +10,22 @@
             <i class="bi bi-search text-danger me-2"></i>
             <c:choose>
                 <c:when test="${not empty keyword}">
-                    '<span class="accent"><c:out value="${keyword}"/></span>' 검색 결과
+                    '<span class="accent"><c:out value="${keyword}"/></span>' 検索結果
                 </c:when>
                 <c:otherwise>
                     <c:choose>
-                        <c:when test="${searchType == 'theme'}"><span class="accent">테마 전체</span> 검색 결과</c:when>
-                        <c:when test="${searchType == 'user'}"><span class="accent">셰프 전체</span> 검색 결과</c:when>
-                        <c:otherwise><span class="accent">레시피 전체</span> 검색 결과</c:otherwise>
+                        <c:when test="${searchType == 'theme'}"><span class="accent">テーマ全体</span> 検索結果</c:when>
+                        <c:when test="${searchType == 'user'}"><span class="accent">シェフ全体</span> 検索結果</c:when>
+                        <c:otherwise><span class="accent">レシピ全体</span> 検索結果</c:otherwise>
                     </c:choose>
                 </c:otherwise>
             </c:choose>
         </h3>
         <span class="text-muted">
             <c:choose>
-                <c:when test="${searchType == 'theme'}">총 ${totalCount}개의 테마글</c:when>
-                <c:when test="${searchType == 'user'}">총 ${totalCount}명의 셰프</c:when>
-                <c:otherwise>총 ${totalCount}개의 레시피</c:otherwise>
+                <c:when test="${searchType == 'theme'}">全${totalCount}件のテーマ</c:when>
+                <c:when test="${searchType == 'user'}">全${totalCount}名のシェフ</c:when>
+                <c:otherwise>全${totalCount}件のレシピ</c:otherwise>
             </c:choose>
         </span>
     </div>
@@ -37,7 +37,7 @@
                 <c:when test="${empty recipes}">
                     <div class="col-12 text-center py-5">
                         <i class="bi bi-exclamation-circle text-muted" style="font-size: 3rem;"></i>
-                        <p class="mt-3 text-muted">검색어와 일치하는 레시피가 없습니다.<br>다른 검색어를 입력해 보세요.</p>
+                        <p class="mt-3 text-muted">検索キーワードに一致するレシピがありません。<br>別のキーワードをお試しください。</p>
                     </div>
                 </c:when>
                 <c:otherwise>
@@ -66,7 +66,7 @@
                                                 </c:choose>
                                             </span>
                                             <span><i class="bi bi-eye"></i> ${r.viewCount}</span>
-                                            <span><i class="bi bi-person-fill"></i> <c:out value="${not empty r.nickname ? r.nickname : '무명셰프'}"/></span>
+                                            <span><i class="bi bi-person-fill"></i> <c:out value="${not empty r.nickname ? r.nickname : '名無しシェフ'}"/></span>
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                 <c:when test="${empty themes}">
                     <div class="col-12 text-center py-5">
                         <i class="bi bi-exclamation-circle text-muted" style="font-size: 3rem;"></i>
-                        <p class="mt-3 text-muted">검색어와 일치하는 테마가 없습니다.<br>다른 검색어를 입력해 보세요.</p>
+                        <p class="mt-3 text-muted">検索キーワードに一致するテーマがありません。<br>別のキーワードをお試しください。</p>
                     </div>
                 </c:when>
                 <c:otherwise>
@@ -96,7 +96,7 @@
                                     <div class="recipe-card-img-wrap">
                                         <c:choose>
                                             <c:when test="${not empty t.thumbnail}">
-                                                <img class="recipe-card-img" src="${pageContext.request.contextPath}/resources/upload/theme/${t.thumbnail}" alt="${t.title}">
+                                                <img class="recipe-card-img" src="${pageContext.request.contextPath}${t.thumbnail}" alt="${t.title}">
                                             </c:when>
                                             <c:otherwise>
                                                 <img class="recipe-card-img" src="https://placehold.co/400x400/dee2e6/6c757d?text=No+Image" alt="${t.title}">
@@ -107,7 +107,7 @@
                                         <h6 class="recipe-card-title">${t.title}</h6>
                                         <div class="recipe-meta">
                                             <span><i class="bi bi-eye"></i> ${t.viewCount}</span>
-                                            <span><i class="bi bi-person-fill"></i> <c:out value="${not empty t.nickname ? t.nickname : '무명셰프'}"/></span>
+                                            <span><i class="bi bi-person-fill"></i> <c:out value="${not empty t.nickname ? t.nickname : '名無しシェフ'}"/></span>
                                         </div>
                                     </div>
                                 </div>
@@ -126,7 +126,7 @@
                 <c:when test="${empty users}">
                     <div class="col-12 text-center py-5">
                         <i class="bi bi-exclamation-circle text-muted" style="font-size: 3rem;"></i>
-                        <p class="mt-3 text-muted">검색어와 일치하는 셰프가 없습니다.<br>다른 검색어를 입력해 보세요.</p>
+                        <p class="mt-3 text-muted">検索キーワードに一致するシェフがいません。<br>別のキーワードをお試しください。</p>
                     </div>
                 </c:when>
                 <c:otherwise>

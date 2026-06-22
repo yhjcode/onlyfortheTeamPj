@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     com.bggchef.dto.UserDTO loginUser =
@@ -10,7 +10,7 @@
         ? ctx + loginUser.getProfileImg()
         : "https://via.placeholder.com/80x80?text=User";
 
-    String medal = loginUser.getMedalGrade() != null ? loginUser.getMedalGrade() : "브론즈";
+    String medal = loginUser.getMedalGrade() != null ? loginUser.getMedalGrade() : "ブロンズ";
 %>
 <c:set var="ctx" value="<%= ctx %>"/>
 
@@ -80,67 +80,67 @@
 .mp-intro-form .btn-save { font-size:12px; padding:3px 12px; }
 </style>
 
-<!-- 히어로 배너 -->
+<!-- ヒーローバナー -->
 <div class="page-hero mypage">
-    <h1><i class="bi bi-person-circle me-2"></i>마이페이지</h1>
-    <p>나의 레시피와 활동을 한눈에 확인하세요</p>
+    <h1><i class="bi bi-person-circle me-2"></i>マイページ</h1>
+    <p>自分のレシピとアクティビティを確認しよう</p>
 </div>
 
-<!-- 프로필 카드 -->
+<!-- プロフィールカード -->
 <div class="mp-profile-card">
-    <img src="<%= profileImg %>" class="mp-avatar" alt="프로필"
+    <img src="<%= profileImg %>" class="mp-avatar" alt="プロフィール"
          onerror="this.src='https://via.placeholder.com/80x80?text=User'">
     <div style="flex:1;min-width:0;">
         <div class="mp-name"><%= loginUser.getNickname() %></div>
         <div class="mp-email"><%= loginUser.getEmail() %></div>
         <span class="mp-medal">🏅 <%= medal %></span>
-        <!-- 셰프 소개글 -->
+        <!-- シェフ紹介文 -->
         <div class="mp-intro-wrap">
             <c:choose>
                 <c:when test="${not empty chefIntro}">
                     <span class="mp-intro-text" id="introText">${chefIntro}</span>
                 </c:when>
                 <c:otherwise>
-                    <span class="mp-intro-empty" id="introText">소개글을 작성해 보세요.</span>
+                    <span class="mp-intro-empty" id="introText">自己紹介を書いてみましょう。</span>
                 </c:otherwise>
             </c:choose>
-            <button type="button" class="mp-intro-edit-btn" id="introEditBtn" title="소개글 수정">
-                <i class="bi bi-pencil"></i> 수정
+            <button type="button" class="mp-intro-edit-btn" id="introEditBtn" title="自己紹介を編集">
+                <i class="bi bi-pencil"></i> 編集
             </button>
             <div class="mp-intro-form" id="introForm">
-                <textarea id="introTextarea" rows="3" maxlength="1000" placeholder="나를 소개하는 글을 입력하세요 (최대 1000자)">${chefIntro}</textarea>
+                <textarea id="introTextarea" rows="3" maxlength="1000" placeholder="自己紹介を入力してください（最大1000文字）">${chefIntro}</textarea>
                 <div class="d-flex justify-content-end gap-2 mt-1">
-                    <button type="button" class="btn btn-outline-secondary btn-sm btn-save" id="introCancelBtn">취소</button>
-                    <button type="button" class="btn btn-danger btn-sm btn-save" id="introSaveBtn">저장</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm btn-save" id="introCancelBtn">キャンセル</button>
+                    <button type="button" class="btn btn-danger btn-sm btn-save" id="introSaveBtn">保存</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="mp-actions">
-        <a href="<%= ctx %>/user/edit" class="mp-edit-btn" title="정보 수정">
+        <a href="<%= ctx %>/user/edit" class="mp-edit-btn" title="情報を編集">
             <i class="bi bi-pencil-fill"></i>
         </a>
-        <a href="<%= ctx %>/user/withdraw" class="mp-withdraw-link">정보 수정</a>
+        <a href="<%= ctx %>/user/withdraw" class="mp-withdraw-link">退会する</a>
     </div>
 </div>
 
-<!-- 탭 버튼 -->
+<!-- タブボタン -->
 <div class="mp-tabs" id="mpTabs">
-    <button type="button" class="mp-tab-btn active" data-pane="mp-pane-recipe">내 레시피</button>
-    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-review">내가 쓴 댓글</button>
-    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-replies">내 글에 달린 댓글</button>
-    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-theme">내 테마</button>
-    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-favorite">즐겨찾기</button>
+    <button type="button" class="mp-tab-btn active" data-pane="mp-pane-recipe">マイレシピ</button>
+    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-review">投稿したコメント</button>
+    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-replies">もらったコメント</button>
+    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-theme">マイテーマ</button>
+    <button type="button" class="mp-tab-btn"        data-pane="mp-pane-favorite">お気に入り</button>
 </div>
 
-<!-- ─── 내 레시피 ─── -->
+<!-- ─── マイレシピ ─── -->
 <div class="mp-pane active" id="mp-pane-recipe">
     <c:choose>
         <c:when test="${empty myRecipes}">
             <div class="mp-empty">
                 <span class="mp-empty-icon">🍳</span>
-                아직 작성한 레시피가 없어요<br>
-                <a href="<%= ctx %>/recipe/write" class="btn btn-danger btn-sm mt-3">첫 레시피 작성하기</a>
+                まだレシピを投稿していません<br>
+                <a href="<%= ctx %>/recipe/write" class="btn btn-danger btn-sm mt-3">最初のレシピを投稿する</a>
             </div>
         </c:when>
         <c:otherwise>
@@ -164,11 +164,11 @@
     </c:choose>
 </div>
 
-<!-- ─── 내가 쓴 댓글 ─── -->
+<!-- ─── 投稿したコメント ─── -->
 <div class="mp-pane" id="mp-pane-review">
     <c:choose>
         <c:when test="${empty myReviews}">
-            <div class="mp-empty"><span class="mp-empty-icon">💬</span>아직 작성한 댓글이 없어요</div>
+            <div class="mp-empty"><span class="mp-empty-icon">💬</span>まだコメントを投稿していません</div>
         </c:when>
         <c:otherwise>
             <c:forEach var="rv" items="${myReviews}">
@@ -186,11 +186,11 @@
     </c:choose>
 </div>
 
-<!-- ─── 내 글에 달린 댓글 ─── -->
+<!-- ─── もらったコメント ─── -->
 <div class="mp-pane" id="mp-pane-replies">
     <c:choose>
         <c:when test="${empty repliesToMe}">
-            <div class="mp-empty"><span class="mp-empty-icon">📬</span>내 레시피에 달린 댓글이 없어요</div>
+            <div class="mp-empty"><span class="mp-empty-icon">📬</span>まだコメントが届いていません</div>
         </c:when>
         <c:otherwise>
             <c:forEach var="rv" items="${repliesToMe}">
@@ -209,17 +209,17 @@
     </c:choose>
 </div>
 
-<!-- ─── 내 테마 ─── -->
+<!-- ─── マイテーマ ─── -->
 <div class="mp-pane" id="mp-pane-theme">
     <c:choose>
         <c:when test="${empty myThemes}">
-            <div class="mp-empty"><span class="mp-empty-icon">🎨</span>아직 만든 테마가 없어요</div>
+            <div class="mp-empty"><span class="mp-empty-icon">🎨</span>まだテーマを作成していません</div>
         </c:when>
         <c:otherwise>
             <div class="mp-grid">
                 <c:forEach var="t" items="${myThemes}">
                     <div class="mp-card">
-                        <img src="${pageContext.request.contextPath}/resources/upload/theme/${t.thumbnail}"
+                        <img src="${pageContext.request.contextPath}${t.thumbnail}"
                              alt="${t.title}" loading="lazy"
                              onerror="this.src='https://via.placeholder.com/200x140?text=No+Image'">
                         <div class="mp-card-body">
@@ -233,11 +233,11 @@
     </c:choose>
 </div>
 
-<!-- ─── 즐겨찾기 ─── -->
+<!-- ─── お気に入り ─── -->
 <div class="mp-pane" id="mp-pane-favorite">
     <c:choose>
         <c:when test="${empty myFavorites}">
-            <div class="mp-empty"><span class="mp-empty-icon">⭐</span>아직 즐겨찾기한 레시피가 없어요</div>
+            <div class="mp-empty"><span class="mp-empty-icon">⭐</span>まだお気に入りのレシピがありません</div>
         </c:when>
         <c:otherwise>
             <div class="mp-grid">
@@ -260,7 +260,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ── 소개글 인라인 편집 ──
+    // ── 自己紹介インライン編集 ──
     var introText     = document.getElementById('introText');
     var introEditBtn  = document.getElementById('introEditBtn');
     var introForm     = document.getElementById('introForm');
@@ -296,19 +296,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     introText.textContent = intro;
                 } else {
                     introText.className = 'mp-intro-empty';
-                    introText.textContent = '소개글을 작성해 보세요.';
+                    introText.textContent = '自己紹介を書いてみましょう。';
                 }
                 introForm.style.display    = 'none';
                 introText.style.display    = '';
                 introEditBtn.style.display = '';
             } else {
-                alert(data.msg || '저장에 실패했습니다.');
+                alert(data.msg || '保存に失敗しました。');
             }
         })
-        .catch(function () { alert('저장 중 오류가 발생했습니다.'); });
+        .catch(function () { alert('保存中にエラーが発生しました。'); });
     });
 
-    // ── 탭 전환 ──
+    // ── タブ切替 ──
     var tabs  = document.querySelectorAll('#mpTabs .mp-tab-btn');
     var panes = document.querySelectorAll('.mp-pane');
 
