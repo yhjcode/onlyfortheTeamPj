@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -94,7 +94,16 @@
     </div>
 
     <!-- 테마 설명 -->
-    <div class="mb-5 p-4 bg-light rounded-4 theme-desc"><c:choose><c:when test="${not empty theme.description}">${fn:trim(theme.description)}</c:when><c:otherwise>테마 소개글을 준비 중입니다.</c:otherwise></c:choose></div>
+    <div class="mb-5 p-4 bg-light rounded-4">
+        <c:choose>
+            <c:when test="${not empty theme.description}">
+                ${theme.description}
+            </c:when>
+            <c:otherwise>
+                테마 소개글을 준비 중입니다.
+            </c:otherwise>
+        </c:choose>
+    </div>
 
     <c:if test="${empty recipeList}">
         <div class="text-center text-muted py-5">
@@ -108,12 +117,14 @@
              style="border-bottom: 2px solid #eaeaea !important;">
 
             <c:if test="${not empty recipe.thumbnail}">
-    <div class="text-center mb-4">
-        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
-             alt="${recipe.title}"
-             style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    </div>
-</c:if>
+                <div class="text-center mb-4">
+                    <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}">
+                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
+                             alt="${recipe.title}"
+                             style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    </a>
+                </div>
+            </c:if>
 
             <c:if test="${not empty loginUser and loginUser.userId eq recipe.userId}">
                 <div class="position-absolute" style="top: 0; right: 0;">
@@ -151,17 +162,16 @@
                         </c:when>
 
                         <c:otherwise>
-                            <p class="text-muted mt-3 recipe-desc"
-                               style="font-size:1.1rem; text-align:left;">작성된 소개글이 없습니다.</p>
+                            작성된 소개글이 없습니다.
                         </c:otherwise>
                     </c:choose>
                 </div>
 
                 <div class="mt-3 d-flex justify-content-center gap-2">
-                   <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
-   class="btn btn-outline-primary btn-sm px-3">
-    레시피로 이동
-</a>
+                    <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
+                     class="btn btn-outline-primary btn-sm px-3">
+                     레시피로 이동
+                     </a>
 
                     <c:if test="${not empty recipe.recipeLink}">
                         <a href="${recipe.recipeLink}"
@@ -187,6 +197,8 @@
 
     <c:if test="${not empty loginUser}">
         <div class="mb-4">
+        <div class="mb-3">
+    <label class="form-label">별점</label>
 
             <div class="mb-3">
                 <label class="form-label">별점</label>
@@ -330,6 +342,7 @@ function loadThemeComments() {
                         comment.content +
                     '</div>';
 
+                html += '<div class="mt-2">';
                 html += '<div class="mt-2" id="button-area-' + comment.commentId + '">';
 
                 if (loginUserId !== "" && !isReply) {
@@ -447,6 +460,9 @@ function showEditComment(commentId) {
     contentDiv.innerHTML =
         '<textarea id="edit-comment-' + commentId + '" class="form-control" rows="3">' +
             oldContent +
+        '</textarea>' +
+        '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="updateThemeComment(' + commentId + ')">저장</button>' +
+        '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="loadThemeComments()">취소</button>';
         '</textarea>';
 
     buttonDiv.innerHTML =
@@ -505,4 +521,26 @@ function deleteThemeComment(commentId) {
         }
     });
 }
-</script>
+function changeRating(amount) {
+    let rating = parseFloat(document.getElementById("commentRating").value);
+    rating = Math.round((rating + amount) * 10) / 10;
+
+    if (rating < 0.1) rating = 0.1;
+    if (rating > 5.0) rating = 5.0;
+
+    document.getElementById("commentRating").value = rating.toFixed(1);
+    document.getElementById("ratingText").innerText = rating.toFixed(1);
+
+    updateStars(rating);
+}
+
+function updateStars(rating) {
+    const fullStars = Math.floor(rating);
+    let stars = "";
+
+    for (let i = 1; i <= 5; i++) {
+        stars += i <= fullStars ? "★" : "☆";
+    }
+
+    document.getElementById("starRating").innerText = stars;
+}

@@ -128,6 +128,27 @@
         .ingredient-row { grid-template-columns: 1fr; }
         .remove-btn { width: 100%; border-radius: 6px; }
     }
+    
+    
+    
+    
+    /* #ingredientGroups 내부의 첫 번째 식재 그룹(.ingredient-group) 안에 있는 */
+/* 머리글(.ingredient-group-head)의 그룹 삭제 버튼(.remove-btn)만 보이지 않게 숨깁니다 */
+#ingredientGroups > .ingredient-group:first-child > .ingredient-group-head > .remove-btn {
+    display: none !important;
+}
+
+
+
+
+/* #stepList 내부의 첫 번째 조리 순서(.step-item) 안에 있는 */
+/* 머리글(.step-head)의 순서 삭제 버튼(.remove-btn)만 보이지 않게 숨깁니다 */
+#stepList > .step-item:first-child > .step-head > .remove-btn {
+    display: none !important;
+}
+
+    
+    
 </style>
 
 <div class="recipe-write-wrap">
@@ -239,7 +260,7 @@
         </section>
 
         <div class="d-flex justify-content-between align-items-center mb-5">
-            <a href="${pageContext.request.contextPath}/recipe/list" class="btn btn-outline-secondary btn-lg px-4">キャンセル</a>
+            <a href="${pageContext.request.contextPath}/category/list.jsp" class="btn btn-outline-secondary btn-lg px-4">キャンセル</a>
             <button type="submit" class="btn btn-danger btn-lg px-5">投稿する</button>
         </div>
     </form>
@@ -322,7 +343,7 @@
         const title = document.createElement('strong');
         title.className = 'ingredient-group-title';
 
-        const removeGroupBtn = createButton('remove-btn', '-', '食材グループを削除');
+        const removeGroupBtn = createButton('remove-btn', '-', '食材グループを削除');////////////////////////////////////////////////////////////////////////////
         removeGroupBtn.addEventListener('click', () => {
             if (ingredientGroups.querySelectorAll('.ingredient-group').length > 1) {
                 group.remove();
@@ -356,7 +377,7 @@
         const title = document.createElement('strong');
         title.className = 'step-title';
 
-        const removeBtn = createButton('remove-btn', '-', '手順を削除');
+        const removeBtn = createButton('remove-btn', '-', '手順を削除');////////////////////////////////////////////////
         removeBtn.addEventListener('click', () => {
             if (stepList.querySelectorAll('.step-item').length > 1) {
                 step.remove();
