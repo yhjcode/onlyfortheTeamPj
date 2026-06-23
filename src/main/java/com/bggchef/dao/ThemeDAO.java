@@ -393,8 +393,7 @@ public class ThemeDAO {
     }
 
     public void updateRecipeInfo(RecipeDTO dto) throws SQLException {
-        String sql = "UPDATE RECIPE SET title = ?, description = ?, thumbnail = ?, link = ? WHERE recipe_id = ?";
-
+        String sql = "UPDATE RECIPE SET title = ?, description = ?, thumbnail = ? WHERE recipe_id = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -405,8 +404,7 @@ public class ThemeDAO {
             pstmt.setString(1, dto.getTitle());
             pstmt.setString(2, dto.getDescription());
             pstmt.setString(3, dto.getThumbnail());
-            pstmt.setString(4, dto.getRecipeLink());
-            pstmt.setLong(5, dto.getRecipeId());
+            pstmt.setLong(4, dto.getRecipeId());
 
             pstmt.executeUpdate();
         } finally {
@@ -456,22 +454,45 @@ public class ThemeDAO {
     }
 
     public void update(ThemeDTO dto) throws SQLException {
-        String sql = "UPDATE RECOMMENDED_THEME SET title = ?, subtitle = ?, description = ?, thumbnail = ? WHERE theme_id = ?";
 
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         try {
             conn = DBUtil.getConnection();
-            pstmt = conn.prepareStatement(sql);
 
-            pstmt.setString(1, dto.getTitle());
-            pstmt.setString(2, dto.getSubtitle());
-            pstmt.setString(3, dto.getDescription());
-            pstmt.setString(4, dto.getThumbnail());
-            pstmt.setInt(5, dto.getThemeId());
+            if (dto.getThumbnail() == null || dto.getThumbnail().trim().isEmpty()) {
+
+                String sql =
+                    "UPDATE RECOMMENDED_THEME " +
+                    "SET title = ?, subtitle = ?, description = ? " +
+                    "WHERE theme_id = ?";
+
+                pstmt = conn.prepareStatement(sql);
+
+                pstmt.setString(1, dto.getTitle());
+                pstmt.setString(2, dto.getSubtitle());
+                pstmt.setString(3, dto.getDescription());
+                pstmt.setInt(4, dto.getThemeId());
+
+            } else {
+
+                String sql =
+                    "UPDATE RECOMMENDED_THEME " +
+                    "SET title = ?, subtitle = ?, description = ?, thumbnail = ? " +
+                    "WHERE theme_id = ?";
+
+                pstmt = conn.prepareStatement(sql);
+
+                pstmt.setString(1, dto.getTitle());
+                pstmt.setString(2, dto.getSubtitle());
+                pstmt.setString(3, dto.getDescription());
+                pstmt.setString(4, dto.getThumbnail());
+                pstmt.setInt(5, dto.getThemeId());
+            }
 
             pstmt.executeUpdate();
+
         } finally {
             if (pstmt != null) pstmt.close();
             if (conn != null) conn.close();
