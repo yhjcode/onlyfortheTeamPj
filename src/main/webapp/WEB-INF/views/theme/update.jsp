@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -87,10 +88,32 @@
             <h5>실시간 미리보기</h5>
 
             <div class="card shadow-sm">
-                <img id="preview-img"
-                     src="${not empty theme.thumbnail ? pageContext.request.contextPath.concat('/resources/upload/theme/').concat(theme.thumbnail) : 'https://via.placeholder.com/400x200'}"
-                     class="card-img-top"
-                     alt="미리보기">
+                <c:choose>
+    <c:when test="${not empty theme.thumbnail}">
+        <img id="preview-img"
+             src="${pageContext.request.contextPath}/resources/upload/theme/${theme.thumbnail}"
+             class="card-img-top"
+             alt="미리보기"
+             style="max-height:250px; object-fit:cover;">
+
+        <div id="preview-img-box"
+             style="display:none;">
+        </div>
+    </c:when>
+
+    <c:otherwise>
+        <div id="preview-img-box"
+             class="card-img-top d-flex align-items-center justify-content-center"
+             style="height:250px; background:#f5f5f5; color:#999; font-size:18px;">
+            이미지를 선택하세요
+        </div>
+
+        <img id="preview-img"
+             src=""
+             alt=""
+             style="display:none;">
+    </c:otherwise>
+</c:choose>
 
                 <div class="card-body">
                     <h5 id="preview-title"
@@ -162,17 +185,34 @@
     document.getElementById("input-img").addEventListener("change", function(e) {
         const file = e.target.files[0];
 
+        const previewImg = document.getElementById("preview-img");
+        const previewBox = document.getElementById("preview-img-box");
+
         if (file) {
             const reader = new FileReader();
 
             reader.onload = function(event) {
-                document.getElementById("preview-img").src = event.target.result;
+                previewImg.src = event.target.result;
+                previewImg.className = "card-img-top";
+                previewImg.style.maxHeight = "250px";
+                previewImg.style.objectFit = "cover";
+                previewImg.style.display = "block";
+
+                previewBox.classList.remove("d-flex");
+                previewBox.classList.add("d-none");
+                previewBox.style.display = "none";
             };
 
             reader.readAsDataURL(file);
+        } else {
+            previewImg.removeAttribute("src");
+            previewImg.style.display = "none";
+
+            previewBox.classList.remove("d-none");
+            previewBox.classList.add("d-flex");
+            previewBox.style.display = "flex";
         }
     });
-
     function validateThemeForm() {
         const title = titleInput.value.trim();
         const subtitle = subtitleInput.value.trim();

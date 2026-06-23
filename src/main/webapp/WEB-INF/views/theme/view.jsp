@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <style>
 .recipe-desc {
@@ -7,8 +8,9 @@
     word-break: break-all;
     overflow-wrap: anywhere;
     width: 100%;
+    margin-left: 0;
+    padding-left: 0;
 }
-
 
 .recipe-desc-wrapper {
     width: 100%;
@@ -22,7 +24,10 @@
     overflow-wrap: anywhere;
     width: 100%;
     max-width: 100%;
-    text-align: left;
+    text-align: left !important;
+    text-indent: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 24px !important;
 }
 </style>
 
@@ -89,12 +94,7 @@
     </div>
 
     <!-- 테마 설명 -->
-    <div class="mb-5 p-4 bg-light rounded-4 theme-desc">
-    <c:choose>
-        <c:when test="${not empty theme.description}">${theme.description}</c:when>
-        <c:otherwise>테마 소개글을 준비 중입니다.</c:otherwise>
-    </c:choose>
-</div>
+    <div class="mb-5 p-4 bg-light rounded-4 theme-desc"><c:choose><c:when test="${not empty theme.description}">${fn:trim(theme.description)}</c:when><c:otherwise>테마 소개글을 준비 중입니다.</c:otherwise></c:choose></div>
 
     <c:if test="${empty recipeList}">
         <div class="text-center text-muted py-5">
@@ -149,24 +149,24 @@
                 </h4>
 
                 <div class="recipe-desc-wrapper">
-    <c:choose>
-        <c:when test="${not empty recipe.description}">
-            <p class="text-muted mt-3 recipe-desc"
-               style="font-size:1.1rem; text-align:left;">${recipe.description}</p>
-        </c:when>
+                    <c:choose>
+                        <c:when test="${not empty recipe.description}">
+                            <p class="text-muted mt-3 recipe-desc"
+                               style="font-size:1.1rem; text-align:left;">${fn:trim(recipe.description)}</p>
+                        </c:when>
 
-        <c:otherwise>
-            <p class="text-muted mt-3 recipe-desc"
-               style="font-size:1.1rem; text-align:left;">작성된 소개글이 없습니다.</p>
-        </c:otherwise>
-    </c:choose>
-</div>
+                        <c:otherwise>
+                            <p class="text-muted mt-3 recipe-desc"
+                               style="font-size:1.1rem; text-align:left;">작성된 소개글이 없습니다.</p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
 
                 <div class="mt-3 d-flex justify-content-center gap-2">
-                    <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
-                       class="btn btn-outline-primary btn-sm px-3">
-                        레시피로 이동
-                    </a>
+                   <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
+   class="btn btn-outline-primary btn-sm px-3">
+    레시피로 이동
+</a>
 
                     <c:if test="${not empty recipe.recipeLink}">
                         <a href="${recipe.recipeLink}"

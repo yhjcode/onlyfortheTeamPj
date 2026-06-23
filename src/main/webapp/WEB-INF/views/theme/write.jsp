@@ -117,10 +117,17 @@
             <h5>실시간 미리보기</h5>
 
             <div class="card shadow-sm sticky-top" style="top: 20px;">
-                <img id="preview-img"
-                     src="https://via.placeholder.com/400x200"
-                     class="card-img-top"
-                     alt="미리보기">
+                <div id="preview-img-box"
+     class="card-img-top d-flex align-items-center justify-content-center"
+     style="height:200px; background:#f1f1f1; color:#999;">
+    이미지 미리보기
+</div>
+
+<img id="preview-img"
+     src=""
+     class="card-img-top"
+     alt="미리보기"
+     style="display:none;">
 
                 <div class="card-body">
                     <h5 id="preview-title"
@@ -197,14 +204,32 @@ contentInput.addEventListener("input", function(e) {
 document.getElementById("input-img").addEventListener("change", function(e) {
     const file = e.target.files[0];
 
+    const previewBox = document.getElementById("preview-img-box");
+    const previewImg = document.getElementById("preview-img");
+
     if (file) {
         const reader = new FileReader();
 
         reader.onload = function(event) {
-            document.getElementById("preview-img").src = event.target.result;
+            previewImg.src = event.target.result;
+            previewImg.className = "card-img-top";
+            previewImg.style.maxHeight = "250px";
+            previewImg.style.objectFit = "cover";
+            previewImg.style.display = "block";
+
+            previewBox.classList.remove("d-flex");
+            previewBox.classList.add("d-none");
+            previewBox.style.display = "none";
         };
 
         reader.readAsDataURL(file);
+    } else {
+        previewImg.removeAttribute("src");
+        previewImg.style.display = "none";
+
+        previewBox.classList.remove("d-none");
+        previewBox.classList.add("d-flex");
+        previewBox.style.display = "flex";
     }
 });
 
