@@ -257,21 +257,3 @@
 	</div>
 </section>
 
-<!-- ============================================
-     카테고리 칩 (빠른 이동)
-     ============================================ -->
-<section class="section-card text-center">
-	<h3 class="section-title justify-content-center mb-4">
-		<i class="bi bi-tags-fill text-danger me-2"></i> カテゴリで探す
-	</h3>
-	<div>
-		<a href="${pageContext.request.contextPath}/category/list?type=1" class="category-chip">🍚 韓国料理</a>
-		<a href="${pageContext.request.contextPath}/category/list?type=2" class="category-chip">🍝 洋食</a>
-		<a href="${pageContext.request.contextPath}/category/list?type=3" class="category-chip">🥢 中華料理</a>
-		<a href="${pageContext.request.contextPath}/category/list?type=4" class="category-chip">🍣 和食</a>
-		<a href="${pageContext.request.contextPath}/category/list?type=5" class="category-chip">🍰 デザート</a>
-		<a href="${pageContext.request.contextPath}/category/list?type=6" class="category-chip">🥤 ドリンク</a>
-		<a href="${pageContext.request.contextPath}/category/list?type=7" class="category-chip">🍢 軽食</a>
-		<a href="${pageContext.request.contextPath}/category/list" class="category-chip">すべて見る</a>
-	</div>
-</section>
