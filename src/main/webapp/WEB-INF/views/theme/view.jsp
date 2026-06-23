@@ -139,12 +139,9 @@
             </c:if>
 
             <div class="text-center" style="width:100%; overflow:hidden;">
-                <h4>
-                    <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}"
-                       class="text-decoration-none text-dark">
-                        ${recipe.title}
-                    </a>
-                </h4>
+               <h4 class="text-dark">
+    ${recipe.title}
+</h4>
 
                 <div class="recipe-desc-wrapper">
                     <c:choose>
