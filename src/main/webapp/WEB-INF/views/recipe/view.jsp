@@ -443,6 +443,12 @@ function addReplyComment(parentReviewId) {
 }
 
 function showEditComment(reviewId) {
+	
+	
+	const buttons = event.target.parentElement;
+	buttons.style.display = "none";// 버튼 수정부분
+	
+	
     const contentDiv = document.getElementById("comment-content-" + reviewId);
     const oldContent = contentDiv.innerText;
 
