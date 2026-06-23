@@ -108,14 +108,12 @@
              style="border-bottom: 2px solid #eaeaea !important;">
 
             <c:if test="${not empty recipe.thumbnail}">
-                <div class="text-center mb-4">
-                    <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}">
-                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
-                             alt="${recipe.title}"
-                             style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    </a>
-                </div>
-            </c:if>
+    <div class="text-center mb-4">
+        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
+             alt="${recipe.title}"
+             style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    </div>
+</c:if>
 
             <c:if test="${not empty loginUser and loginUser.userId eq recipe.userId}">
                 <div class="position-absolute" style="top: 0; right: 0;">
