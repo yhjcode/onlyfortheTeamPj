@@ -203,25 +203,30 @@ public List<ListDTO> CategorySort(String sort, String categoryId, String ratingF
 				basesql += " AND R.CATEGORY_ID = ?";
 			}
 			
-			double minRating = 0.0;											//평점버튼 시작
+			double minRating = 0.0;											//평점버튼 시작	
 			double maxRating = 0.0;
 			if (ratingFilter != null && !ratingFilter.equals("0")) {
 			    int filterNum = Integer.parseInt(ratingFilter);
-			    if (filterNum == 10) {
-			        minRating = -0.1; 				// 0점대 레시피 포함
-			        maxRating = 0.5;
-			    } else {
-			        maxRating = 5.5 - (0.5 * filterNum);
-			        minRating = maxRating - 0.5;
-			    }
-			    basesql += " AND R.AVG_RATING > ? AND R.AVG_RATING <= ?";
-			}																		//평점버튼 끝
+			    
+			    if (filterNum == 1) { minRating = 4.5; maxRating = 5.0; }
+			    else if (filterNum == 2) { minRating = 4.0; maxRating = 4.4; }
+			    else if (filterNum == 3) { minRating = 3.5; maxRating = 3.9; }
+			    else if (filterNum == 4) { minRating = 3.0; maxRating = 3.4; }
+			    else if (filterNum == 5) { minRating = 2.5; maxRating = 2.9; }
+			    else if (filterNum == 6) { minRating = 2.0; maxRating = 2.4; }
+			    else if (filterNum == 7) { minRating = 1.5; maxRating = 1.9; }
+			    else if (filterNum == 8) { minRating = 1.0; maxRating = 1.4; }
+			    else if (filterNum == 9) { minRating = 0.5; maxRating = 0.9; }
+			    else if (filterNum == 10) { minRating = 0.0; maxRating = 0.4; }
+			    
+			    basesql += " AND AVG_RATING >= ? AND AVG_RATING <= ?"; 
+			}																	//평점버튼 끝
 			
 			
 			if("desc".equals(sort)) {
 				basesql += " ORDER BY R.CREATED_AT DESC";
 			}else if("view".equals(sort)) {
-				basesql += " ORDER BY R.VIEW_COUNT DESC";
+				basesql += " ORDER BY NVL(R.VIEW_COUNT, 0) DESC, R.CREATED_AT DESC";
 			}else if("avg".equals(sort)) {
 				basesql += " ORDER BY R.AVG_RATING DESC";
 			}
@@ -292,28 +297,44 @@ public List<ListDTO> CategorySort(String sort, String categoryId, String ratingF
 	        // 바인딩 인덱스용 변수
 	        int paramIndex = 1; 
 	        
-	        String sql = "SELECT COUNT(*) FROM RECIPE WHERE IS_DELETED = 0";
+	        String sql = "SELECT COUNT(*) FROM RECIPE R, USERS U WHERE R.USER_ID = U.USER_ID AND R.IS_DELETED = 0";
 	        
 	        // 카테고리
 	        if(categoryId != null && !categoryId.equals("0")) {
-	            sql += " AND CATEGORY_ID = ?";
+	            sql += " AND R.CATEGORY_ID = ?";
 	        }
 	
 	        // 평점버튼
 	        double minRating = 0.0;
 	        double maxRating = 0.0;
+
 	        if (ratingFilter != null && !ratingFilter.equals("0")) {
 	            int filterNum = Integer.parseInt(ratingFilter);
-	            if (filterNum == 10) {
-	                minRating = -0.1;
-	                maxRating = 0.5;
-	            } else {
-	                maxRating = 5.5 - (0.5 * filterNum);
-	                minRating = maxRating - 0.5;
+	            
+	            if (filterNum == 1) {          // 5 ~ 4.5
+	                minRating = 4.5; maxRating = 5.0;
+	            } else if (filterNum == 2) {   // 4.4 ~ 4.0
+	                minRating = 4.0; maxRating = 4.4;
+	            } else if (filterNum == 3) {   // 3.9 ~ 3.5
+	                minRating = 3.5; maxRating = 3.9;
+	            } else if (filterNum == 4) {   // 3.4 ~ 3.0
+	                minRating = 3.0; maxRating = 3.4;
+	            } else if (filterNum == 5) {   // 2.9 ~ 2.5
+	                minRating = 2.5; maxRating = 2.9;
+	            } else if (filterNum == 6) {   // 2.4 ~ 2.0
+	                minRating = 2.0; maxRating = 2.4;
+	            } else if (filterNum == 7) {   // 1.9 ~ 1.5
+	                minRating = 1.5; maxRating = 1.9;
+	            } else if (filterNum == 8) {   // 1.4 ~ 1.0
+	                minRating = 1.0; maxRating = 1.4;
+	            } else if (filterNum == 9) {   // 0.9 ~ 0.5
+	                minRating = 0.5; maxRating = 0.9;
+	            } else if (filterNum == 10) {  // 0.5 이하
+	                minRating = 0.0; maxRating = 0.4;
 	            }
-	            sql += " AND AVG_RATING > ? AND AVG_RATING <= ?";
+	            
+	            sql += " AND AVG_RATING >= ? AND AVG_RATING <= ?";
 	        }
-	        
 	        pstmt = con.prepareStatement(sql);
 	        
 	        if(categoryId != null && !categoryId.equals("0")) {
