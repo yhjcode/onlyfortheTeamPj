@@ -22,6 +22,12 @@
             align-items: center;
             margin-bottom: 10px;
         }
+
+        .preview-text-wrap {
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 
@@ -35,7 +41,8 @@
 
             <form action="${pageContext.request.contextPath}/theme/writeAction"
                   method="POST"
-                  enctype="multipart/form-data">
+                  enctype="multipart/form-data"
+                  onsubmit="return validateThemeWriteForm();">
 
                 <input type="hidden" name="themeId" value="0">
 
@@ -47,6 +54,10 @@
                            class="form-control"
                            placeholder="제목을 입력하세요"
                            required>
+
+                    <div class="text-end mt-1">
+                        <small id="titleCount" class="text-muted">0 / 300</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -55,6 +66,10 @@
                            name="subtitle"
                            id="input-subtitle"
                            class="form-control">
+
+                    <div class="text-end mt-1">
+                        <small id="subtitleCount" class="text-muted">0 / 300</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -72,18 +87,22 @@
                               id="input-content"
                               class="form-control"
                               rows="5"></textarea>
+
+                    <div class="text-end mt-1">
+                        <small id="contentCount" class="text-muted">0 / 4000</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">포함할 레시피</label>
 
                     <button type="button"
-        class="btn btn-secondary"
-        onclick="window.open('${pageContext.request.contextPath}/theme/myRecipeList?themeId=0&mode=write',
-                             'recipePopup',
-                             'width=700,height=600,scrollbars=yes')">
-    내 레시피 추가
-</button>
+                            class="btn btn-secondary"
+                            onclick="window.open('${pageContext.request.contextPath}/theme/myRecipeList?themeId=0&mode=write',
+                                                 'recipePopup',
+                                                 'width=700,height=600,scrollbars=yes')">
+                        내 레시피 추가
+                    </button>
 
                     <div id="selectedRecipeArea" class="mt-3"></div>
                 </div>
@@ -104,13 +123,17 @@
                      alt="미리보기">
 
                 <div class="card-body">
-                    <h5 id="preview-title" class="card-title">
+                    <h5 id="preview-title"
+                        class="card-title preview-text-wrap">
                         제목이 여기에 표시됩니다
                     </h5>
 
+                    <h6 id="preview-subtitle"
+                        class="card-subtitle mb-2 text-muted preview-text-wrap">
+                    </h6>
+
                     <p id="preview-content"
-                       class="card-text"
-                       style="white-space: pre-wrap;">
+                       class="card-text preview-text-wrap">
                         작성한 내용이 여기에 나타납니다.
                     </p>
                 </div>
@@ -120,6 +143,99 @@
 </div>
 
 <script>
+const TITLE_MAX = 300;
+const SUBTITLE_MAX = 300;
+const CONTENT_MAX = 4000;
+
+const titleInput = document.getElementById("input-title");
+const subtitleInput = document.getElementById("input-subtitle");
+const contentInput = document.getElementById("input-content");
+
+const titleCount = document.getElementById("titleCount");
+const subtitleCount = document.getElementById("subtitleCount");
+const contentCount = document.getElementById("contentCount");
+
+const previewTitle = document.getElementById("preview-title");
+const previewSubtitle = document.getElementById("preview-subtitle");
+const previewContent = document.getElementById("preview-content");
+
+function toggleCountColor(counter, length, max) {
+    if (length > max) {
+        counter.classList.remove("text-muted");
+        counter.classList.add("text-danger");
+    } else {
+        counter.classList.remove("text-danger");
+        counter.classList.add("text-muted");
+    }
+}
+
+function updateCounts() {
+    titleCount.innerText = titleInput.value.length + " / " + TITLE_MAX;
+    subtitleCount.innerText = subtitleInput.value.length + " / " + SUBTITLE_MAX;
+    contentCount.innerText = contentInput.value.length + " / " + CONTENT_MAX;
+
+    toggleCountColor(titleCount, titleInput.value.length, TITLE_MAX);
+    toggleCountColor(subtitleCount, subtitleInput.value.length, SUBTITLE_MAX);
+    toggleCountColor(contentCount, contentInput.value.length, CONTENT_MAX);
+}
+
+titleInput.addEventListener("input", function(e) {
+    previewTitle.innerText = e.target.value || "제목이 여기에 표시됩니다";
+    updateCounts();
+});
+
+subtitleInput.addEventListener("input", function(e) {
+    previewSubtitle.innerText = e.target.value;
+    updateCounts();
+});
+
+contentInput.addEventListener("input", function(e) {
+    previewContent.innerText = e.target.value || "작성한 내용이 여기에 나타납니다.";
+    updateCounts();
+});
+
+document.getElementById("input-img").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            document.getElementById("preview-img").src = event.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    }
+});
+
+function validateThemeWriteForm() {
+    const title = titleInput.value.trim();
+    const subtitle = subtitleInput.value.trim();
+    const content = contentInput.value;
+
+    if (title.length === 0) {
+        alert("테마 제목을 입력하세요.");
+        return false;
+    }
+
+    if (title.length > TITLE_MAX) {
+        alert("테마 제목은 최대 300자까지 입력 가능합니다.");
+        return false;
+    }
+
+    if (subtitle.length > SUBTITLE_MAX) {
+        alert("부제목은 최대 300자까지 입력 가능합니다.");
+        return false;
+    }
+
+    if (content.length > CONTENT_MAX) {
+        alert("테마 상세 내용은 최대 4000자까지 입력 가능합니다.");
+        return false;
+    }
+
+    return true;
+}
+
 function addRecipeToWrite(recipeId, title) {
     var area = document.getElementById("selectedRecipeArea");
 
@@ -146,6 +262,8 @@ function addRecipeToWrite(recipeId, title) {
 
     area.appendChild(div);
 }
+
+updateCounts();
 </script>
 
 </body>
