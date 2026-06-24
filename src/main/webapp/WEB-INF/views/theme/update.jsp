@@ -33,29 +33,31 @@
                 <div class="mb-3">
                     <label class="form-label">テーマタイトル *</label>
                     <input type="text"
-                           name="title"
-                           id="input-title"
-                           class="form-control"
-                           value="${theme.title}"
-                           required>
+       name="title"
+       id="input-title"
+       class="form-control"
+       value="${theme.title}"
+       maxlength="33"
+       required>
 
                     <div class="text-end mt-1">
-                        <small id="titleCount" class="text-muted">0 / 300</small>
+                        <small id="titleCount" class="text-muted">0 / 33</small>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">サブタイトル</label>
                     <input type="text"
-                           name="subtitle"
-                           id="input-subtitle"
-                           class="form-control"
-                           value="${theme.subtitle}">
+       name="subtitle"
+       id="input-subtitle"
+       class="form-control"
+       value="${theme.subtitle}"
+       maxlength="33">
 
-                    <div class="text-end mt-1">
-                        <small id="subtitleCount" class="text-muted">0 / 300</small>
-                    </div>
-                </div>
+<div class="text-end mt-1">
+    <small id="subtitleCount" class="text-muted">0 / 33</small>
+</div>
+</div>
 
                 <div class="mb-3">
                     <label class="form-label">画像アップロード（変更時に選択）</label>
@@ -131,8 +133,8 @@
 </div>
 
 <script>
-    const TITLE_MAX = 300;
-    const SUBTITLE_MAX = 300;
+    const TITLE_MAX = 33;
+    const SUBTITLE_MAX = 33;
     const CONTENT_MAX = 4000;
 
     const titleInput = document.getElementById("input-title");
@@ -224,12 +226,12 @@
         }
 
         if (title.length > TITLE_MAX) {
-            alert("テーマタイトルは最大300文字まで入力できます。");
+            alert("テーマタイトルは最大33文字まで入力できます。");
             return false;
         }
 
         if (subtitle.length > SUBTITLE_MAX) {
-            alert("サブタイトルは最大300文字まで入力できます。");
+            alert("サブタイトルは最大33文字まで入力できます。");
             return false;
         }
 
