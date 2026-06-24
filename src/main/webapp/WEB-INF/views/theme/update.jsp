@@ -93,7 +93,7 @@
                 <c:choose>
     <c:when test="${not empty theme.thumbnail}">
         <img id="preview-img"
-             src="${pageContext.request.contextPath}/resources/upload/theme/${theme.thumbnail}"
+             src="${pageContext.request.contextPath}${theme.thumbnail}"
              class="card-img-top"
              alt="プレビュー"
              style="max-height:250px; object-fit:cover;">

@@ -16,14 +16,14 @@
 </section>
 
 <!-- ============================================
-     별점 높은 레시피
+     조회수 높은 레시피
      ============================================ -->
 <section class="section-card position-relative">
 	<div class="d-flex justify-content-between align-items-center mb-4">
 		<h3 class="section-title">
-			<i class="bi bi-star-fill text-danger me-2"></i> <span class="accent">高評価</span>&nbsp;レシピ
+			<i class="bi bi-eye-fill text-danger me-2"></i> <span class="accent">人気</span>&nbsp;レシピ
 		</h3>
-		<a href="${pageContext.request.contextPath}/category/list" class="btn-more">
+		<a href="${pageContext.request.contextPath}/category/list?sort=view" class="btn-more">
 			もっと見る <i class="bi bi-chevron-right"></i>
 		</a>
 	</div>
@@ -34,8 +34,8 @@
 		<div class="carousel-viewport">
 			<div class="carousel-track">
 				<c:choose>
-					<c:when test="${not empty topRatedRecipes}">
-						<c:forEach var="r" items="${topRatedRecipes}" varStatus="status">
+					<c:when test="${not empty topViewRecipes}">
+						<c:forEach var="r" items="${topViewRecipes}" varStatus="status">
 							<div class="slide-item">
 								<a href="${pageContext.request.contextPath}/recipe/view?id=${r.recipeId}">
 									<div class="recipe-card">
@@ -53,13 +53,13 @@
 										<div class="recipe-card-body">
 											<h6 class="recipe-card-title">${r.title}</h6>
 											<div class="recipe-meta">
+												<span><i class="bi bi-eye-fill"></i> ${r.viewCount}</span>
 												<span class="rating"><i class="bi bi-star-fill"></i>
 													<c:choose>
 														<c:when test="${r.avgRating != null}"><fmt:formatNumber value="${r.avgRating}" pattern="0.0"/></c:when>
 														<c:otherwise>-</c:otherwise>
 													</c:choose>
 												</span>
-												<span><i class="bi bi-eye"></i> ${r.viewCount}</span>
 												<span><i class="bi bi-person"></i> ${r.nickname}</span>
 											</div>
 										</div>
@@ -70,7 +70,7 @@
 					</c:when>
 					<c:otherwise>
 						<div class="slide-item" style="min-width:100%">
-							<div class="text-center text-muted py-4">まだ評価済みレシピがありません。</div>
+							<div class="text-center text-muted py-4">レシピがありません。</div>
 						</div>
 					</c:otherwise>
 				</c:choose>

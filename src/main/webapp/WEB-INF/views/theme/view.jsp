@@ -39,7 +39,7 @@
 
     <c:if test="${not empty theme.thumbnail}">
         <div class="text-center mb-4">
-            <img src="${pageContext.request.contextPath}/resources/upload/theme/${theme.thumbnail}"
+            <img src="${pageContext.request.contextPath}${theme.thumbnail}"
                  alt="${theme.title}"
                  style="max-width: 500px; border-radius: 15px;">
         </div>
@@ -109,7 +109,7 @@
 
     <c:if test="${not empty recipe.thumbnail}">
         <div class="text-center mb-4">
-            <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
+            <img src="${pageContext.request.contextPath}${recipe.thumbnail}"
                  alt="${recipe.title}"
                  style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         </div>

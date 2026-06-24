@@ -18,7 +18,7 @@
                         <div class="recipe-card-img-wrap">
                             <c:choose>
                             <c:when test="${not empty theme.thumbnail}">
-                                <img src="${pageContext.request.contextPath}/resources/upload/theme/${theme.thumbnail}" class="recipe-card-img" alt="${theme.title}">
+                                <img src="${pageContext.request.contextPath}${theme.thumbnail}" class="recipe-card-img" alt="${theme.title}">
                                 
                             </c:when>
                             <c:otherwise>

@@ -96,10 +96,10 @@ public class RecipeDAO {
     public RecipeDTO selectRecipeById(long recipeId) throws SQLException {
         String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
                    + "       r.servings, r.cook_time, r.difficulty, r.view_count, r.avg_rating, "
-                   + "       r.is_deleted, r.created_at, u.nickname, cl.name AS category_name "
+                   + "       r.is_deleted, r.created_at, u.nickname, cm.name AS category_name "
                    + "  FROM RECIPE r "
                    + "  JOIN USERS u ON r.user_id = u.user_id "
-                   + "  JOIN CATEGORY_L cl ON r.category_id = cl.categoryl_id "
+                   + "  JOIN CATEGORY_M cm ON r.category_id = cm.categorym_id "
                    + " WHERE r.recipe_id = ? AND r.is_deleted = 0";
 
         Connection conn = null;
