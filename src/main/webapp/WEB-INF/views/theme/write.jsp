@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>테마 작성하기</title>
+    <title>テーマを作成する</title>
 
     <style>
         .selected-recipe-box {
@@ -34,7 +34,7 @@
 <body class="bg-light">
 
 <div class="container py-5">
-    <h2 class="mb-4">테마 작성</h2>
+    <h2 class="mb-4">テーマ作成</h2>
 
     <div class="row">
         <div class="col-md-7">
@@ -47,12 +47,12 @@
                 <input type="hidden" name="themeId" value="0">
 
                 <div class="mb-3">
-                    <label class="form-label">테마 제목 *</label>
+                    <label class="form-label">テーマタイトル *</label>
                     <input type="text"
                            name="title"
                            id="input-title"
                            class="form-control"
-                           placeholder="제목을 입력하세요"
+                           placeholder="タイトルを入力してください"
                            required>
 
                     <div class="text-end mt-1">
@@ -61,7 +61,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">부제목</label>
+                    <label class="form-label">サブタイトル</label>
                     <input type="text"
                            name="subtitle"
                            id="input-subtitle"
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">이미지 업로드</label>
+                    <label class="form-label">画像アップロード</label>
                     <input type="file"
                            name="thumbnail"
                            id="input-img"
@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">테마 상세 내용</label>
+                    <label class="form-label">テーマ詳細内容</label>
                     <textarea name="description"
                               id="input-content"
                               class="form-control"
@@ -94,45 +94,45 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">포함할 레시피</label>
+                    <label class="form-label">含めるレシピ</label>
 
                     <button type="button"
                             class="btn btn-secondary"
                             onclick="window.open('${pageContext.request.contextPath}/theme/myRecipeList?themeId=0&mode=write',
                                                  'recipePopup',
                                                  'width=700,height=600,scrollbars=yes')">
-                        내 레시피 추가
+                        マイレシピを追加
                     </button>
 
                     <div id="selectedRecipeArea" class="mt-3"></div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                    등록
+                    登録
                 </button>
             </form>
         </div>
 
         <div class="col-md-5">
-            <h5>실시간 미리보기</h5>
+            <h5>リアルタイムプレビュー</h5>
 
             <div class="card shadow-sm sticky-top" style="top: 20px;">
                 <div id="preview-img-box"
      class="card-img-top d-flex align-items-center justify-content-center"
      style="height:200px; background:#f1f1f1; color:#999;">
-    이미지 미리보기
+    画像プレビュー
 </div>
 
 <img id="preview-img"
      src=""
      class="card-img-top"
-     alt="미리보기"
+     alt="プレビュー"
      style="display:none;">
 
                 <div class="card-body">
                     <h5 id="preview-title"
                         class="card-title preview-text-wrap">
-                        제목이 여기에 표시됩니다
+                        タイトルがここに表示されます
                     </h5>
 
                     <h6 id="preview-subtitle"
@@ -141,7 +141,7 @@
 
                     <p id="preview-content"
                        class="card-text preview-text-wrap">
-                        작성한 내용이 여기에 나타납니다.
+                        作成した内容がここに表示されます。
                     </p>
                 </div>
             </div>
@@ -187,7 +187,7 @@ function updateCounts() {
 }
 
 titleInput.addEventListener("input", function(e) {
-    previewTitle.innerText = e.target.value || "제목이 여기에 표시됩니다";
+    previewTitle.innerText = e.target.value || "タイトルがここに表示されます";
     updateCounts();
 });
 
@@ -197,7 +197,7 @@ subtitleInput.addEventListener("input", function(e) {
 });
 
 contentInput.addEventListener("input", function(e) {
-    previewContent.innerText = e.target.value || "작성한 내용이 여기에 나타납니다.";
+    previewContent.innerText = e.target.value || "作成した内容がここに表示されます。";
     updateCounts();
 });
 
@@ -239,22 +239,22 @@ function validateThemeWriteForm() {
     const content = contentInput.value;
 
     if (title.length === 0) {
-        alert("테마 제목을 입력하세요.");
+        alert("テーマタイトルを入力してください。");
         return false;
     }
 
     if (title.length > TITLE_MAX) {
-        alert("테마 제목은 최대 300자까지 입력 가능합니다.");
+        alert("テーマタイトルは最大300文字まで入力できます。");
         return false;
     }
 
     if (subtitle.length > SUBTITLE_MAX) {
-        alert("부제목은 최대 300자까지 입력 가능합니다.");
+        alert("サブタイトルは最大300文字まで入力できます。");
         return false;
     }
 
     if (content.length > CONTENT_MAX) {
-        alert("테마 상세 내용은 최대 4000자까지 입력 가능합니다.");
+        alert("テーマ詳細内容は最大4000文字まで入力できます。");
         return false;
     }
 
@@ -265,7 +265,7 @@ function addRecipeToWrite(recipeId, title) {
     var area = document.getElementById("selectedRecipeArea");
 
     if (document.getElementById("rec-" + recipeId)) {
-        alert("이미 추가된 레시피입니다.");
+        alert("すでに追加されたレシピです。");
         return;
     }
 
@@ -276,10 +276,10 @@ function addRecipeToWrite(recipeId, title) {
     div.innerHTML =
         '<div class="selected-recipe-header">' +
             '<strong>' + title + '</strong>' +
-            '<button type="button" class="btn btn-danger btn-sm">삭제</button>' +
+            '<button type="button" class="btn btn-danger btn-sm">削除</button>' +
         '</div>' +
         '<input type="hidden" name="recipeIds" value="' + recipeId + '">' +
-        '<input type="text" name="descriptions" class="form-control my-2" placeholder="이 레시피 소개글">';
+        '<input type="text" name="descriptions" class="form-control my-2" placeholder="このレシピの紹介文">';
 
     div.querySelector("button").onclick = function() {
         div.remove();

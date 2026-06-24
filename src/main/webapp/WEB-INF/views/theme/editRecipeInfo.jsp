@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="container py-4">
-    <h3 class="fw-bold mb-4">레시피 정보 수정</h3>
+    <h3 class="fw-bold mb-4">レシピ情報を編集</h3>
 
     <form action="${pageContext.request.contextPath}/theme/editRecipeInfoAction"
           method="post"
@@ -16,7 +16,7 @@
         <div class="card p-4 shadow-sm">
 
             <div class="mb-4 text-center">
-                <label class="form-label d-block text-start">기존 사진</label>
+                <label class="form-label d-block text-start">既存の写真</label>
 
                 <c:if test="${not empty recipe.thumbnail}">
                     <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
@@ -29,12 +29,12 @@
                        class="form-control">
 
                 <small class="text-muted">
-                    새 사진을 선택하지 않으면 기존 사진이 유지됩니다.
+                    新しい写真を選択しなければ既存の写真が維持されます。
                 </small>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">제목</label>
+                <label class="form-label">タイトル</label>
 
                 <input type="text"
                        name="title"
@@ -50,7 +50,7 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">설명</label>
+                <label class="form-label">説明</label>
 
                 <textarea name="description"
                           id="description"
@@ -66,12 +66,12 @@
             <div class="d-flex gap-2">
                 <button type="submit"
                         class="btn btn-primary px-4">
-                    수정 완료
+                    編集完了
                 </button>
 
                 <a href="${pageContext.request.contextPath}/theme/view?themeId=${themeId}"
                    class="btn btn-secondary px-4">
-                    취소
+                    キャンセル
                 </a>
             </div>
 
@@ -123,17 +123,17 @@ function validateRecipeForm() {
     const description = document.getElementById("description").value;
 
     if (title.length === 0) {
-        alert("제목을 입력하세요.");
+        alert("タイトルを入力してください。");
         return false;
     }
 
     if (title.length > 200) {
-        alert("제목은 최대 200자까지 입력 가능합니다.");
+        alert("タイトルは最大200文字まで入力できます。");
         return false;
     }
 
     if (description.length > 1000) {
-        alert("설명은 최대 1000자까지 입력 가능합니다.");
+        alert("説明は最大1000文字まで入力できます。");
         return false;
     }
 

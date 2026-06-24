@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>테마 수정하기</title>
+    <title>テーマを編集する</title>
 
     <style>
         .preview-text-wrap {
@@ -18,7 +18,7 @@
 <body class="bg-light">
 
 <div class="container py-5">
-    <h2 class="mb-4">테마 수정</h2>
+    <h2 class="mb-4">テーマ編集</h2>
 
     <div class="row">
         <div class="col-md-7">
@@ -31,7 +31,7 @@
                 <input type="hidden" name="oldThumbnail" value="${theme.thumbnail}">
 
                 <div class="mb-3">
-                    <label class="form-label">테마 제목 *</label>
+                    <label class="form-label">テーマタイトル *</label>
                     <input type="text"
                            name="title"
                            id="input-title"
@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">부제목</label>
+                    <label class="form-label">サブタイトル</label>
                     <input type="text"
                            name="subtitle"
                            id="input-subtitle"
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">이미지 업로드 (변경 시 선택)</label>
+                    <label class="form-label">画像アップロード（変更時に選択）</label>
                     <input type="file"
                            name="thumbnail"
                            id="input-img"
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">테마 상세 내용</label>
+                    <label class="form-label">テーマ詳細内容</label>
                     <textarea name="description"
                               id="input-content"
                               class="form-control"
@@ -79,13 +79,13 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                    수정 완료
+                    編集完了
                 </button>
             </form>
         </div>
 
         <div class="col-md-5">
-            <h5>실시간 미리보기</h5>
+            <h5>リアルタイムプレビュー</h5>
 
             <div class="card shadow-sm">
                 <c:choose>
@@ -93,7 +93,7 @@
         <img id="preview-img"
              src="${pageContext.request.contextPath}/resources/upload/theme/${theme.thumbnail}"
              class="card-img-top"
-             alt="미리보기"
+             alt="プレビュー"
              style="max-height:250px; object-fit:cover;">
 
         <div id="preview-img-box"
@@ -105,7 +105,7 @@
         <div id="preview-img-box"
              class="card-img-top d-flex align-items-center justify-content-center"
              style="height:250px; background:#f5f5f5; color:#999; font-size:18px;">
-            이미지를 선택하세요
+            画像を選択してください
         </div>
 
         <img id="preview-img"
@@ -219,22 +219,22 @@
         const content = contentInput.value;
 
         if (title.length === 0) {
-            alert("테마 제목을 입력하세요.");
+            alert("テーマタイトルを入力してください。");
             return false;
         }
 
         if (title.length > TITLE_MAX) {
-            alert("테마 제목은 최대 300자까지 입력 가능합니다.");
+            alert("テーマタイトルは最大300文字まで入力できます。");
             return false;
         }
 
         if (subtitle.length > SUBTITLE_MAX) {
-            alert("부제목은 최대 300자까지 입력 가능합니다.");
+            alert("サブタイトルは最大300文字まで入力できます。");
             return false;
         }
 
         if (content.length > CONTENT_MAX) {
-            alert("테마 상세 내용은 최대 4000자까지 입력 가능합니다.");
+            alert("テーマ詳細内容は最大4000文字まで入力できます。");
             return false;
         }
 

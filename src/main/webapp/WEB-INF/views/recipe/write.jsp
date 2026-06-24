@@ -190,11 +190,11 @@
                                 <option value="${category.categorylId}"><c:out value="${category.name}" /></option>
                             </c:forEach>
                             <c:if test="${empty categoryList}">
-                                <option value="1">찌개/국</option>
-                                <option value="2">구이</option>
-                                <option value="3">볶음</option>
-                                <option value="4">파스타</option>
-                                <option value="5">스테이크</option>
+                                <option value="1">チゲ/スープ</option>
+                                <option value="2">焼き物</option>
+                                <option value="3">炒め物</option>
+                                <option value="4">パスタ</option>
+                                <option value="5">ステーキ</option>
                             </c:if>
                         </select>
                     </div>

@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>내 레시피 선택</title>
+<title>マイレシピを選択</title>
 
 <style>
 body {
@@ -61,7 +61,7 @@ h3 {
 
 <body>
 
-<h3>내 레시피 선택</h3>
+<h3>マイレシピを選択</h3>
 
 <c:choose>
     <c:when test="${not empty myRecipeList}">
@@ -84,7 +84,7 @@ h3 {
                                 class="select-btn write-select-btn"
                                 data-recipe-id="${recipe.recipeId}"
                                 data-recipe-title="${recipe.title}">
-                            선택
+                            選択
                         </button>
                     </div>
                 </c:when>
@@ -108,10 +108,10 @@ h3 {
                         <input type="text"
                                name="description"
                                class="desc-input"
-                               placeholder="테마 소개글 입력">
+                               placeholder="テーマ紹介文を入力">
 
                         <button type="submit" class="select-btn">
-                            선택
+                            選択
                         </button>
                     </form>
                 </c:otherwise>
@@ -124,7 +124,7 @@ h3 {
 
     <c:otherwise>
         <div style="text-align:center; padding:20px;">
-            등록된 레시피가 없습니다.
+            登録されたレシピがありません。
         </div>
     </c:otherwise>
 </c:choose>
@@ -133,7 +133,7 @@ h3 {
     <button type="button"
             class="select-btn close-btn"
             onclick="window.close()">
-        닫기
+        閉じる
     </button>
 </div>
 
@@ -147,7 +147,7 @@ document.addEventListener('click', function(e) {
             window.opener.addRecipeToWrite(recipeId, title);
             window.close();
         } else {
-            alert("부모 창의 addRecipeToWrite 함수를 찾을 수 없습니다.");
+            alert("親ウィンドウのaddRecipeToWrite関数が見つかりません。");
         }
     }
 });

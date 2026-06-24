@@ -121,7 +121,7 @@ public class UserController extends HttpServlet {
                 req.getSession().setAttribute("loginUser", user);
                 resp.sendRedirect(req.getContextPath() + "/main");
             } else {
-                req.setAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
+                req.setAttribute("errorMsg", "ユーザーIDまたはパスワードが間違っています。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/login.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
             }
@@ -160,7 +160,7 @@ public class UserController extends HttpServlet {
             if (success) {
                 resp.sendRedirect(req.getContextPath() + "/user/login");
             } else {
-                req.setAttribute("errorMsg", "이미 사용 중인 아이디입니다.");
+                req.setAttribute("errorMsg", "すでに使用されているユーザーIDです。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/join.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
             }
@@ -239,7 +239,7 @@ public class UserController extends HttpServlet {
         try {
             UserDTO verified = userService.login(loginUser.getUserId(), password);
             if (verified == null) {
-                req.setAttribute("errorMsg", "비밀번호가 올바르지 않습니다.");
+                req.setAttribute("errorMsg", "パスワードが正しくありません。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/withdraw.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
                 return;

@@ -3,13 +3,13 @@
 
 <div class="container py-4">
     <div class="d-flex justify-content-end mb-3">
-        <a href="${pageContext.request.contextPath}/theme/write" class="btn btn-outline-primary">추천테마 작성</a>
+        <a href="${pageContext.request.contextPath}/theme/write" class="btn btn-outline-primary">おすすめテーマを作成</a>
     </div>
     <div class="section-card mb-4">
         <h2 class="section-title">
-            <span class="accent">추천</span> 테마 리스트
+            <span class="accent">おすすめ</span>テーマリスト
         </h2>
-        <p class="text-muted mt-2">전문 셰프들이 추천하는 다양한 테마별 레시피를 만나보세요!</p>
+        <p class="text-muted mt-2">プロシェフたちがおすすめする様々なテーマ別レシピをご覧ください！</p>
 
         <div class="row g-4 mt-2">
             <c:forEach var="theme" items="${themeList}">
@@ -30,7 +30,7 @@
                             <h5 class="recipe-card-title">${theme.title}</h5>
                             <p class="recipe-meta text-truncate">${theme.description}</p>
                             <div class="recipe-meta mt-2">
-                                <span><i class="bi bi-eye"></i> 조회수 ${theme.viewCount}</span>
+                                <span><i class="bi bi-eye"></i> 閲覧数 ${theme.viewCount}</span>
                             </div>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
             
             <c:if test="${empty themeList}">
                 <div class="col-12 text-center py-5">
-                    <p class="text-muted">등록된 추천 테마가 없습니다.</p>
+                    <p class="text-muted">登録されたおすすめテーマがありません。</p>
                 </div>
             </c:if>
         </div>
