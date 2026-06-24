@@ -94,16 +94,7 @@
     </div>
 
     <!-- 테마 설명 -->
-    <div class="mb-5 p-4 bg-light rounded-4">
-        <c:choose>
-            <c:when test="${not empty theme.description}">
-                ${theme.description}
-            </c:when>
-            <c:otherwise>
-                테마 소개글을 준비 중입니다.
-            </c:otherwise>
-        </c:choose>
-    </div>
+    <div class="mb-5 p-4 bg-light rounded-4 theme-desc"><c:choose><c:when test="${not empty theme.description}">${fn:trim(theme.description)}</c:when><c:otherwise>테마 소개글을 준비 중입니다.</c:otherwise></c:choose></div>
 
     <c:if test="${empty recipeList}">
         <div class="text-center text-muted py-5">
@@ -113,76 +104,104 @@
     </c:if>
 
     <c:forEach var="recipe" items="${recipeList}">
-        <div class="mb-5 pb-5 position-relative"
-             style="border-bottom: 2px solid #eaeaea !important;">
+<div class="mb-5 pb-5 position-relative"
+     style="border-bottom: 2px solid #eaeaea !important;">
 
-            <c:if test="${not empty recipe.thumbnail}">
-                <div class="text-center mb-4">
-                    <a href="${pageContext.request.contextPath}/recipe/view?recipeId=${recipe.recipeId}">
-                        <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
-                             alt="${recipe.title}"
-                             style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    </a>
-                </div>
-            </c:if>
+    <c:if test="${not empty recipe.thumbnail}">
+        <div class="text-center mb-4">
+            <img src="${pageContext.request.contextPath}/resources/upload/recipe/${recipe.thumbnail}"
+                 alt="${recipe.title}"
+                 style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        </div>
+    </c:if>
 
-            <c:if test="${not empty loginUser and loginUser.userId eq recipe.userId}">
-                <div class="position-absolute" style="top: 0; right: 0;">
-                    <button type="button"
-                            class="btn btn-sm btn-outline-secondary me-2"
-                            onclick="location.href='${pageContext.request.contextPath}/theme/editRecipeInfo?themeId=${theme.themeId}&recipeId=${recipe.recipeId}'">
-                        소개 수정
-                    </button>
+    <!-- 제목 + 버튼 -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
 
-                    <form action="${pageContext.request.contextPath}/theme/removeRecipe"
-                          method="post"
-                          class="d-inline">
-                        <input type="hidden" name="themeId" value="${theme.themeId}">
-                        <input type="hidden" name="recipeId" value="${recipe.recipeId}">
-
-                        <button type="submit"
-                                class="btn btn-sm btn-outline-danger"
-                                onclick="return confirm('이 요리를 테마에서 제거하시겠습니까?');">
-                            X 삭제
-                        </button>
-                    </form>
-                </div>
-            </c:if>
-
-            <div class="text-center" style="width:100%; overflow:hidden;">
-               <h4 class="text-dark">
+        <div style="flex:1; min-width:0; padding-right:15px;">
+            <h4 class="text-dark mb-0"
+    style="
+        word-break: normal;
+        overflow-wrap: anywhere;
+        line-height:1.5;
+        text-align:left;
+        margin:0;
+    ">
     ${recipe.title}
 </h4>
-
-                <div class="recipe-desc-wrapper">
-                    <c:choose>
-                        <c:when test="${not empty recipe.description}">
-                            <p class="text-muted mt-3 recipe-desc"
-                               style="font-size:1.1rem; text-align:left;">${fn:trim(recipe.description)}</p>
-                        </c:when>
-
-                        <c:otherwise>
-                            작성된 소개글이 없습니다.
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-
-                <div class="mt-3 d-flex justify-content-center gap-2">
-                    <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
-                     class="btn btn-outline-primary btn-sm px-3">
-                     레시피로 이동
-                     </a>
-
-                    <c:if test="${not empty recipe.recipeLink}">
-                        <a href="${recipe.recipeLink}"
-                           target="_blank"
-                           class="btn btn-outline-success btn-sm px-3">
-                            상세 레시피 바로가기
-                        </a>
-                    </c:if>
-                </div>
-            </div>
         </div>
+
+        <c:if test="${not empty loginUser and loginUser.userId eq recipe.userId}">
+            <div style="white-space:nowrap; flex-shrink:0;">
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary me-2"
+                        onclick="location.href='${pageContext.request.contextPath}/theme/editRecipeInfo?themeId=${theme.themeId}&recipeId=${recipe.recipeId}'">
+                    소개 수정
+                </button>
+
+                <form action="${pageContext.request.contextPath}/theme/removeRecipe"
+                      method="post"
+                      class="d-inline">
+
+                    <input type="hidden"
+                           name="themeId"
+                           value="${theme.themeId}">
+
+                    <input type="hidden"
+                           name="recipeId"
+                           value="${recipe.recipeId}">
+
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('이 요리를 테마에서 제거하시겠습니까?');">
+                        X 삭제
+                    </button>
+
+                </form>
+
+            </div>
+        </c:if>
+
+    </div>
+
+    <!-- 설명 -->
+    <div class="recipe-desc-wrapper">
+
+        <c:choose>
+
+            <c:when test="${not empty recipe.description}">
+                <p class="text-muted mt-3 recipe-desc"
+   style="font-size:1.1rem; text-align:left;">${fn:trim(recipe.description)}</p>
+            </c:when>
+
+            <c:otherwise>
+                <p class="text-muted mt-3 recipe-desc"
+   style="font-size:1.1rem; text-align:left;">작성된 소개글이 없습니다.</p>            </c:otherwise>
+
+        </c:choose>
+
+    </div>
+
+    <!-- 버튼 -->
+    <div class="mt-3 d-flex justify-content-center gap-2">
+
+        <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
+           class="btn btn-outline-primary btn-sm px-3">
+            레시피로 이동
+        </a>
+
+        <c:if test="${not empty recipe.recipeLink}">
+            <a href="${recipe.recipeLink}"
+               target="_blank"
+               class="btn btn-outline-success btn-sm px-3">
+                상세 레시피 바로가기
+            </a>
+        </c:if>
+
+    </div>
+
+</div>
     </c:forEach>
 
 </div>
@@ -197,8 +216,6 @@
 
     <c:if test="${not empty loginUser}">
         <div class="mb-4">
-        <div class="mb-3">
-    <label class="form-label">별점</label>
 
             <div class="mb-3">
                 <label class="form-label">별점</label>
@@ -342,7 +359,6 @@ function loadThemeComments() {
                         comment.content +
                     '</div>';
 
-                html += '<div class="mt-2">';
                 html += '<div class="mt-2" id="button-area-' + comment.commentId + '">';
 
                 if (loginUserId !== "" && !isReply) {
@@ -460,9 +476,6 @@ function showEditComment(commentId) {
     contentDiv.innerHTML =
         '<textarea id="edit-comment-' + commentId + '" class="form-control" rows="3">' +
             oldContent +
-        '</textarea>' +
-        '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="updateThemeComment(' + commentId + ')">저장</button>' +
-        '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="loadThemeComments()">취소</button>';
         '</textarea>';
 
     buttonDiv.innerHTML =
@@ -521,26 +534,4 @@ function deleteThemeComment(commentId) {
         }
     });
 }
-function changeRating(amount) {
-    let rating = parseFloat(document.getElementById("commentRating").value);
-    rating = Math.round((rating + amount) * 10) / 10;
-
-    if (rating < 0.1) rating = 0.1;
-    if (rating > 5.0) rating = 5.0;
-
-    document.getElementById("commentRating").value = rating.toFixed(1);
-    document.getElementById("ratingText").innerText = rating.toFixed(1);
-
-    updateStars(rating);
-}
-
-function updateStars(rating) {
-    const fullStars = Math.floor(rating);
-    let stars = "";
-
-    for (let i = 1; i <= 5; i++) {
-        stars += i <= fullStars ? "★" : "☆";
-    }
-
-    document.getElementById("starRating").innerText = stars;
-}
+</script>

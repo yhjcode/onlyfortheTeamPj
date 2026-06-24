@@ -4,6 +4,7 @@
 
 <style>
     .recipe-view-wrap { max-width: 980px; margin: 0 auto; }
+
     .recipe-hero {
         background: #fff;
         border: 1px solid #e9ecef;
@@ -11,12 +12,14 @@
         overflow: hidden;
         margin-bottom: 22px;
     }
+
     .recipe-hero-img {
         width: 100%;
         max-height: 520px;
         object-fit: cover;
         background: #f4f4f4;
     }
+
     .recipe-hero-empty {
         min-height: 320px;
         background: #f7f7f7;
@@ -26,18 +29,22 @@
         color: #adb5bd;
         font-size: 4rem;
     }
+
     .recipe-hero-body { padding: 30px 36px; text-align: center; }
+
     .recipe-title {
         font-size: 2rem;
         line-height: 1.35;
         font-weight: 800;
         margin-bottom: 12px;
     }
+
     .recipe-desc {
         color: #6c757d;
         white-space: pre-line;
         margin-bottom: 18px;
     }
+
     .recipe-meta-list {
         display: flex;
         justify-content: center;
@@ -45,17 +52,20 @@
         flex-wrap: wrap;
         margin-top: 20px;
     }
+
     .recipe-meta-item {
         min-width: 110px;
         color: #495057;
         font-weight: 700;
     }
+
     .recipe-meta-item i {
         display: block;
         font-size: 1.8rem;
         color: #dc3545;
         margin-bottom: 6px;
     }
+
     .recipe-view-section {
         background: #fff;
         border: 1px solid #e9ecef;
@@ -63,17 +73,20 @@
         padding: 30px 36px;
         margin-bottom: 22px;
     }
+
     .recipe-view-section h3 {
         font-size: 1.35rem;
         font-weight: 800;
         color: var(--bggchef-primary);
         margin-bottom: 22px;
     }
+
     .ingredient-list {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0 28px;
     }
+
     .ingredient-item {
         display: flex;
         justify-content: space-between;
@@ -81,8 +94,10 @@
         border-bottom: 1px solid #f1f3f5;
         padding: 12px 0;
     }
+
     .ingredient-name { font-weight: 700; color: #343a40; }
     .ingredient-amount { color: #868e96; text-align: right; }
+
     .step-item {
         display: grid;
         grid-template-columns: 82px 1fr;
@@ -90,7 +105,9 @@
         padding: 26px 0;
         border-bottom: 1px solid #f1f3f5;
     }
+
     .step-item:last-child { border-bottom: 0; }
+
     .step-no {
         width: 72px;
         height: 72px;
@@ -103,12 +120,14 @@
         font-size: 1.25rem;
         font-weight: 800;
     }
+
     .step-content {
         font-size: 1.05rem;
         color: #343a40;
         white-space: pre-line;
         margin-bottom: 16px;
     }
+
     .step-img {
         width: 100%;
         max-width: 680px;
@@ -116,9 +135,44 @@
         border: 1px solid #e9ecef;
         object-fit: cover;
     }
+
+    .comment-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px 36px;
+        max-width: 980px;
+        margin: 0 auto 50px auto;
+    }
+
+    .rating-wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .star-rating {
+    color: #ffc107;
+    font-size: 32px;
+    letter-spacing: 2px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+}
+
+    .rating-score {
+        font-size: 20px;
+        font-weight: 800;
+        color: #212529;
+    }
+
     @media (max-width: 768px) {
         .recipe-hero-body,
-        .recipe-view-section { padding: 24px 18px; }
+        .recipe-view-section,
+        .comment-card {
+            padding: 24px 18px;
+        }
+
         .recipe-title { font-size: 1.55rem; }
         .ingredient-list { grid-template-columns: 1fr; }
         .step-item { grid-template-columns: 1fr; gap: 12px; }
@@ -240,56 +294,39 @@
 </div>
 
 <!-- ================= 댓글 ================= -->
-<div class="section-card mb-5 p-4" style="max-width:980px; margin:0 auto;">
+<div class="comment-card">
 
-    <h4 class="mb-4">
+    <h4 class="mb-4 fw-bold">
         <i class="bi bi-chat-dots text-danger me-2"></i>
-        コメント
+        댓글
     </h4>
 
     <c:if test="${not empty sessionScope.loginUser}">
         <div class="mb-4">
             <div class="mb-3">
-                <label class="form-label">評価</label>
+                <label class="form-label">별점</label>
 
-                <div style="display:flex; align-items:center; gap:15px;">
-                    <div id="starRating" style="font-size:32px; color:#ffc107;">
-                        ★★★★★
-                    </div>
+     <div class="rating-wrap">
+    <span id="starRating" class="star-rating">★★★★★</span>
+    <span id="ratingText" class="rating-score">5.0</span>
+</div>
 
-                    <strong id="ratingText" style="font-size:20px;">
-                        5.0
-                    </strong>
+<input type="hidden"
+       id="commentRating"
+       value="5.0">
 
-                    <div style="display:flex; flex-direction:column; gap:2px;">
-                        <button type="button"
-                                onclick="changeRating(0.1)"
-                                class="btn btn-secondary btn-sm"
-                                style="width:40px;height:28px;padding:0;">
-                            ▲
-                        </button>
 
-                        <button type="button"
-                                onclick="changeRating(-0.1)"
-                                class="btn btn-secondary btn-sm"
-                                style="width:40px;height:28px;padding:0;">
-                            ▼
-                        </button>
-                    </div>
-                </div>
-
-                <input type="hidden" id="commentRating" value="5.0">
             </div>
 
             <textarea id="commentContent"
                       class="form-control"
                       rows="3"
-                      placeholder="コメントを入力してください"></textarea>
+                      placeholder="댓글을 입력하세요"></textarea>
 
             <button type="button"
                     class="btn btn-danger mt-2"
                     onclick="addRecipeComment()">
-                コメントを投稿
+                댓글 등록
             </button>
         </div>
     </c:if>
@@ -381,7 +418,7 @@ function addRecipeComment() {
     const rating = document.getElementById("commentRating").value;
 
     if (content === "") {
-        alert("コメントを入力してください。");
+        alert("댓글을 입력하세요.");
         return;
     }
 
@@ -401,7 +438,7 @@ function addRecipeComment() {
             document.getElementById("commentContent").value = "";
             loadRecipeComments();
         } else {
-            alert("コメントの投稿に失敗しました：" + result);
+            alert("댓글 등록에 실패했습니다：" + result);
         }
     });
 }
@@ -443,12 +480,9 @@ function addReplyComment(parentReviewId) {
 }
 
 function showEditComment(reviewId) {
-	
-	
-	const buttons = event.target.parentElement;
-	buttons.style.display = "none";// 버튼 수정부분
-	
-	
+    const buttons = event.target.parentElement;
+    buttons.style.display = "none";
+
     const contentDiv = document.getElementById("comment-content-" + reviewId);
     const oldContent = contentDiv.innerText;
 
@@ -507,28 +541,75 @@ function deleteRecipeComment(reviewId) {
         } else {
             alert("コメントの削除に失敗しました：" + result);
         }
+        
     });
 }
+let currentRating = 5.0;
 
-function changeRating(amount) {
-    let rating = parseFloat(document.getElementById("commentRating").value);
-    rating = Math.round((rating + amount) * 10) / 10;
+document.addEventListener("DOMContentLoaded", function () {
+    const starRating = document.getElementById("starRating");
 
-    if (rating < 0.1) rating = 0.1;
-    if (rating > 5.0) rating = 5.0;
+    if (!starRating) return;
 
-    document.getElementById("commentRating").value = rating.toFixed(1);
-    document.getElementById("ratingText").innerText = rating.toFixed(1);
+    let isDragging = false;
 
-    updateStars(rating);
-}
+    function calculateRating(e) {
+        const rect = starRating.getBoundingClientRect();
+        let x = e.clientX - rect.left;
 
-function updateStars(rating) {
-    const fullStars = Math.floor(rating);
+        if (x < 0) x = 0;
+        if (x > rect.width) x = rect.width;
+
+        let rating = (x / rect.width) * 5;
+        rating = Math.ceil(rating * 2) / 2;
+
+        if (rating < 0.5) rating = 0.5;
+        if (rating > 5.0) rating = 5.0;
+
+        return rating;
+    }
+
+    function setRating(e) {
+        currentRating = calculateRating(e);
+        updateRatingDisplay();
+    }
+
+    starRating.addEventListener("mousedown", function (e) {
+        isDragging = true;
+        setRating(e);
+    });
+
+    starRating.addEventListener("mousemove", function (e) {
+        if (isDragging) {
+            setRating(e);
+        }
+    });
+
+    document.addEventListener("mouseup", function () {
+        isDragging = false;
+    });
+
+    starRating.addEventListener("click", function (e) {
+        setRating(e);
+    });
+
+    updateRatingDisplay();
+});
+
+function updateRatingDisplay() {
+    document.getElementById("commentRating").value = currentRating.toFixed(1);
+    document.getElementById("ratingText").innerText = currentRating.toFixed(1);
+
     let stars = "";
 
     for (let i = 1; i <= 5; i++) {
-        stars += i <= fullStars ? "★" : "☆";
+        if (currentRating >= i) {
+            stars += "★";
+        } else if (currentRating >= i - 0.5) {
+            stars += "⯪";
+        } else {
+            stars += "☆";
+        }
     }
 
     document.getElementById("starRating").innerText = stars;

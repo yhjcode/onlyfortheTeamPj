@@ -33,29 +33,31 @@
                 <div class="mb-3">
                     <label class="form-label">테마 제목 *</label>
                     <input type="text"
-                           name="title"
-                           id="input-title"
-                           class="form-control"
-                           value="${theme.title}"
-                           required>
+       name="title"
+       id="input-title"
+       class="form-control"
+       value="${theme.title}"
+       maxlength="33"
+       required>
 
                     <div class="text-end mt-1">
-                        <small id="titleCount" class="text-muted">0 / 300</small>
+                        <small id="titleCount" class="text-muted">0 / 33</small>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">부제목</label>
                     <input type="text"
-                           name="subtitle"
-                           id="input-subtitle"
-                           class="form-control"
-                           value="${theme.subtitle}">
+       name="subtitle"
+       id="input-subtitle"
+       class="form-control"
+       value="${theme.subtitle}"
+       maxlength="33">
 
-                    <div class="text-end mt-1">
-                        <small id="subtitleCount" class="text-muted">0 / 300</small>
-                    </div>
-                </div>
+<div class="text-end mt-1">
+    <small id="subtitleCount" class="text-muted">0 / 33</small>
+</div>
+</div>
 
                 <div class="mb-3">
                     <label class="form-label">이미지 업로드 (변경 시 선택)</label>
@@ -131,8 +133,8 @@
 </div>
 
 <script>
-    const TITLE_MAX = 300;
-    const SUBTITLE_MAX = 300;
+    const TITLE_MAX = 33;
+    const SUBTITLE_MAX = 33;
     const CONTENT_MAX = 4000;
 
     const titleInput = document.getElementById("input-title");
@@ -224,12 +226,12 @@
         }
 
         if (title.length > TITLE_MAX) {
-            alert("테마 제목은 최대 300자까지 입력 가능합니다.");
+            alert("테마 제목은 최대 33자까지 입력 가능합니다.");
             return false;
         }
 
         if (subtitle.length > SUBTITLE_MAX) {
-            alert("부제목은 최대 300자까지 입력 가능합니다.");
+            alert("부제목은 최대 33자까지 입력 가능합니다.");
             return false;
         }
 

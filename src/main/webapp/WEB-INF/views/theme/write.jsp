@@ -49,11 +49,12 @@
                 <div class="mb-3">
                     <label class="form-label">테마 제목 *</label>
                     <input type="text"
-                           name="title"
-                           id="input-title"
-                           class="form-control"
-                           placeholder="제목을 입력하세요"
-                           required>
+       name="title"
+       id="input-title"
+       class="form-control"
+       placeholder="제목을 입력하세요"
+       maxlength="300"
+       required>
 
                     <div class="text-end mt-1">
                         <small id="titleCount" class="text-muted">0 / 300</small>
@@ -63,9 +64,10 @@
                 <div class="mb-3">
                     <label class="form-label">부제목</label>
                     <input type="text"
-                           name="subtitle"
-                           id="input-subtitle"
-                           class="form-control">
+       name="subtitle"
+       id="input-subtitle"
+       class="form-control"
+       maxlength="300">
 
                     <div class="text-end mt-1">
                         <small id="subtitleCount" class="text-muted">0 / 300</small>
@@ -84,9 +86,10 @@
                 <div class="mb-3">
                     <label class="form-label">테마 상세 내용</label>
                     <textarea name="description"
-                              id="input-content"
-                              class="form-control"
-                              rows="5"></textarea>
+          id="input-content"
+          class="form-control"
+          rows="5"
+          maxlength="4000"></textarea>
 
                     <div class="text-end mt-1">
                         <small id="contentCount" class="text-muted">0 / 4000</small>
@@ -150,8 +153,8 @@
 </div>
 
 <script>
-const TITLE_MAX = 300;
-const SUBTITLE_MAX = 300;
+const TITLE_MAX = 33;
+const SUBTITLE_MAX = 33;
 const CONTENT_MAX = 4000;
 
 const titleInput = document.getElementById("input-title");
@@ -244,12 +247,12 @@ function validateThemeWriteForm() {
     }
 
     if (title.length > TITLE_MAX) {
-        alert("테마 제목은 최대 300자까지 입력 가능합니다.");
+        alert("테마 제목은 최대 33자까지 입력 가능합니다.");
         return false;
     }
 
     if (subtitle.length > SUBTITLE_MAX) {
-        alert("부제목은 최대 300자까지 입력 가능합니다.");
+        alert("부제목은 최대 33자까지 입력 가능합니다.");
         return false;
     }
 
