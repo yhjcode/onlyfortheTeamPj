@@ -208,7 +208,7 @@ public List<ListDTO> CategorySort(String sort, String categoryId, String ratingF
 			if (ratingFilter != null && !ratingFilter.equals("0")) {
 			    int filterNum = Integer.parseInt(ratingFilter);
 			    
-			    if (filterNum == 1) { minRating = 4.5; maxRating = 5.0; }
+			    if  (filterNum == 1) { minRating = 4.5; maxRating = 5.0; }
 			    else if (filterNum == 2) { minRating = 4.0; maxRating = 4.4; }
 			    else if (filterNum == 3) { minRating = 3.5; maxRating = 3.9; }
 			    else if (filterNum == 4) { minRating = 3.0; maxRating = 3.4; }
