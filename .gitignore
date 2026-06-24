@@ -13,10 +13,7 @@ out/
 hs_err_pid*
 
 # 사용자 업로드 파일 (각 PC 로컬에만 보관)
-src/main/webapp/resources/upload/profile/*
-!src/main/webapp/resources/upload/profile/.gitkeep
-src/main/webapp/resources/upload/recipe/*
-!src/main/webapp/resources/upload/recipe/.gitkeep
+
 src/main/webapp/resources/upload/step/*
 !src/main/webapp/resources/upload/step/.gitkeep
 src/main/webapp/resources/upload/theme/*

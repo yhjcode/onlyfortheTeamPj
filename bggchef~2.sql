@@ -1200,3 +1200,74 @@ COMMIT;
 SELECT COUNT(*) AS 유저 FROM USERS;
 SELECT COUNT(*) AS 레시피 FROM RECIPE;
 SELECT COUNT(*) AS 테마 FROM RECOMMENDED_THEME;
+
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/' || THUMBNAIL 
+WHERE THUMBNAIL NOT LIKE '/resources%' 
+AND THUMBNAIL NOT LIKE 'http%';
+
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe1.jpg'  WHERE THUMBNAIL = 'https://picsum.photos/seed/r1/400/400';
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe3.jpg'  WHERE THUMBNAIL = 'https://picsum.photos/seed/r3/400/400';
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe15.jpg' WHERE THUMBNAIL = 'https://picsum.photos/seed/r15/400/400';
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe24.jpg' WHERE THUMBNAIL = 'https://picsum.photos/seed/r24/400/400';
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe25.jpg' WHERE THUMBNAIL = 'https://picsum.photos/seed/r25/400/400';
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe40.jpg' WHERE THUMBNAIL = 'https://picsum.photos/seed/r40/400/400';
+
+COMMIT;
+
+UPDATE USERS SET PROFILE_IMG = '/resources/upload/profile/' || PROFILE_IMG 
+WHERE PROFILE_IMG NOT LIKE '/resources%' 
+AND PROFILE_IMG NOT LIKE 'http%'
+AND PROFILE_IMG IS NOT NULL;
+
+COMMIT;
+SELECT USER_ID, PROFILE_IMG FROM USERS WHERE PROFILE_IMG IS NOT NULL;
+
+SELECT RECIPE_ID, TITLE, THUMBNAIL FROM RECIPE ORDER BY RECIPE_ID;
+
+UPDATE RECIPE SET THUMBNAIL = NULL 
+WHERE RECIPE_ID IN (35, 36, 37, 38, 39, 40);
+
+COMMIT;
+
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe1.jpg' WHERE RECIPE_ID = 1;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe1.jpg' WHERE RECIPE_ID = 2;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe2.jpg' WHERE RECIPE_ID = 3;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe2.jpg' WHERE RECIPE_ID = 4;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe3.jpg' WHERE RECIPE_ID = 5;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe4.jpg' WHERE RECIPE_ID = 6;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe5.jpg' WHERE RECIPE_ID = 7;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe6.jpg' WHERE RECIPE_ID = 8;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe9.jpg' WHERE RECIPE_ID = 9;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe7.jpg' WHERE RECIPE_ID = 10;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe8.jpg' WHERE RECIPE_ID = 11;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe12.jpg' WHERE RECIPE_ID = 12;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe11.jpg' WHERE RECIPE_ID = 13;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe10.jpg' WHERE RECIPE_ID = 14;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe14.jpg' WHERE RECIPE_ID = 15;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe14.jpg' WHERE RECIPE_ID = 16;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe14.jpg' WHERE RECIPE_ID = 17;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe15.jpg' WHERE RECIPE_ID = 18;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe16.jpg' WHERE RECIPE_ID = 19;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe17.jpg' WHERE RECIPE_ID = 20;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe18.jpg' WHERE RECIPE_ID = 21;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe22.jpg' WHERE RECIPE_ID = 22;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe20.jpg' WHERE RECIPE_ID = 23;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe21.jpg' WHERE RECIPE_ID = 24;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe21.jpg' WHERE RECIPE_ID = 25;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe21.jpg' WHERE RECIPE_ID = 26;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe22.jpg' WHERE RECIPE_ID = 27;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe23.jpg' WHERE RECIPE_ID = 28;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe24.jpg' WHERE RECIPE_ID = 29;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe25.jpg' WHERE RECIPE_ID = 30;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe26.jpg' WHERE RECIPE_ID = 31;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe27.jpg' WHERE RECIPE_ID = 32;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe28.jpg' WHERE RECIPE_ID = 33;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe29.jpg' WHERE RECIPE_ID = 34;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe30.jpg' WHERE RECIPE_ID = 35;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe31.jpg' WHERE RECIPE_ID = 36;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe32.jpg' WHERE RECIPE_ID = 37;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe33.jpg' WHERE RECIPE_ID = 38;
+UPDATE RECIPE SET THUMBNAIL = '/resources/upload/recipe/recipe34.jpg' WHERE RECIPE_ID = 39;
+UPDATE RECIPE SET THUMBNAIL = NULL WHERE RECIPE_ID = 40;
+
+COMMIT;

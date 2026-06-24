@@ -42,7 +42,7 @@
             </div>
             <div>
                 <label class="bgg-label">電話番号</label>
-                <input type="tel" name="phone" class="bgg-input" value="<%= loginUser.getPhone() != null ? loginUser.getPhone() : "" %>">
+                <input type="tel" name="phone" id="phone" class="bgg-input" maxlength="13" value="<%= loginUser.getPhone() != null ? loginUser.getPhone() : "" %>">
             </div>
         </div>
         <div class="mb-3">
@@ -67,3 +67,24 @@
         </a>
     </div>
 </div>
+
+<script>
+document.getElementById('phone').addEventListener('input', function() {
+    var digits = this.value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length > 7) {
+        this.value = digits.slice(0, 3) + '-' + digits.slice(3, 7) + '-' + digits.slice(7);
+    } else if (digits.length > 3) {
+        this.value = digits.slice(0, 3) + '-' + digits.slice(3);
+    } else {
+        this.value = digits;
+    }
+});
+
+document.querySelector('form').addEventListener('submit', function(e) {
+    var phone = document.getElementById('phone').value;
+    if (phone && !/^\d{3}-\d{4}-\d{4}$/.test(phone)) {
+        e.preventDefault();
+        alert('電話番号は 010-0000-0000 の形式で入力してください。');
+    }
+});
+</script>
