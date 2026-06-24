@@ -62,16 +62,16 @@
    onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=${targetFilter}'" 
    class="${currentRatingFilter == targetFilter || currentRatingFilter eq targetFilter ? 'active' : ''}">
    <i class="bi bi-star-fill" style="color:#FFC107"></i>
-   <fmt:formatNumber value="${0.5 + (avg * 0.5)}" pattern="0.0" />
+   <fmt:formatNumber value="${(avg * 0.5)}" pattern="0.0" />
     ~ 
-   <fmt:formatNumber value="${0.5 + (avg * 0.5) + 0.4}" pattern="0.0" />
+   <fmt:formatNumber value="${(avg * 0.5) + 0.5}" pattern="0.0" />
  </button>
  </c:forEach>
 
  <button type="button"
   onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=1'" 
   class="${currentRatingFilter == '1' ? 'active' : ''}">
- <i class="bi bi-star-fill" style="color:#FFC107"></i> 5 ~ 4.5 </button>
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> 4.5 ~ 5 </button>
   <button type="button"
  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=0'" 
  class="${currentRatingFilter == '0' || empty currentRatingFilter ? 'active' : ''}">

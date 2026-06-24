@@ -1,6 +1,62 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<%@ page import="java.util.*" %>
+<%@ page import="com.bggchef.dao.SearchDAO" %> 
+<%@ page import="com.bggchef.dto.RecipeDTO" %> 
+<%@ page import="com.bggchef.dto.ThemeDTO" %> 
+<%@ page import="com.bggchef.dto.UserDTO" %>
+
+<%-- 💡 [핵심 추가] 브라우저가 보낸 검색 데이터(파라미터)를 받아 DB를 조회하는 실제 연산 구역 --%>
+<%
+    // 1. 요청 파라미터 수집 및 방어 코드
+    String searchType = request.getParameter("searchType");
+    String keyword = request.getParameter("keyword");
+    String strPage = request.getParameter("page");
+    
+    if (searchType == null || searchType.trim().isEmpty()) {
+        searchType = "recipe";
+    }
+    if (keyword == null) {
+        keyword = "";
+    }
+    
+    int currentPage = (strPage != null && !strPage.equals("")) ? Integer.parseInt(strPage) : 1;
+    int pageSize = 12; // 한 페이지에 보여줄 카드 개수 세팅
+    
+    // 2. DAO 객체 생성 및 데이터 조회
+    SearchDAO searchDAO = new SearchDAO();
+    int totalCount = 0;
+    
+    if ("recipe".equals(searchType)) {
+        totalCount = searchDAO.getRecipeCount(keyword);
+        List<RecipeDTO> recipes = searchDAO.searchRecipe(keyword, currentPage, pageSize);
+        request.setAttribute("recipes", recipes); // 하단 ${recipes}와 연결
+        
+    } else if ("theme".equals(searchType)) {
+        totalCount = searchDAO.getThemeCount(keyword);
+        List<ThemeDTO> themes = searchDAO.searchTheme(keyword, currentPage, pageSize);
+        request.setAttribute("themes", themes);   // 하단 ${themes}와 연결
+        
+    } else if ("user".equals(searchType)) {
+        totalCount = searchDAO.getUserCount(keyword);
+        List<UserDTO> users = searchDAO.searchUser(keyword, currentPage, pageSize);
+        request.setAttribute("users", users);     // 하단 ${users}와 연결
+    }
+    
+    // 3. 하단 페이징 처리를 위한 전체 페이지 수 계산
+    int pageCount = (int) Math.ceil((double) totalCount / pageSize);
+    
+    // 4. EL 표현식(${...})이 꺼내쓸 수 있도록 request 영역에 데이터 바인딩
+    request.setAttribute("searchType", searchType);
+    request.setAttribute("keyword", keyword);
+    request.setAttribute("totalCount", totalCount);
+    request.setAttribute("pageCount", pageCount);
+    request.setAttribute("currentPage", currentPage);
+%>
+<%-- 자바 핵심 로직 끝 --%>
+
 <c:set var="menu" value="search" scope="request"/>
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
