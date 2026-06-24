@@ -301,7 +301,7 @@ public class RecipeController extends HttpServlet {
         }
 
         recipeDAO.deleteRecipe(recipeId, loginUser.getUserId());
-        res.sendRedirect(req.getContextPath() + "/recipe/list");
+        res.sendRedirect(req.getContextPath() + "/category/list");
     }
 
 
