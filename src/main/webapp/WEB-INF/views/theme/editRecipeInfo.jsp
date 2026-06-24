@@ -41,11 +41,11 @@
                        id="title"
                        class="form-control"
                        value="${recipe.title}"
-                       maxlength="200"
+                       maxlength="66"
                        required>
 
                 <div class="text-end mt-1">
-                    <small id="titleCount" class="text-muted">0 / 200</small>
+                    <small id="titleCount" class="text-muted">0 / 66</small>
                 </div>
             </div>
 
@@ -56,10 +56,10 @@
                           id="description"
                           class="form-control"
                           rows="5"
-                          maxlength="1000">${recipe.description}</textarea>
+                          maxlength="330">${recipe.description}</textarea>
 
                 <div class="text-end mt-1">
-                    <small id="descriptionCount" class="text-muted">0 / 1000</small>
+                    <small id="descriptionCount" class="text-muted">0 / 330</small>
                 </div>
             </div>
 
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const descriptionCount = document.getElementById("descriptionCount");
 
     function updateTitleCount() {
-        titleCount.innerText = title.value.length + " / 200";
+        titleCount.innerText = title.value.length + " / 66";
 
         if (title.value.length > 200) {
             titleCount.classList.remove("text-muted");
@@ -100,9 +100,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateDescriptionCount() {
-        descriptionCount.innerText = description.value.length + " / 1000";
+        descriptionCount.innerText = description.value.length + " / 330";
 
-        if (description.value.length > 1000) {
+        if (description.value.length > 330) {
             descriptionCount.classList.remove("text-muted");
             descriptionCount.classList.add("text-danger");
         } else {
@@ -127,13 +127,13 @@ function validateRecipeForm() {
         return false;
     }
 
-    if (title.length > 200) {
-        alert("タイトルは最大200文字まで入力できます。");
+    if (title.length > 66) {
+        alert("タイトルは最大66文字まで入力できます。");
         return false;
     }
 
-    if (description.length > 1000) {
-        alert("説明は最大1000文字まで入力できます。");
+    if (description.length > 330) {
+        alert("説明は最大330文字まで入力できます。");
         return false;
     }
 
