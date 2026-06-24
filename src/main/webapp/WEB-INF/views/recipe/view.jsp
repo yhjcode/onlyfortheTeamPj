@@ -108,6 +108,8 @@
         color: #343a40;
         white-space: pre-line;
         margin-bottom: 16px;
+        
+        word-break: break-all;      /*  텍스트가 박스 안에서만 출력되도록 세팅 */
     }
     .step-img {
         width: 100%;
@@ -145,7 +147,7 @@
             </div>
 
             <h2 class="recipe-title"><c:out value="${recipe.title}" /></h2>
-            <div class="recipe-desc"><c:out value="${recipe.description}" /></div>
+            <div class="recipe-desc"><c:out value="${recipe.description}" /></div> 
 
             <div class="text-muted">
                 by <strong><c:out value="${recipe.nickname}" /></strong>
@@ -288,40 +290,47 @@
 
             <button type="button"
                     class="btn btn-danger mt-2"
-                    onclick="addRecipeComment()">
+                    onclick="addRecipeComment()">   
                 コメントを投稿
             </button>
         </div>
     </c:if>
 
-    <div id="commentList">
-        <%-- AJAX 댓글 출력 --%>
+    <div id="commentList">        <%-- AJAX 댓글 출력 메서드  --%>
+     
     </div>
 </div>
 
 <script>
-const recipeId = "${recipe.recipeId}";
-const contextPath = "${pageContext.request.contextPath}";
-const loginUserId = "${sessionScope.loginUser != null ? sessionScope.loginUser.userId : ""}";
+const recipeId = "${recipe.recipeId}"; // 서버의 recipe객체에서 recipeid에 해당하는 getter메서드를 찾아 호출 후 리턴값을 저장
+const contextPath = "${pageContext.request.contextPath}"; // 이 사이트의 컨텍스트 패스를 저장(자바에서 제공하는 컨텍스트패스 객체를 이용)
+const loginUserId = "${sessionScope.loginUser != null ? sessionScope.loginUser.userId : ""}"; // 자바의 삼항연산자를 EL로 표현/ 로그인 되어있으면 유저아이디를 getter로 가져오고 아니면 ""저장
 
-window.onload = function() {
+window.onload = function() { // js와 크롬 연결
     loadRecipeComments();
 };
 
 function loadRecipeComments() {
     fetch(contextPath + "/review/list?recipe_id=" + recipeId)
-        .then(response => response.json())
+    //fetch(`${contextPath}/review/list?recipe_id=${recipeId}`) //템플릿 리터럴
+    
+        .then(response => response.json())                                          // 응답받은 json을 자바스크립트 배열(작성자id/댓글내용/별점 등 댓글테이블 행)단위로 data에 저장
         .then(data => {
             let html = "";
 
-            data.forEach(function(comment) {
-                const isReply = comment.parentReviewId != null;
-                const marginStyle = isReply ? "margin-left:40px;" : "";
+            
+            // 받은json의 수만큼 반복하며 조건문의 충족여부에(댓글json인지 대댓글json인지) 따라 선택적으로 html을 누적해나간다
+            
+            
+            
+            data.forEach(function(comment) {                                       // json의 개수만큼 comment 함수 실행(let html에 분기결과에 따라 누적)
+                const isReply = comment.parentReviewId != null;               //isReply = boolean / 즉 null이아니면 true(대댓글) / 이 json이 대댓글인지 댓글인지 확인
+                const marginStyle = isReply ? "margin-left:40px;" : "";          //대댓글이면 마진값으로 댓글과 간격으로 구분
 
                 html +=
                     '<div class="border-bottom py-3" style="' + marginStyle + '" id="comment-' + comment.reviewId + '">';
 
-                if (!isReply && comment.rating != null) {
+                if (!isReply && comment.rating != null) {                         //이json이 댓글json이면 별점세팅 태그를 html에 누적
                     html += '<div class="text-warning mb-1">⭐ ' + comment.rating + ' / 5.0</div>';
                 }
 
@@ -337,20 +346,20 @@ function loadRecipeComments() {
 
                 html += '<div class="mt-2">';
 
-                if (loginUserId !== "" && !isReply) {
+                if (loginUserId !== "" && !isReply) {                                                        // 로그인도 됐고 대댓글도 아니라면
                     html +=
                         '<button type="button" class="btn btn-sm btn-outline-primary me-2" ' +
-                            'onclick="showReplyForm(' + comment.reviewId + ')">' +
+                            'onclick="showReplyForm(' + comment.reviewId + ')">' +                 //返信버튼을 띄우고 이걸 누르면 showReplyForm(' + comment.reviewId + ')메서드 호출
                             '返信' +
                         '</button>';
                 }
 
-                if (loginUserId !== "" && loginUserId === comment.userId) {
-                    html +=
+                if (loginUserId !== "" && loginUserId === comment.userId) { // 로그인을 했고 로그인유저의 id가 이 json이 갖고있는 userid와 문자가 일치하고 자료형도 일치하는가?
+                    html +=                                                                                                                                             //(로그인한 유저와 이 댓글을 쓴 유저가 같은 사람인지 확인)
                         '<button type="button" class="btn btn-sm btn-outline-secondary me-2" ' +
                             'onclick="showEditComment(' + comment.reviewId + ')">' +
                             '編集' +
-                        '</button>' +
+                        '</button>' +                                                       // 맞으면 편집, 삭제버튼도 추가로 송출
 
                         '<button type="button" class="btn btn-sm btn-outline-danger" ' +
                             'onclick="deleteRecipeComment(' + comment.reviewId + ')">' +
@@ -360,7 +369,7 @@ function loadRecipeComments() {
 
                 html += '</div>';
 
-                if (!isReply) {
+                if (!isReply) {                                                                // 이 json이 댓글이라면 실행
                     html +=
                         '<div id="reply-form-' + comment.reviewId + '" class="mt-3" style="display:none;">' +
                             '<textarea id="reply-content-' + comment.reviewId + '" class="form-control" rows="2" placeholder="返信を入力してください"></textarea>' +
@@ -372,20 +381,23 @@ function loadRecipeComments() {
                 html += '</div>';
             });
 
-            document.getElementById("commentList").innerHTML = html;
+            document.getElementById("commentList").innerHTML = html;                 // html로 누적받은 태그들을 id = commentlist인 태그에 뿌림
         });
 }
 
-function addRecipeComment() {
-    const content = document.getElementById("commentContent").value.trim();
-    const rating = document.getElementById("commentRating").value;
+
+
+
+function addRecipeComment() {   //댓글 작성메서드 
+    const content = document.getElementById("commentContent").value.trim();           //textarea에 입력받은 댓글내용 앞뒤 공백 제거 후 const content 에 저장
+    const rating = document.getElementById("commentRating").value;                       //별점데이터 저장
 
     if (content === "") {
-        alert("コメントを入力してください。");
+        alert("コメントを入力してください。");                                                      // 댓글이 없으면 경고알림
         return;
     }
 
-    fetch(contextPath + "/review/list", {
+    fetch(contextPath + "/review/list", {                                                          //서버의 컨트롤러에 dopost/reivew/list매핑값을 찾아서 해더에 해당하는 데이터 형식으로 바디값을 전송
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
@@ -395,26 +407,32 @@ function addRecipeComment() {
               "&rating=" + encodeURIComponent(rating) +
               "&content=" + encodeURIComponent(content)
     })
-    .then(response => response.text())
+    
+    
+    
+    //응답
+    .then(response => response.text())                 // db 댓글테이블에 저장 성공했는지 실패했는지 텍스트로 구분
     .then(result => {
         if (result.trim() === "success") {
-            document.getElementById("commentContent").value = "";
+            document.getElementById("commentContent").value = "";  // 성공했으면 textarea는 비우고 하단에 댓글,대댓글 목록 뿌림
             loadRecipeComments();
         } else {
-            alert("コメントの投稿に失敗しました：" + result);
+            alert("コメントの投稿に失敗しました：" + result);  // 서버로부터의 응답이 "success"가 아니면 실패매세지 알람, 원인을 result에 저장후 출력
         }
     });
 }
 
-function showReplyForm(reviewId) {
+
+
+function showReplyForm(reviewId) { // 返信버튼을 클릭하면 해당 댓글id에 해당하는 대댓글 입력창이 뜸(style.display = "block";으로 숨김해제)
     document.getElementById("reply-form-" + reviewId).style.display = "block";
 }
 
-function hideReplyForm(reviewId) {
+function hideReplyForm(reviewId) { // 캔슬버튼 눌렀을떄 
     document.getElementById("reply-form-" + reviewId).style.display = "none";
 }
 
-function addReplyComment(parentReviewId) {
+function addReplyComment(parentReviewId) {   // 댓글의 대댓글을 작성하는 메서드
     const content = document.getElementById("reply-content-" + parentReviewId).value.trim();
 
     if (content === "") {
@@ -442,26 +460,34 @@ function addReplyComment(parentReviewId) {
     });
 }
 
-function showEditComment(reviewId) {
+
+
+
+
+function showEditComment(reviewId) {           // 댓글 편집버튼을 클릭했을때 호출되는 메서드
 	
 	
 	const buttons = event.target.parentElement;
-	buttons.style.display = "none";// 버튼 수정부분
+	buttons.style.display = "none";                                  // 편집버튼 눌렀을때 하단에 보존,켄슬만 남기고 삭제,편집버튼은 지우도록 수정한 부븐
 	
 	
-    const contentDiv = document.getElementById("comment-content-" + reviewId);
-    const oldContent = contentDiv.innerText;
+    const contentDiv = document.getElementById("comment-content-" + reviewId);  // 기존 댓글을 contentDiv에 저장
+    const oldContent = contentDiv.innerText; // contentDiv를 oldContent 에 백업
 
     contentDiv.innerHTML =
-        '<textarea id="edit-comment-' + reviewId + '" class="form-control" rows="3">' +
+        '<textarea id="edit-comment-' + reviewId + '" class="form-control" rows="3">' +    // contentDiv에 아래 html태그를 저장(수정전용 html태그들)
             oldContent +
         '</textarea>' +
         '<button type="button" class="btn btn-sm btn-danger mt-2 me-2" onclick="updateRecipeComment(' + reviewId + ')">保存</button>' +
         '<button type="button" class="btn btn-sm btn-secondary mt-2" onclick="loadRecipeComments()">キャンセル</button>';
 }
 
-function updateRecipeComment(reviewId) {
-    const content = document.getElementById("edit-comment-" + reviewId).value.trim();
+
+
+
+
+function updateRecipeComment(reviewId) {                        //댓글 편집버튼을 눌렀을때 편집메서드에 의해 호출된 보존버튼을 클릭하면 호출되는 수정한 댓글내용 저장메서드
+    const content = document.getElementById("edit-comment-" + reviewId).value.trim(); // 수정받은 댓글내용을 앞뒤 공백 제거후 const content에 저장
 
     if (content === "") {
         alert("コメントを入力してください。");
@@ -478,19 +504,26 @@ function updateRecipeComment(reviewId) {
               "&rating=5.0" +
               "&content=" + encodeURIComponent(content)
     })
+    
+    
+    
     .then(response => response.text())
     .then(result => {
         if (result.trim() === "success") {
-            loadRecipeComments();
+            loadRecipeComments();                                 // 수정한 댓글이 db댓글 테이블에 저장됐으면 댓글목록을 뿌리는 메서드 호출로 댓글목록 리셋
         } else {
             alert("コメントの編集に失敗しました：" + result);
         }
     });
 }
 
-function deleteRecipeComment(reviewId) {
+
+
+
+
+function deleteRecipeComment(reviewId) {  // 로그인 했고 로그인 세션의 userid == json데이터 내부 userid와 같을 경우 보여지는 편집,삭제 버튼중 삭제버튼을 클릭 한 순간 호출되는 삭제메서드
     if (!confirm("コメントを削除しますか？")) {
-        return;
+        return;                                              //confirm메세지에서 취소를 누르면 이 삭제메서드 중지(return)
     }
 
     fetch(contextPath + "/review/list", {
@@ -500,17 +533,22 @@ function deleteRecipeComment(reviewId) {
         },
         body: "action=delete&review_id=" + reviewId
     })
+    
+    
     .then(response => response.text())
     .then(result => {
-        if (result.trim() === "success") {
-            loadRecipeComments();
+        if (result.trim() === "success") {      
+            loadRecipeComments();                       // review id에 해당하는 행을 삭제 성공했으면 댓글 목록을 새로고침(페이지새로고침x)
         } else {
             alert("コメントの削除に失敗しました：" + result);
         }
     });
 }
 
-function changeRating(amount) {
+
+
+
+function changeRating(amount) { //별점 수정
     let rating = parseFloat(document.getElementById("commentRating").value);
     rating = Math.round((rating + amount) * 10) / 10;
 
@@ -523,7 +561,7 @@ function changeRating(amount) {
     updateStars(rating);
 }
 
-function updateStars(rating) {
+function updateStars(rating) {  //별점
     const fullStars = Math.floor(rating);
     let stars = "";
 
