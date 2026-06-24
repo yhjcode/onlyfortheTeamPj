@@ -27,8 +27,8 @@
 <div class="bgg-card">
     <div class="bgg-logo-area">
         <span class="bgg-logo-icon">🍳</span>
-        <div class="bgg-logo-title">회원가입</div>
-        <div class="bgg-logo-sub">함께 요리하는 즐거움</div>
+        <div class="bgg-logo-title">会員登録</div>
+        <div class="bgg-logo-sub">一緒に料理を楽しもう</div>
     </div>
 
     <c:if test="${not empty errorMsg}">
@@ -37,49 +37,49 @@
 
     <form action="${pageContext.request.contextPath}/user/join" method="post" enctype="multipart/form-data" id="joinForm">
         <div class="mb-3">
-            <label class="bgg-label">아이디</label>
+            <label class="bgg-label">ユーザーID</label>
             <div class="bgg-id-wrap">
-                <input type="text" name="userId" id="userId" class="bgg-input" placeholder="아이디 (영문, 숫자)" required>
-                <button type="button" class="bgg-check-btn" onclick="checkUserId()">중복확인</button>
+                <input type="text" name="userId" id="userId" class="bgg-input" placeholder="ユーザーID（英数字）" required>
+                <button type="button" class="bgg-check-btn" onclick="checkUserId()">重複確認</button>
             </div>
             <div class="bgg-id-msg" id="userIdMsg"></div>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">닉네임</label>
-            <input type="text" name="nickname" class="bgg-input" placeholder="닉네임" required>
+            <label class="bgg-label">ニックネーム</label>
+            <input type="text" name="nickname" class="bgg-input" placeholder="ニックネーム" required>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">비밀번호</label>
-            <input type="password" name="password" id="pw" class="bgg-input" placeholder="비밀번호 (8자 이상)" minlength="8" required>
+            <label class="bgg-label">パスワード</label>
+            <input type="password" name="password" id="pw" class="bgg-input" placeholder="パスワード（8文字以上）" minlength="8" required>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">비밀번호 확인</label>
-            <input type="password" id="pwConfirm" class="bgg-input" placeholder="비밀번호 재입력" required>
+            <label class="bgg-label">パスワード確認</label>
+            <input type="password" id="pwConfirm" class="bgg-input" placeholder="パスワードを再入力" required>
             <div class="bgg-id-msg" id="pwMsg"></div>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">이메일</label>
+            <label class="bgg-label">メール</label>
             <input type="email" name="email" class="bgg-input" placeholder="example@email.com" required>
         </div>
         <div class="bgg-row mb-3">
             <div>
-                <label class="bgg-label">생년월일</label>
+                <label class="bgg-label">生年月日</label>
                 <input type="date" name="birthday" class="bgg-input">
             </div>
             <div>
-                <label class="bgg-label">연락처</label>
-                <input type="tel" name="phone" class="bgg-input" placeholder="010-0000-0000">
+                <label class="bgg-label">電話番号</label>
+                <input type="tel" name="phone" id="phone" class="bgg-input" placeholder="010-0000-0000" maxlength="13">
             </div>
         </div>
         <div class="mb-3">
-            <label class="bgg-label">프로필 사진</label>
+            <label class="bgg-label">プロフィール写真</label>
             <input type="file" name="profileImg" class="bgg-input" accept="image/*" style="padding: 7px 12px;">
         </div>
-        <button type="submit" class="bgg-btn" id="submitBtn">가입하기</button>
+        <button type="submit" class="bgg-btn" id="submitBtn">登録する</button>
     </form>
 
     <div class="bgg-links">
-        이미 계정이 있으신가요? <a href="${pageContext.request.contextPath}/user/login">로그인</a>
+        すでにアカウントをお持ちですか？ <a href="${pageContext.request.contextPath}/user/login">ログイン</a>
     </div>
 </div>
 
@@ -89,17 +89,17 @@ var idChecked = false;
 function checkUserId() {
     var userId = document.getElementById('userId').value.trim();
     var msg = document.getElementById('userIdMsg');
-    if (!userId) { msg.textContent = '아이디를 입력하세요.'; msg.className = 'bgg-id-msg ng'; return; }
+    if (!userId) { msg.textContent = 'ユーザーIDを入力してください。'; msg.className = 'bgg-id-msg ng'; return; }
 
     fetch('${pageContext.request.contextPath}/user/checkId?userId=' + encodeURIComponent(userId))
         .then(function(r){ return r.json(); })
         .then(function(data){
             if (data.available) {
-                msg.textContent = '사용 가능한 아이디입니다.';
+                msg.textContent = '使用可能なユーザーIDです。';
                 msg.className = 'bgg-id-msg ok';
                 idChecked = true;
             } else {
-                msg.textContent = '이미 사용 중인 아이디입니다.';
+                msg.textContent = 'すでに使用されているユーザーIDです。';
                 msg.className = 'bgg-id-msg ng';
                 idChecked = false;
             }
@@ -110,16 +110,32 @@ document.getElementById('userId').addEventListener('input', function(){ idChecke
 document.getElementById('pwConfirm').addEventListener('input', function(){
     var msg = document.getElementById('pwMsg');
     if (this.value === document.getElementById('pw').value) {
-        msg.textContent = '비밀번호가 일치합니다.'; msg.className = 'bgg-id-msg ok';
+        msg.textContent = 'パスワードが一致しています。'; msg.className = 'bgg-id-msg ok';
     } else {
-        msg.textContent = '비밀번호가 일치하지 않습니다.'; msg.className = 'bgg-id-msg ng';
+        msg.textContent = 'パスワードが一致しません。'; msg.className = 'bgg-id-msg ng';
+    }
+});
+
+document.getElementById('phone').addEventListener('input', function() {
+    var digits = this.value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length > 7) {
+        this.value = digits.slice(0, 3) + '-' + digits.slice(3, 7) + '-' + digits.slice(7);
+    } else if (digits.length > 3) {
+        this.value = digits.slice(0, 3) + '-' + digits.slice(3);
+    } else {
+        this.value = digits;
     }
 });
 
 document.getElementById('joinForm').addEventListener('submit', function(e){
-    if (!idChecked) { e.preventDefault(); alert('아이디 중복확인을 해주세요.'); return; }
+    if (!idChecked) { e.preventDefault(); alert('ユーザーIDの重複確認を行ってください。'); return; }
     var pw = document.getElementById('pw').value;
     var pwc = document.getElementById('pwConfirm').value;
-    if (pw !== pwc) { e.preventDefault(); alert('비밀번호가 일치하지 않습니다.'); }
+    if (pw !== pwc) { e.preventDefault(); alert('パスワードが一致しません。'); return; }
+    var phone = document.getElementById('phone').value;
+    if (phone && !/^\d{3}-\d{4}-\d{4}$/.test(phone)) {
+        e.preventDefault();
+        alert('電話番号は 010-0000-0000 の形式で入力してください。');
+    }
 });
 </script>

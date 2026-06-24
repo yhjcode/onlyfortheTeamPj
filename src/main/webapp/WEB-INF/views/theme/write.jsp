@@ -1,56 +1,148 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>테마 작성하기</title>
+    <title>テーマを作成する</title>
+
     <style>
-        .recipe-item { border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .selected-recipe-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .selected-recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .preview-text-wrap {
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
+
 <body class="bg-light">
 
 <div class="container py-5">
-    <h2 class="mb-4">테마 작성</h2>
+    <h2 class="mb-4">テーマ作成</h2>
+
     <div class="row">
         <div class="col-md-7">
-            <form action="${pageContext.request.contextPath}/theme/writeAction" method="POST" enctype="multipart/form-data">
+
+            <form action="${pageContext.request.contextPath}/theme/writeAction"
+                  method="POST"
+                  enctype="multipart/form-data"
+                  onsubmit="return validateThemeWriteForm();">
+
+                <input type="hidden" name="themeId" value="0">
+
                 <div class="mb-3">
-                    <label class="form-label">테마 제목 *</label>
-                    <input type="text" name="title" id="input-title" class="form-control" placeholder="제목을 입력하세요" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">부제목</label>
-                    <input type="text" name="subtitle" id="input-subtitle" class="form-control">
+                    <label class="form-label">テーマタイトル *</label>
+                    <input type="text"
+                           name="title"
+                           id="input-title"
+                           class="form-control"
+                           placeholder="タイトルを入力してください"
+                           required>
+
+                    <div class="text-end mt-1">
+                        <small id="titleCount" class="text-muted">0 / 300</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">포함할 레시피</label>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="openRecipePopup()">레시피 선택하기</button>
-                    <div id="selectedRecipes" class="mt-2">
-                        </div>
+                    <label class="form-label">サブタイトル</label>
+                    <input type="text"
+                           name="subtitle"
+                           id="input-subtitle"
+                           class="form-control">
+
+                    <div class="text-end mt-1">
+                        <small id="subtitleCount" class="text-muted">0 / 300</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">이미지 업로드</label>
-                    <input type="file" name="thumbnail" id="input-img" class="form-control" accept="image/*">
+                    <label class="form-label">画像アップロード</label>
+                    <input type="file"
+                           name="thumbnail"
+                           id="input-img"
+                           class="form-control"
+                           accept="image/*">
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">테마 상세 내용</label>
-                    <textarea name="content" id="input-content" class="form-control" rows="5"></textarea>
+                    <label class="form-label">テーマ詳細内容</label>
+                    <textarea name="description"
+                              id="input-content"
+                              class="form-control"
+                              rows="5"></textarea>
+
+                    <div class="text-end mt-1">
+                        <small id="contentCount" class="text-muted">0 / 4000</small>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">등록</button>
+
+                <div class="mb-3">
+                    <label class="form-label">含めるレシピ</label>
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            onclick="window.open('${pageContext.request.contextPath}/theme/myRecipeList?themeId=0&mode=write',
+                                                 'recipePopup',
+                                                 'width=700,height=600,scrollbars=yes')">
+                        マイレシピを追加
+                    </button>
+
+                    <div id="selectedRecipeArea" class="mt-3"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    登録
+                </button>
             </form>
         </div>
 
         <div class="col-md-5">
-            <h5>실시간 미리보기</h5>
-            <div class="card shadow-sm">
-                <img id="preview-img" src="https://via.placeholder.com/400x200" class="card-img-top" alt="미리보기">
+            <h5>リアルタイムプレビュー</h5>
+
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div id="preview-img-box"
+     class="card-img-top d-flex align-items-center justify-content-center"
+     style="height:200px; background:#f1f1f1; color:#999;">
+    画像プレビュー
+</div>
+
+<img id="preview-img"
+     src=""
+     class="card-img-top"
+     alt="プレビュー"
+     style="display:none;">
+
                 <div class="card-body">
-                    <h5 id="preview-title" class="card-title">제목이 여기에 표시됩니다</h5>
-                    <p id="preview-content" class="card-text" style="white-space: pre-wrap;">작성한 내용이 여기에 나타납니다.</p>
+                    <h5 id="preview-title"
+                        class="card-title preview-text-wrap">
+                        タイトルがここに表示されます
+                    </h5>
+
+                    <h6 id="preview-subtitle"
+                        class="card-subtitle mb-2 text-muted preview-text-wrap">
+                    </h6>
+
+                    <p id="preview-content"
+                       class="card-text preview-text-wrap">
+                        作成した内容がここに表示されます。
+                    </p>
                 </div>
             </div>
         </div>
@@ -58,48 +150,146 @@
 </div>
 
 <script>
-    // 1. 레시피 선택 팝업 열기
-    function openRecipePopup() {
-        window.open('${pageContext.request.contextPath}/theme/myRecipeList', 'recipePopup', 'width=600,height=500,scrollbars=yes');
+const TITLE_MAX = 300;
+const SUBTITLE_MAX = 300;
+const CONTENT_MAX = 4000;
+
+const titleInput = document.getElementById("input-title");
+const subtitleInput = document.getElementById("input-subtitle");
+const contentInput = document.getElementById("input-content");
+
+const titleCount = document.getElementById("titleCount");
+const subtitleCount = document.getElementById("subtitleCount");
+const contentCount = document.getElementById("contentCount");
+
+const previewTitle = document.getElementById("preview-title");
+const previewSubtitle = document.getElementById("preview-subtitle");
+const previewContent = document.getElementById("preview-content");
+
+function toggleCountColor(counter, length, max) {
+    if (length > max) {
+        counter.classList.remove("text-muted");
+        counter.classList.add("text-danger");
+    } else {
+        counter.classList.remove("text-danger");
+        counter.classList.add("text-muted");
+    }
+}
+
+function updateCounts() {
+    titleCount.innerText = titleInput.value.length + " / " + TITLE_MAX;
+    subtitleCount.innerText = subtitleInput.value.length + " / " + SUBTITLE_MAX;
+    contentCount.innerText = contentInput.value.length + " / " + CONTENT_MAX;
+
+    toggleCountColor(titleCount, titleInput.value.length, TITLE_MAX);
+    toggleCountColor(subtitleCount, subtitleInput.value.length, SUBTITLE_MAX);
+    toggleCountColor(contentCount, contentInput.value.length, CONTENT_MAX);
+}
+
+titleInput.addEventListener("input", function(e) {
+    previewTitle.innerText = e.target.value || "タイトルがここに表示されます";
+    updateCounts();
+});
+
+subtitleInput.addEventListener("input", function(e) {
+    previewSubtitle.innerText = e.target.value;
+    updateCounts();
+});
+
+contentInput.addEventListener("input", function(e) {
+    previewContent.innerText = e.target.value || "作成した内容がここに表示されます。";
+    updateCounts();
+});
+
+document.getElementById("input-img").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+
+    const previewBox = document.getElementById("preview-img-box");
+    const previewImg = document.getElementById("preview-img");
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            previewImg.src = event.target.result;
+            previewImg.className = "card-img-top";
+            previewImg.style.maxHeight = "250px";
+            previewImg.style.objectFit = "cover";
+            previewImg.style.display = "block";
+
+            previewBox.classList.remove("d-flex");
+            previewBox.classList.add("d-none");
+            previewBox.style.display = "none";
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        previewImg.removeAttribute("src");
+        previewImg.style.display = "none";
+
+        previewBox.classList.remove("d-none");
+        previewBox.classList.add("d-flex");
+        previewBox.style.display = "flex";
+    }
+});
+
+function validateThemeWriteForm() {
+    const title = titleInput.value.trim();
+    const subtitle = subtitleInput.value.trim();
+    const content = contentInput.value;
+
+    if (title.length === 0) {
+        alert("テーマタイトルを入力してください。");
+        return false;
     }
 
-    // 2. 팝업에서 호출할 함수 (선택한 레시피 목록 추가)
-    function addRecipeToList(recipeId, title) {
-        // 중복 체크
-        if(document.getElementById('rec-' + recipeId)) {
-            alert("이미 추가된 요리입니다.");
-            return;
-        }
-        
-        let container = document.getElementById('selectedRecipes');
-        let div = document.createElement('div');
-        div.id = 'rec-' + recipeId;
-        div.className = "recipe-item";
-        div.innerHTML = title + 
-            '<input type="hidden" name="recipeIds" value="' + recipeId + '">' +
-            '<button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">삭제</button>';
-        container.appendChild(div);
+    if (title.length > TITLE_MAX) {
+        alert("テーマタイトルは最大300文字まで入力できます。");
+        return false;
     }
 
-    // 3. 기존 미리보기 스크립트
-    document.getElementById('input-title').addEventListener('input', function(e) {
-        document.getElementById('preview-title').innerText = e.target.value;
-    });
+    if (subtitle.length > SUBTITLE_MAX) {
+        alert("サブタイトルは最大300文字まで入力できます。");
+        return false;
+    }
 
-    document.getElementById('input-content').addEventListener('input', function(e) {
-        document.getElementById('preview-content').innerText = e.target.value;
-    });
+    if (content.length > CONTENT_MAX) {
+        alert("テーマ詳細内容は最大4000文字まで入力できます。");
+        return false;
+    }
 
-    document.getElementById('input-img').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                document.getElementById('preview-img').src = event.target.result;
-            }
-            reader.readAsDataURL(file);
-        }
-    });
+    return true;
+}
+
+function addRecipeToWrite(recipeId, title) {
+    var area = document.getElementById("selectedRecipeArea");
+
+    if (document.getElementById("rec-" + recipeId)) {
+        alert("すでに追加されたレシピです。");
+        return;
+    }
+
+    var div = document.createElement("div");
+    div.id = "rec-" + recipeId;
+    div.className = "selected-recipe-box";
+
+    div.innerHTML =
+        '<div class="selected-recipe-header">' +
+            '<strong>' + title + '</strong>' +
+            '<button type="button" class="btn btn-danger btn-sm">削除</button>' +
+        '</div>' +
+        '<input type="hidden" name="recipeIds" value="' + recipeId + '">' +
+        '<input type="text" name="descriptions" class="form-control my-2" placeholder="このレシピの紹介文">';
+
+    div.querySelector("button").onclick = function() {
+        div.remove();
+    };
+
+    area.appendChild(div);
+}
+
+updateCounts();
 </script>
+
 </body>
 </html>

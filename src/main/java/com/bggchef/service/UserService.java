@@ -34,4 +34,14 @@ public class UserService {
     public boolean withdraw(String userId) throws SQLException {
         return userDAO.deleteLogically(userId) > 0;
     }
+
+    /** 셰프 소개글 조회 */
+    public String getIntro(String userId) throws SQLException {
+        return userDAO.selectIntro(userId);
+    }
+
+    /** 셰프 소개글 등록/수정 */
+    public void saveIntro(String userId, String intro) throws SQLException {
+        userDAO.upsertIntro(userId, intro);
+    }
 }

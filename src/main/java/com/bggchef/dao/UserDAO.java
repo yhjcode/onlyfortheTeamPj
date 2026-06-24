@@ -91,6 +91,40 @@ public class UserDAO {
         }
     }
 
+    /** 셰프 소개글 조회 — 없으면 null 반환 */
+    public String selectIntro(String userId) throws SQLException {
+        String sql = "SELECT intro FROM CHEF_INTRO WHERE user_id = ?";
+        Connection conn = null; PreparedStatement pstmt = null; ResultSet rs = null;
+        try {
+            conn  = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+            return rs.next() ? rs.getString("intro") : null;
+        } finally {
+            DBUtil.close(conn, pstmt, rs);
+        }
+    }
+
+    /** 셰프 소개글 등록/수정 (MERGE) */
+    public void upsertIntro(String userId, String intro) throws SQLException {
+        String sql = "MERGE INTO CHEF_INTRO ci USING DUAL ON (ci.user_id = ?) "
+                   + "WHEN MATCHED    THEN UPDATE SET ci.intro = ?, ci.updated_at = SYSDATE "
+                   + "WHEN NOT MATCHED THEN INSERT (user_id, intro, updated_at) VALUES (?, ?, SYSDATE)";
+        Connection conn = null; PreparedStatement pstmt = null;
+        try {
+            conn  = DBUtil.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            pstmt.setString(2, intro);
+            pstmt.setString(3, userId);
+            pstmt.setString(4, intro);
+            pstmt.executeUpdate();
+        } finally {
+            DBUtil.close(conn, pstmt);
+        }
+    }
+
     /** 회원 논리 삭제 (is_deleted = 1) */
     public int deleteLogically(String userId) throws SQLException {
         String sql = "UPDATE USERS SET is_deleted = 1 WHERE user_id = ?";

@@ -71,6 +71,13 @@ public class RecipeController extends HttpServlet {
     /// 
     /// 
 
+
+
+    //////////////////
+    /// 
+    /// 
+    /// 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -90,6 +97,10 @@ public class RecipeController extends HttpServlet {
             throw new ServletException(e);
         }
     }
+
+
+
+
     
     
     
@@ -105,6 +116,9 @@ public class RecipeController extends HttpServlet {
     }
     
     
+ //2
+
+
  //2
 
     private void showEditForm(HttpServletRequest req, HttpServletResponse res)
@@ -130,6 +144,12 @@ public class RecipeController extends HttpServlet {
     
     
     
+   //3
+
+
+
+
+
    //3
 
     private void showView(HttpServletRequest req, HttpServletResponse res)
@@ -187,24 +207,24 @@ public class RecipeController extends HttpServlet {
 //        req.setAttribute("steps", recipe.getSteps());
 //        forward(req, res, "/WEB-INF/views/recipe/view.jsp");
 //    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
     //4
     private void showList(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        forward(req, res, "/WEB-INF/views/recipe/list.jsp");
+        forward(req, res, "/WEB-INF/views/category/list.jsp");////////////////////////////////////////////수정함
     }
-    
-    
-    
+
+
+
     //5
     private void insertRecipe(HttpServletRequest req, HttpServletResponse res)
             throws SQLException, ServletException, IOException {
@@ -218,9 +238,9 @@ public class RecipeController extends HttpServlet {
         List<RecipeIngredientDTO> ingredients = buildIngredientList(req);// 재료묶음정보를  레시피재료DTO에 채우고 레시피DTO리스트를 만들어서 ingredients에 참조
         List<RecipeStepDTO> steps = buildStepList(req, null); // 스텝별로(스텝설명,사진) 리세피스텝 DTO에 저장후 스탭DTO리스트에 저장 
 
-        
+
         // 이 시점에서 레시피 정보(레시피DTO객체), 재료정보(리스트),스텝정보(리스트) 완성
-        
+
         long recipeId = recipeDAO.insertRecipe(recipe, ingredients, steps);//  (레시피DTO객체), 재료정보(리스트),스텝정보(리스트)들을 각 db테이블에 insert into 하고 한번에 커밋+ 레시피id를 시퀀스로
         //발급받고 리턴
         res.sendRedirect(req.getContextPath() + "/recipe/view?recipe_id=" + recipeId); //레시피id에 해당하는 레시피상세페이지를 조립해서 브라우저에 응답
@@ -233,6 +253,15 @@ public class RecipeController extends HttpServlet {
     
     
     
+//6
+
+
+
+
+
+
+
+
 //6
 
     private void updateRecipe(HttpServletRequest req, HttpServletResponse res)
@@ -254,11 +283,11 @@ public class RecipeController extends HttpServlet {
         recipeDAO.updateRecipe(recipe, ingredients, steps);
         res.sendRedirect(req.getContextPath() + "/recipe/view?recipe_id=" + recipe.getRecipeId());
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 //7
     private void deleteRecipe(HttpServletRequest req, HttpServletResponse res)
             throws SQLException, IOException {
@@ -274,12 +303,12 @@ public class RecipeController extends HttpServlet {
         recipeDAO.deleteRecipe(recipeId, loginUser.getUserId());
         res.sendRedirect(req.getContextPath() + "/recipe/list");
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
   //8
     private RecipeDTO buildRecipe(HttpServletRequest req) { // 입력받은 데이터 레시피DTO에 저장
         RecipeDTO recipe = new RecipeDTO();
@@ -349,11 +378,11 @@ public class RecipeController extends HttpServlet {
         }
         return list;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
  //11
     private String saveSingleFile(Part part, String uploadDir) //썸네일 세팅 메서드---썸네일파일,파일정뵤 + 웹용가상경로를 매개변수로 받는다
             throws IOException {

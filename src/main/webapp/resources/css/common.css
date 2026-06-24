@@ -44,6 +44,7 @@ a:hover { text-decoration: none; }
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
 }
 .bggchef-logo:hover { color: var(--bggchef-primary-hover) !important; }
 .bggchef-logo .logo-icon { font-size: 1.9rem; }
@@ -284,6 +285,25 @@ a:hover { text-decoration: none; }
 }
 
 
+
+/* ============================================
+   캐러셀 슬라이더
+   ============================================ */
+.carousel-container {
+    position: relative;
+}
+.carousel-viewport {
+    overflow: hidden;
+}
+.carousel-track {
+    display: flex;
+    transition: transform 0.35s ease;
+}
+.slide-item {
+    flex: 0 0 25%;
+    padding: 0 8px;
+    box-sizing: border-box;
+}
 
 /* ============================================
    캐러셀 화살표

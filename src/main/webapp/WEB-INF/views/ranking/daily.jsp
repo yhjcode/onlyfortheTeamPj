@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -180,8 +180,8 @@
 
 <!-- 헤더 배너 -->
 <div class="ranking-hero">
-    <h1><i class="bi bi-trophy-fill me-2"></i>BGGChef 랭킹</h1>
-    <p>인기 레시피와 활발한 셰프들을 한눈에 확인하세요</p>
+    <h1><i class="bi bi-trophy-fill me-2"></i>おうちシェフ ランキング</h1>
+    <p>人気レシピと活躍中のシェフをチェックしよう</p>
 </div>
 
 <!-- ───── 상위 탭: 레시피 랭킹 | 셰프 랭킹 ───── -->
@@ -190,14 +190,14 @@
         <button class="nav-link active" id="recipe-tab"
                 data-bs-toggle="pill" data-bs-target="#recipe-pane"
                 type="button" role="tab" aria-selected="true">
-            <i class="bi bi-journal-richtext me-1"></i> 레시피 랭킹
+            <i class="bi bi-journal-richtext me-1"></i> レシピランキング
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="chef-tab"
                 data-bs-toggle="pill" data-bs-target="#chef-pane"
                 type="button" role="tab" aria-selected="false">
-            <i class="bi bi-person-heart me-1"></i> 셰프 랭킹
+            <i class="bi bi-person-heart me-1"></i> シェフランキング
         </button>
     </li>
 </ul>
@@ -215,14 +215,14 @@
                     <button class="nav-link active" id="recipe-view-tab"
                             data-bs-toggle="tab" data-bs-target="#recipe-view-pane"
                             type="button" role="tab">
-                        <i class="bi bi-eye me-1"></i> 조회수 순위
+                        <i class="bi bi-eye me-1"></i> 閲覧数ランキング
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="recipe-rating-tab"
                             data-bs-toggle="tab" data-bs-target="#recipe-rating-pane"
                             type="button" role="tab">
-                        <i class="bi bi-star me-1"></i> 평점 순위
+                        <i class="bi bi-star me-1"></i> 評価ランキング
                     </button>
                 </li>
             </ul>
@@ -234,13 +234,13 @@
                     <c:choose>
                         <c:when test="${empty recipesByView}">
                             <div class="ranking-empty">
-                                <i class="bi bi-inbox"></i>등록된 레시피가 없습니다.
+                                <i class="bi bi-inbox"></i>レシピがありません。
                             </div>
                         </c:when>
                         <c:otherwise>
                             <div class="ranking-list">
                                 <c:forEach var="r" items="${recipesByView}" varStatus="vs">
-                                    <a href="${pageContext.request.contextPath}/recipe/detail?id=${r.recipeId}"
+                                    <a href="${pageContext.request.contextPath}/recipe/view?id=${r.recipeId}"
                                        class="ranking-item
                                               ${vs.index == 0 ? 'rank-top-1' : vs.index == 1 ? 'rank-top-2' : vs.index == 2 ? 'rank-top-3' : ''}">
                                         <!-- 순위 -->
@@ -256,7 +256,7 @@
                                         <div class="recipe-thumb">
                                             <c:choose>
                                                 <c:when test="${not empty r.thumbnail}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}"
+                                                    <img src="${pageContext.request.contextPath}${r.thumbnail}"
                                                          alt="${r.title}">
                                                 </c:when>
                                                 <c:otherwise>
@@ -296,13 +296,13 @@
                     <c:choose>
                         <c:when test="${empty recipesByRating}">
                             <div class="ranking-empty">
-                                <i class="bi bi-inbox"></i>평점이 등록된 레시피가 없습니다.
+                                <i class="bi bi-inbox"></i>評価済みのレシピがありません。
                             </div>
                         </c:when>
                         <c:otherwise>
                             <div class="ranking-list">
                                 <c:forEach var="r" items="${recipesByRating}" varStatus="vs">
-                                    <a href="${pageContext.request.contextPath}/recipe/detail?id=${r.recipeId}"
+                                    <a href="${pageContext.request.contextPath}/recipe/view?id=${r.recipeId}"
                                        class="ranking-item
                                               ${vs.index == 0 ? 'rank-top-1' : vs.index == 1 ? 'rank-top-2' : vs.index == 2 ? 'rank-top-3' : ''}">
                                         <div class="rank-num">
@@ -316,7 +316,7 @@
                                         <div class="recipe-thumb">
                                             <c:choose>
                                                 <c:when test="${not empty r.thumbnail}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/recipe/${r.thumbnail}"
+                                                    <img src="${pageContext.request.contextPath}${r.thumbnail}"
                                                          alt="${r.title}">
                                                 </c:when>
                                                 <c:otherwise>
@@ -363,14 +363,14 @@
                     <button class="nav-link active" id="chef-view-tab"
                             data-bs-toggle="tab" data-bs-target="#chef-view-pane"
                             type="button" role="tab">
-                        <i class="bi bi-bar-chart me-1"></i> 조회수 합산 순위
+                        <i class="bi bi-bar-chart me-1"></i> 閲覧数合計ランキング
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="chef-rating-tab"
                             data-bs-toggle="tab" data-bs-target="#chef-rating-pane"
                             type="button" role="tab">
-                        <i class="bi bi-star me-1"></i> 평점 평균 순위
+                        <i class="bi bi-star me-1"></i> 平均評価ランキング
                     </button>
                 </li>
             </ul>
@@ -382,7 +382,7 @@
                     <c:choose>
                         <c:when test="${empty chefsByView}">
                             <div class="ranking-empty">
-                                <i class="bi bi-inbox"></i>등록된 셰프가 없습니다.
+                                <i class="bi bi-inbox"></i>シェフがいません。
                             </div>
                         </c:when>
                         <c:otherwise>
@@ -404,7 +404,7 @@
                                         <div class="chef-avatar-sm">
                                             <c:choose>
                                                 <c:when test="${not empty c.profileImg}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/profile/${c.profileImg}"
+                                                    <img src="${pageContext.request.contextPath}${c.profileImg}"
                                                          alt="${c.nickname}">
                                                 </c:when>
                                                 <c:otherwise>
@@ -416,7 +416,7 @@
                                         <div class="flex-grow-1" style="min-width:0;">
                                             <div class="fw-bold text-truncate">${c.nickname}</div>
                                             <div class="text-muted small mt-1">
-                                                <i class="bi bi-journal-text me-1"></i>레시피 ${c.recipeCount}개
+                                                <i class="bi bi-journal-text me-1"></i>レシピ ${c.recipeCount}件
                                             </div>
                                         </div>
                                         <!-- 조회수 합산 / 평점 평균 -->
@@ -444,7 +444,7 @@
                     <c:choose>
                         <c:when test="${empty chefsByRating}">
                             <div class="ranking-empty">
-                                <i class="bi bi-inbox"></i>평점이 등록된 셰프가 없습니다.
+                                <i class="bi bi-inbox"></i>評価済みのシェフがいません。
                             </div>
                         </c:when>
                         <c:otherwise>
@@ -464,7 +464,7 @@
                                         <div class="chef-avatar-sm">
                                             <c:choose>
                                                 <c:when test="${not empty c.profileImg}">
-                                                    <img src="${pageContext.request.contextPath}/resources/upload/profile/${c.profileImg}"
+                                                    <img src="${pageContext.request.contextPath}${c.profileImg}"
                                                          alt="${c.nickname}">
                                                 </c:when>
                                                 <c:otherwise>
@@ -475,7 +475,7 @@
                                         <div class="flex-grow-1" style="min-width:0;">
                                             <div class="fw-bold text-truncate">${c.nickname}</div>
                                             <div class="text-muted small mt-1">
-                                                <i class="bi bi-journal-text me-1"></i>레시피 ${c.recipeCount}개
+                                                <i class="bi bi-journal-text me-1"></i>レシピ ${c.recipeCount}件
                                             </div>
                                         </div>
                                         <div class="text-end">
@@ -500,3 +500,12 @@
     </div><!-- /chef-pane -->
 
 </div><!-- /mainRankTabContent -->
+
+<script>
+window.addEventListener('load', function () {
+    if (location.hash === '#chef') {
+        var tab = document.getElementById('chef-tab');
+        if (tab) bootstrap.Tab.getOrCreateInstance(tab).show();
+    }
+});
+</script>

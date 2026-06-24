@@ -446,7 +446,6 @@ public class RecipeDAO {
         }
     }
     
-//<<<<<<< HEAD
     public List<RecipeDTO> selectLatest(int limit) throws SQLException {
         String sql = "SELECT * FROM ("
                    + "    SELECT r.recipe_id, r.user_id, r.title, r.thumbnail,"
@@ -487,7 +486,6 @@ public class RecipeDAO {
     
     
     //22
-
     public List<RecipeDTO> selectByUserId(String userId) throws SQLException {
         List<RecipeDTO> list = new ArrayList<>();
         String sql = "SELECT recipe_id, title, thumbnail, avg_rating, view_count, created_at " +

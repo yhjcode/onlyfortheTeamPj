@@ -49,6 +49,7 @@ public class UserController extends HttpServlet {
                 req.setAttribute("repliesToMe", reviewDAO.selectRepliesToMe(loginUser.getUserId()));
                 req.setAttribute("myFavorites", favoriteDAO.selectByUserId(loginUser.getUserId()));
                 req.setAttribute("myThemes",    themeDAO.selectByUserId(loginUser.getUserId()));
+                req.setAttribute("chefIntro",   userService.getIntro(loginUser.getUserId()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -104,6 +105,8 @@ public class UserController extends HttpServlet {
             doEdit(req, resp);
         } else if ("/withdraw".equals(action)) {
             doWithdraw(req, resp);
+        } else if ("/intro".equals(action)) {
+            doSaveIntro(req, resp);
         }
     }
 
@@ -118,7 +121,7 @@ public class UserController extends HttpServlet {
                 req.getSession().setAttribute("loginUser", user);
                 resp.sendRedirect(req.getContextPath() + "/main");
             } else {
-                req.setAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
+                req.setAttribute("errorMsg", "ユーザーIDまたはパスワードが間違っています。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/login.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
             }
@@ -135,7 +138,14 @@ public class UserController extends HttpServlet {
         user.setEmail   (req.getParameter("email"));
         user.setPassword(req.getParameter("password"));
         user.setNickname(req.getParameter("nickname"));
-        user.setPhone   (req.getParameter("phone"));
+        String phone = req.getParameter("phone");
+        if (phone != null && !phone.isEmpty() && !phone.matches("\\d{3}-\\d{4}-\\d{4}")) {
+            req.setAttribute("errorMsg", "電話番号の形式が正しくありません。(例: 010-0000-0000)");
+            req.setAttribute("contentPage", "/WEB-INF/views/user/join.jsp");
+            req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
+            return;
+        }
+        user.setPhone(phone);
 
         String birthday = req.getParameter("birthday");
         if (birthday != null && !birthday.isEmpty()) {
@@ -157,7 +167,7 @@ public class UserController extends HttpServlet {
             if (success) {
                 resp.sendRedirect(req.getContextPath() + "/user/login");
             } else {
-                req.setAttribute("errorMsg", "이미 사용 중인 아이디입니다.");
+                req.setAttribute("errorMsg", "すでに使用されているユーザーIDです。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/join.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
             }
@@ -174,7 +184,14 @@ public class UserController extends HttpServlet {
 
         loginUser.setEmail   (req.getParameter("email"));
         loginUser.setNickname(req.getParameter("nickname"));
-        loginUser.setPhone   (req.getParameter("phone"));
+        String editPhone = req.getParameter("phone");
+        if (editPhone != null && !editPhone.isEmpty() && !editPhone.matches("\\d{3}-\\d{4}-\\d{4}")) {
+            req.setAttribute("errorMsg", "電話番号の形式が正しくありません。(例: 010-0000-0000)");
+            req.setAttribute("contentPage", "/WEB-INF/views/user/userEdit.jsp");
+            req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
+            return;
+        }
+        loginUser.setPhone(editPhone);
 
         String birthday = req.getParameter("birthday");
         if (birthday != null && !birthday.isEmpty()) {
@@ -200,6 +217,28 @@ public class UserController extends HttpServlet {
         }
     }
 
+    /** 셰프 소개글 저장 (AJAX POST, JSON 응답) */
+    private void doSaveIntro(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        resp.setContentType("application/json; charset=UTF-8");
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("loginUser") == null) {
+            resp.getWriter().write("{\"ok\":false,\"msg\":\"로그인이 필요합니다.\"}");
+            return;
+        }
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        String intro = req.getParameter("intro");
+        if (intro == null) intro = "";
+        if (intro.length() > 1000) intro = intro.substring(0, 1000);
+        try {
+            userService.saveIntro(loginUser.getUserId(), intro);
+            resp.getWriter().write("{\"ok\":true}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.getWriter().write("{\"ok\":false,\"msg\":\"저장에 실패했습니다.\"}");
+        }
+    }
+
     /** 회원탈퇴 처리 */
     private void doWithdraw(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -214,7 +253,7 @@ public class UserController extends HttpServlet {
         try {
             UserDTO verified = userService.login(loginUser.getUserId(), password);
             if (verified == null) {
-                req.setAttribute("errorMsg", "비밀번호가 올바르지 않습니다.");
+                req.setAttribute("errorMsg", "パスワードが正しくありません。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/withdraw.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
                 return;
