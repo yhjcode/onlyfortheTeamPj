@@ -279,18 +279,18 @@ public class ListDAO {
 	        if (ratingFilter != null && !ratingFilter.equals("0")) {
 	            int filterNum = Integer.parseInt(ratingFilter);
 	            
-	            if (filterNum == 1) { minRating = 4.5; maxRating = 5.0; } 
-	            else if (filterNum == 2) { minRating = 4.0; maxRating = 4.4; } 
-	            else if (filterNum == 3) { minRating = 3.5; maxRating = 3.9; } 
-	            else if (filterNum == 4) { minRating = 3.0; maxRating = 3.4; } 
-	            else if (filterNum == 5) { minRating = 2.5; maxRating = 2.9; } 
-	            else if (filterNum == 6) { minRating = 2.0; maxRating = 2.4; } 
-	            else if (filterNum == 7) { minRating = 1.5; maxRating = 1.9; } 
-	            else if (filterNum == 8) { minRating = 1.0; maxRating = 1.4; } 
-	            else if (filterNum == 9) { minRating = 0.5; maxRating = 0.9; } 
-	            else if (filterNum == 10) { minRating = 0.0; maxRating = 0.4; }
+	            if (filterNum == 1) { minRating = 4.5; maxRating = 5.1; } 
+	            else if (filterNum == 2) { minRating = 4.0; maxRating = 4.5; } 
+	            else if (filterNum == 3) { minRating = 3.5; maxRating = 4.0; } 
+	            else if (filterNum == 4) { minRating = 3.0; maxRating = 3.5; } 
+	            else if (filterNum == 5) { minRating = 2.5; maxRating = 3.0; } 
+	            else if (filterNum == 6) { minRating = 2.0; maxRating = 2.5; } 
+	            else if (filterNum == 7) { minRating = 1.5; maxRating = 2.0; } 
+	            else if (filterNum == 8) { minRating = 1.0; maxRating = 2.5; } 
+	            else if (filterNum == 9) { minRating = 0.5; maxRating = 1.0; } 
+	            else if (filterNum == 10) { minRating = 0.0; maxRating = 0.5; }
 	            
-	            sql += " AND R.AVG_RATING >= ? AND R.AVG_RATING <= ?";
+	            sql += " AND R.AVG_RATING >= ? AND R.AVG_RATING < ? AND";
 	        }
 	        pstmt = con.prepareStatement(sql);
 	        

@@ -54,7 +54,7 @@
  <button type="button"
  onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${currentcategory}&ratingFilter=10'" 
  class="${currentRatingFilter == '10' ? 'active' : ''}">
- <i class="bi bi-star-fill" style="color:#FFC107"></i> 0.4 以下</button>
+ <i class="bi bi-star-fill" style="color:#FFC107"></i> 0.5 以下</button>
  	
  <c:forEach var="avg" begin="1" end="8">
    <c:set var="targetFilter" value="${10 - avg}" />
@@ -64,7 +64,7 @@
    <i class="bi bi-star-fill" style="color:#FFC107"></i>
    <fmt:formatNumber value="${(avg * 0.5)}" pattern="0.0" />
     ~ 
-   <fmt:formatNumber value="${(avg * 0.5) + 0.4}" pattern="0.0" />
+   <fmt:formatNumber value="${(avg * 0.5) + 0.5}" pattern="0.0" />
  </button>
  </c:forEach>
 
