@@ -152,7 +152,8 @@ public class RecipeDAO {
     
     
 //7
-    public List<CategoryLDTO> selectCategoryList() throws SQLException {
+    public List<CategoryLDTO> selectCategoryList() throws SQLException {  //카테고리L 테이블의 모든 정보를 SELECT로 조회하고 행을 하나씩 반복문으로 카테고리L DTO에 하나씩추가후
+    	                                                                                      // 그 DTO을 카테고리L 리스트에 추가하여 그 리스트를 리턴(이 리스트에는 결과적으로 카테고리L의 모든 정보가 들어감)
         String sql = "SELECT categoryl_id, name, type "
                    + "  FROM CATEGORY_L "
                    + " ORDER BY categoryl_id";

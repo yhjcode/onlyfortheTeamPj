@@ -111,12 +111,12 @@ public class RecipeController extends HttpServlet {
         requireLogin(req, res); // 로그인 체크
         if (res.isCommitted()) return; // 비회원일 경우 리턴처리
 
-        req.setAttribute("categoryList", recipeDAO.selectCategoryList()); // 카테고리 리스트를 불러와서 req에 저장
+        req.setAttribute("categoryList", recipeDAO.selectCategoryList()); // 카테고리L 리스트를 불러와서 req에 저장
         forward(req, res, "/WEB-INF/views/recipe/write.jsp");  // req에 담긴 카테고리 리스트로  write.do.jsp화면을 조립해서 사용자 브라우저에 전달
-    }
+    }                                                                     // 서버 내부에선 데이터를 req에 담고 브라우저로 응답할때 res를 이용한다
     
     
- //2
+
 
 
  //2
