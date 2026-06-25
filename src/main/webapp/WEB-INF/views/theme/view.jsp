@@ -141,7 +141,7 @@
                 <button type="button"
                         class="btn btn-sm btn-outline-secondary me-2"
                         onclick="location.href='${pageContext.request.contextPath}/theme/editRecipeInfo?themeId=${theme.themeId}&recipeId=${recipe.recipeId}'">
-                    소개 수정
+                    紹介を編集
                 </button>
 
                 <form action="${pageContext.request.contextPath}/theme/removeRecipe"
@@ -158,8 +158,8 @@
 
                     <button type="submit"
                             class="btn btn-sm btn-outline-danger"
-                            onclick="return confirm('이 요리를 테마에서 제거하시겠습니까?');">
-                        X 삭제
+                            onclick="return confirm('この料理をテーマから削除しますか？');">
+                        X 削除
                     </button>
 
                 </form>
@@ -181,7 +181,7 @@
 
             <c:otherwise>
                 <p class="text-muted mt-3 recipe-desc"
-   style="font-size:1.1rem; text-align:left;">작성된 소개글이 없습니다.</p>            </c:otherwise>
+   style="font-size:1.1rem; text-align:left;">紹介文がありません。</p>            </c:otherwise>
 
         </c:choose>
 
@@ -192,14 +192,14 @@
 
         <a href="${pageContext.request.contextPath}/recipe/view?id=${recipe.recipeId}"
            class="btn btn-outline-primary btn-sm px-3">
-            레시피로 이동
+            レシピへ移動
         </a>
 
         <c:if test="${not empty recipe.recipeLink}">
             <a href="${recipe.recipeLink}"
                target="_blank"
                class="btn btn-outline-success btn-sm px-3">
-                상세 레시피 바로가기
+                詳細レシピへ
             </a>
         </c:if>
 
