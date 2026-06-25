@@ -296,7 +296,7 @@ public class ReviewDAO {
                    + "FROM REVIEW r "
                    + "JOIN RECIPE rc ON r.recipe_id = rc.recipe_id "
                    + "JOIN USERS u ON r.user_id = u.user_id "
-                   + "WHERE rc.user_id = ? AND r.user_id != ? "
+                   + "WHERE rc.user_id = ? "
                    + "AND r.is_deleted = 0 AND r.parent_review_id IS NULL "
                    + "ORDER BY r.created_at DESC";
 
@@ -304,7 +304,6 @@ public class ReviewDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, userId);
-            ps.setString(2, userId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -343,13 +342,5 @@ public class ReviewDAO {
 
         return clob.getSubString(1, (int) clob.length());
     }
-    
-    
-    
-    
-    
-    
-  
-    
-    
+
 }

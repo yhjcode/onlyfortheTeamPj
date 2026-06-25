@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<script type="text/javascript" src="imsi.js"></script>
+<%--<script type="text/javascript" src="imsi.js"></script>--%>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>おうちシェフ - おうちレシピをシェアしよう</title>
@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="col-md-6 col-12">
-                    <form action="${pageContext.request.contextPath}/search" method="get" class="bggchef-search">
+                    <form action="${pageContext.request.contextPath}/search/search.jsp" method="get" class="bggchef-search">
                     <div class="select d-flex align-items-center">
                    <select name="searchType" class="form-select bggchef-select">
                     		<option value="recipe" ${param.searchType eq 'recipe' ? 'selected' : ''}>レシピ</option>

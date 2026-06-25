@@ -106,9 +106,15 @@ h3 {
                         </div>
 
                         <input type="text"
-                               name="description"
-                               class="desc-input"
-                               placeholder="テーマ紹介文を入力">
+       name="description"
+       class="desc-input"
+       placeholder="テーマ紹介文を入力"
+       maxlength="330"
+       oninput="updateThemeCount(this)">
+
+<div style="text-align:right; margin-bottom:10px;">
+    <small class="theme-count">0 / 330</small>
+</div>
 
                         <button type="submit" class="select-btn">
                             選択
@@ -124,7 +130,7 @@ h3 {
 
     <c:otherwise>
         <div style="text-align:center; padding:20px;">
-            レシピがありません。
+            登録されたレシピがありません。
         </div>
     </c:otherwise>
 </c:choose>
@@ -138,6 +144,18 @@ h3 {
 </div>
 
 <script>
+function updateThemeCount(input) {
+    const max = 330;
+
+    if (input.value.length > max) {
+        input.value = input.value.substring(0, max);
+    }
+
+    const form = input.closest("form");
+    const countEl = form.querySelector(".theme-count");
+
+    countEl.innerText = input.value.length + " / " + max;
+}
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('write-select-btn')) {
         var recipeId = e.target.getAttribute('data-recipe-id');
@@ -147,7 +165,7 @@ document.addEventListener('click', function(e) {
             window.opener.addRecipeToWrite(recipeId, title);
             window.close();
         } else {
-            alert("親ウィンドウの addRecipeToWrite 関数が見つかりません。");
+            alert("親ウィンドウのaddRecipeToWrite関数が見つかりません。");
         }
     }
 });

@@ -24,9 +24,13 @@ public class RankingDAO {
     public List<RecipeDTO> selectRecipesByViewCount(int limit) throws SQLException {
         String sql = "SELECT * FROM ("
                    + "    SELECT r.recipe_id, r.user_id, r.title, r.thumbnail,"
-                   + "           r.view_count, r.avg_rating, u.nickname"
+                   + "           r.view_count, u.nickname,"
+                   + "           NVL(ar.AVG_RATING, 0) AS avg_rating"
                    + "    FROM RECIPE r"
                    + "    JOIN USERS u ON r.user_id = u.user_id"
+                   + "    LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW"
+                   + "               WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar"
+                   + "    ON r.recipe_id = ar.RECIPE_ID"
                    + "    WHERE r.is_deleted = 0 AND u.is_deleted = 0"
                    + "    ORDER BY r.view_count DESC"
                    + ") WHERE ROWNUM <= ?";
@@ -60,12 +64,15 @@ public class RankingDAO {
     public List<RecipeDTO> selectRecipesByRating(int limit) throws SQLException {
         String sql = "SELECT * FROM ("
                    + "    SELECT r.recipe_id, r.user_id, r.title, r.thumbnail,"
-                   + "           r.view_count, r.avg_rating, u.nickname"
+                   + "           r.view_count, u.nickname,"
+                   + "           ar.AVG_RATING AS avg_rating"
                    + "    FROM RECIPE r"
                    + "    JOIN USERS u ON r.user_id = u.user_id"
+                   + "    JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW"
+                   + "          WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar"
+                   + "    ON r.recipe_id = ar.RECIPE_ID"
                    + "    WHERE r.is_deleted = 0 AND u.is_deleted = 0"
-                   + "      AND r.avg_rating IS NOT NULL"
-                   + "    ORDER BY r.avg_rating DESC, r.view_count DESC"
+                   + "    ORDER BY ar.AVG_RATING DESC, r.view_count DESC"
                    + ") WHERE ROWNUM <= ?";
 
         Connection conn = null; PreparedStatement pstmt = null; ResultSet rs = null;
@@ -98,9 +105,12 @@ public class RankingDAO {
                    + "    SELECT u.user_id, u.nickname, u.profile_img,"
                    + "           SUM(r.view_count)  AS total_view_count,"
                    + "           COUNT(r.recipe_id) AS recipe_count,"
-                   + "           AVG(r.avg_rating)  AS avg_rating"
+                   + "           AVG(ar.AVG_RATING)  AS avg_rating"
                    + "    FROM USERS u"
                    + "    JOIN RECIPE r ON u.user_id = r.user_id"
+                   + "    LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW"
+                   + "               WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar"
+                   + "    ON r.recipe_id = ar.RECIPE_ID"
                    + "    WHERE r.is_deleted = 0 AND u.is_deleted = 0"
                    + "    GROUP BY u.user_id, u.nickname, u.profile_img"
                    + "    ORDER BY SUM(r.view_count) DESC"
@@ -115,13 +125,16 @@ public class RankingDAO {
                    + "    SELECT u.user_id, u.nickname, u.profile_img,"
                    + "           SUM(r.view_count)  AS total_view_count,"
                    + "           COUNT(r.recipe_id) AS recipe_count,"
-                   + "           AVG(r.avg_rating)  AS avg_rating"
+                   + "           AVG(ar.AVG_RATING)  AS avg_rating"
                    + "    FROM USERS u"
                    + "    JOIN RECIPE r ON u.user_id = r.user_id"
+                   + "    LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW"
+                   + "               WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar"
+                   + "    ON r.recipe_id = ar.RECIPE_ID"
                    + "    WHERE r.is_deleted = 0 AND u.is_deleted = 0"
                    + "    GROUP BY u.user_id, u.nickname, u.profile_img"
-                   + "    HAVING AVG(r.avg_rating) IS NOT NULL"
-                   + "    ORDER BY AVG(r.avg_rating) DESC, SUM(r.view_count) DESC"
+                   + "    HAVING AVG(ar.AVG_RATING) IS NOT NULL"
+                   + "    ORDER BY AVG(ar.AVG_RATING) DESC, SUM(r.view_count) DESC"
                    + ") WHERE ROWNUM <= ?";
 
         return fetchChefList(sql, limit);

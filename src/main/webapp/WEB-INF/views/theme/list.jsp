@@ -3,13 +3,13 @@
 
 <div class="container py-4">
     <div class="d-flex justify-content-end mb-3">
-        <a href="${pageContext.request.contextPath}/theme/write" class="btn btn-outline-primary">おすすめテーマを投稿する</a>
+        <a href="${pageContext.request.contextPath}/theme/write" class="btn btn-outline-primary">おすすめテーマを作成</a>
     </div>
     <div class="section-card mb-4">
         <h2 class="section-title">
-            <span class="accent">おすすめ</span> テーマ一覧
+            <span class="accent">おすすめ</span>テーマリスト
         </h2>
-        <p class="text-muted mt-2">シェフたちがおすすめするテーマ別レシピをご覧ください！</p>
+        <p class="text-muted mt-2">プロシェフたちがおすすめする様々なテーマ別レシピをご覧ください！</p>
 
         <div class="row g-4 mt-2">
             <c:forEach var="theme" items="${themeList}">
@@ -19,6 +19,7 @@
                             <c:choose>
                             <c:when test="${not empty theme.thumbnail}">
                                 <img src="${pageContext.request.contextPath}${theme.thumbnail}" class="recipe-card-img" alt="${theme.title}">
+                                
                             </c:when>
                             <c:otherwise>
                                 <img src="https://picsum.photos/seed/theme${theme.themeId}/400/300" class="recipe-card-img" alt="${theme.title}">
@@ -35,10 +36,10 @@
                     </div>
                 </div>
             </c:forEach>
-
+            
             <c:if test="${empty themeList}">
                 <div class="col-12 text-center py-5">
-                    <p class="text-muted">おすすめテーマがありません。</p>
+                    <p class="text-muted">登録されたおすすめテーマがありません。</p>
                 </div>
             </c:if>
         </div>

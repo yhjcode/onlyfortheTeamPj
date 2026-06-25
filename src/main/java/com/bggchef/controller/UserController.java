@@ -121,7 +121,7 @@ public class UserController extends HttpServlet {
                 req.getSession().setAttribute("loginUser", user);
                 resp.sendRedirect(req.getContextPath() + "/main");
             } else {
-                req.setAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
+                req.setAttribute("errorMsg", "ユーザーIDまたはパスワードが間違っています。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/login.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
             }
@@ -138,7 +138,14 @@ public class UserController extends HttpServlet {
         user.setEmail   (req.getParameter("email"));
         user.setPassword(req.getParameter("password"));
         user.setNickname(req.getParameter("nickname"));
-        user.setPhone   (req.getParameter("phone"));
+        String phone = req.getParameter("phone");
+        if (phone != null && !phone.isEmpty() && !phone.matches("\\d{3}-\\d{4}-\\d{4}")) {
+            req.setAttribute("errorMsg", "電話番号の形式が正しくありません。(例: 010-0000-0000)");
+            req.setAttribute("contentPage", "/WEB-INF/views/user/join.jsp");
+            req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
+            return;
+        }
+        user.setPhone(phone);
 
         String birthday = req.getParameter("birthday");
         if (birthday != null && !birthday.isEmpty()) {
@@ -160,7 +167,7 @@ public class UserController extends HttpServlet {
             if (success) {
                 resp.sendRedirect(req.getContextPath() + "/user/login");
             } else {
-                req.setAttribute("errorMsg", "이미 사용 중인 아이디입니다.");
+                req.setAttribute("errorMsg", "すでに使用されているユーザーIDです。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/join.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
             }
@@ -177,7 +184,14 @@ public class UserController extends HttpServlet {
 
         loginUser.setEmail   (req.getParameter("email"));
         loginUser.setNickname(req.getParameter("nickname"));
-        loginUser.setPhone   (req.getParameter("phone"));
+        String editPhone = req.getParameter("phone");
+        if (editPhone != null && !editPhone.isEmpty() && !editPhone.matches("\\d{3}-\\d{4}-\\d{4}")) {
+            req.setAttribute("errorMsg", "電話番号の形式が正しくありません。(例: 010-0000-0000)");
+            req.setAttribute("contentPage", "/WEB-INF/views/user/userEdit.jsp");
+            req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
+            return;
+        }
+        loginUser.setPhone(editPhone);
 
         String birthday = req.getParameter("birthday");
         if (birthday != null && !birthday.isEmpty()) {
@@ -239,7 +253,7 @@ public class UserController extends HttpServlet {
         try {
             UserDTO verified = userService.login(loginUser.getUserId(), password);
             if (verified == null) {
-                req.setAttribute("errorMsg", "비밀번호가 올바르지 않습니다.");
+                req.setAttribute("errorMsg", "パスワードが正しくありません。");
                 req.setAttribute("contentPage", "/WEB-INF/views/user/withdraw.jsp");
                 req.getRequestDispatcher("/WEB-INF/views/common/layout.jsp").forward(req, resp);
                 return;

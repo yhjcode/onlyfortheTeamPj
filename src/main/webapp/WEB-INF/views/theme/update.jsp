@@ -1,51 +1,131 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>テーマを編集する</title>
+
+    <style>
+        .preview-text-wrap {
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+    </style>
 </head>
+
 <body class="bg-light">
 
 <div class="container py-5">
     <h2 class="mb-4">テーマ編集</h2>
+
     <div class="row">
         <div class="col-md-7">
-            <form action="${pageContext.request.contextPath}/theme/updateAction" method="POST" enctype="multipart/form-data">
+            <form action="${pageContext.request.contextPath}/theme/updateAction"
+                  method="POST"
+                  enctype="multipart/form-data"
+                  onsubmit="return validateThemeForm();">
 
                 <input type="hidden" name="themeId" value="${theme.themeId}">
                 <input type="hidden" name="oldThumbnail" value="${theme.thumbnail}">
 
                 <div class="mb-3">
                     <label class="form-label">テーマタイトル *</label>
-                    <input type="text" name="title" id="input-title" class="form-control" value="${theme.title}" required>
+                    <input type="text"
+       name="title"
+       id="input-title"
+       class="form-control"
+       value="${theme.title}"
+       maxlength="33"
+       required>
+
+                    <div class="text-end mt-1">
+                        <small id="titleCount" class="text-muted">0 / 33</small>
+                    </div>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label">サブタイトル</label>
-                    <input type="text" name="subtitle" id="input-subtitle" class="form-control" value="${theme.subtitle}">
-                </div>
+                    <input type="text"
+       name="subtitle"
+       id="input-subtitle"
+       class="form-control"
+       value="${theme.subtitle}"
+       maxlength="33">
+
+<div class="text-end mt-1">
+    <small id="subtitleCount" class="text-muted">0 / 33</small>
+</div>
+</div>
+
                 <div class="mb-3">
-                    <label class="form-label">画像アップロード（変更する場合に選択）</label>
-                    <input type="file" name="thumbnail" id="input-img" class="form-control" accept="image/*">
+                    <label class="form-label">画像アップロード（変更時に選択）</label>
+                    <input type="file"
+                           name="thumbnail"
+                           id="input-img"
+                           class="form-control"
+                           accept="image/*">
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label">テーマ詳細内容</label>
-                    <textarea name="content" id="input-content" class="form-control" rows="5">${theme.description}</textarea>
+                    <textarea name="description"
+                              id="input-content"
+                              class="form-control"
+                              rows="5">${theme.description}</textarea>
+
+                    <div class="text-end mt-1">
+                        <small id="contentCount" class="text-muted">0 / 4000</small>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">変更を保存</button>
+
+                <button type="submit" class="btn btn-primary">
+                    編集完了
+                </button>
             </form>
         </div>
 
         <div class="col-md-5">
             <h5>リアルタイムプレビュー</h5>
+
             <div class="card shadow-sm">
-                <img id="preview-img"
-                     src="${not empty theme.thumbnail ? pageContext.request.contextPath.concat(theme.thumbnail) : 'https://via.placeholder.com/400x200'}"
-                     class="card-img-top" alt="プレビュー">
+                <c:choose>
+    <c:when test="${not empty theme.thumbnail}">
+        <img id="preview-img"
+             src="${pageContext.request.contextPath}${theme.thumbnail}"
+             class="card-img-top"
+             alt="プレビュー"
+             style="max-height:250px; object-fit:cover;">
+
+        <div id="preview-img-box"
+             style="display:none;">
+        </div>
+    </c:when>
+
+    <c:otherwise>
+        <div id="preview-img-box"
+             class="card-img-top d-flex align-items-center justify-content-center"
+             style="height:250px; background:#f5f5f5; color:#999; font-size:18px;">
+            画像を選択してください
+        </div>
+
+        <img id="preview-img"
+             src=""
+             alt=""
+             style="display:none;">
+    </c:otherwise>
+</c:choose>
+
                 <div class="card-body">
-                    <h5 id="preview-title" class="card-title">${theme.title}</h5>
-                    <h6 id="preview-subtitle" class="card-subtitle mb-2 text-muted">${theme.subtitle}</h6>
-                    <p id="preview-content" class="card-text" style="white-space: pre-wrap;">${theme.description}</p>
+                    <h5 id="preview-title"
+                        class="card-title preview-text-wrap">${theme.title}</h5>
+
+                    <h6 id="preview-subtitle"
+                        class="card-subtitle mb-2 text-muted preview-text-wrap">${theme.subtitle}</h6>
+
+                    <p id="preview-content"
+                       class="card-text preview-text-wrap">${theme.description}</p>
                 </div>
             </div>
         </div>
@@ -53,32 +133,118 @@
 </div>
 
 <script>
-    // 1. 제목 동기화
-    document.getElementById('input-title').addEventListener('input', function(e) {
-        document.getElementById('preview-title').innerText = e.target.value;
+    const TITLE_MAX = 33;
+    const SUBTITLE_MAX = 33;
+    const CONTENT_MAX = 4000;
+
+    const titleInput = document.getElementById("input-title");
+    const subtitleInput = document.getElementById("input-subtitle");
+    const contentInput = document.getElementById("input-content");
+
+    const titleCount = document.getElementById("titleCount");
+    const subtitleCount = document.getElementById("subtitleCount");
+    const contentCount = document.getElementById("contentCount");
+
+    const previewTitle = document.getElementById("preview-title");
+    const previewSubtitle = document.getElementById("preview-subtitle");
+    const previewContent = document.getElementById("preview-content");
+
+    function updateCounts() {
+        titleCount.innerText = titleInput.value.length + " / " + TITLE_MAX;
+        subtitleCount.innerText = subtitleInput.value.length + " / " + SUBTITLE_MAX;
+        contentCount.innerText = contentInput.value.length + " / " + CONTENT_MAX;
+
+        toggleCountColor(titleCount, titleInput.value.length, TITLE_MAX);
+        toggleCountColor(subtitleCount, subtitleInput.value.length, SUBTITLE_MAX);
+        toggleCountColor(contentCount, contentInput.value.length, CONTENT_MAX);
+    }
+
+    function toggleCountColor(counter, length, max) {
+        if (length > max) {
+            counter.classList.remove("text-muted");
+            counter.classList.add("text-danger");
+        } else {
+            counter.classList.remove("text-danger");
+            counter.classList.add("text-muted");
+        }
+    }
+
+    titleInput.addEventListener("input", function(e) {
+        previewTitle.innerText = e.target.value;
+        updateCounts();
     });
 
-    // 2. 부제목 동기화
-    document.getElementById('input-subtitle').addEventListener('input', function(e) {
-        document.getElementById('preview-subtitle').innerText = e.target.value;
+    subtitleInput.addEventListener("input", function(e) {
+        previewSubtitle.innerText = e.target.value;
+        updateCounts();
     });
 
-    // 3. 내용 동기화
-    document.getElementById('input-content').addEventListener('input', function(e) {
-        document.getElementById('preview-content').innerText = e.target.value;
+    contentInput.addEventListener("input", function(e) {
+        previewContent.innerText = e.target.value;
+        updateCounts();
     });
 
-    // 4. 이미지 미리보기
-    document.getElementById('input-img').addEventListener('change', function(e) {
+    document.getElementById("input-img").addEventListener("change", function(e) {
         const file = e.target.files[0];
+
+        const previewImg = document.getElementById("preview-img");
+        const previewBox = document.getElementById("preview-img-box");
+
         if (file) {
             const reader = new FileReader();
+
             reader.onload = function(event) {
-                document.getElementById('preview-img').src = event.target.result;
-            }
+                previewImg.src = event.target.result;
+                previewImg.className = "card-img-top";
+                previewImg.style.maxHeight = "250px";
+                previewImg.style.objectFit = "cover";
+                previewImg.style.display = "block";
+
+                previewBox.classList.remove("d-flex");
+                previewBox.classList.add("d-none");
+                previewBox.style.display = "none";
+            };
+
             reader.readAsDataURL(file);
+        } else {
+            previewImg.removeAttribute("src");
+            previewImg.style.display = "none";
+
+            previewBox.classList.remove("d-none");
+            previewBox.classList.add("d-flex");
+            previewBox.style.display = "flex";
         }
     });
+    function validateThemeForm() {
+        const title = titleInput.value.trim();
+        const subtitle = subtitleInput.value.trim();
+        const content = contentInput.value;
+
+        if (title.length === 0) {
+            alert("テーマタイトルを入力してください。");
+            return false;
+        }
+
+        if (title.length > TITLE_MAX) {
+            alert("テーマタイトルは最大33文字まで入力できます。");
+            return false;
+        }
+
+        if (subtitle.length > SUBTITLE_MAX) {
+            alert("サブタイトルは最大33文字まで入力できます。");
+            return false;
+        }
+
+        if (content.length > CONTENT_MAX) {
+            alert("テーマ詳細内容は最大4000文字まで入力できます。");
+            return false;
+        }
+
+        return true;
+    }
+
+    updateCounts();
 </script>
+
 </body>
 </html>

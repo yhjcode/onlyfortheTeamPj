@@ -369,7 +369,7 @@ public class ThemeController extends HttpServlet {
                         String fileName = System.currentTimeMillis() + "_" + originName.replaceAll("\\s", "_");
 
                         item.write(new File(recipeSaveDirectory + File.separator + fileName));
-                        recipeImages.add("/resources/upload/recipe/" + fileName);
+                        recipeImages.add(fileName);
                     } else {
                         recipeImages.add(null);
                     }
@@ -424,7 +424,7 @@ public class ThemeController extends HttpServlet {
             res.setContentType("text/html; charset=UTF-8");
             PrintWriter out = res.getWriter();
             out.println("<script>");
-            out.println("alert('이미 이 테마에 추가된 레시피입니다.');");
+            out.println("alert('すでにこのテーマに追加されたレシピです。');");
             out.println("window.close();");
             out.println("</script>");
             return;
@@ -442,7 +442,7 @@ public class ThemeController extends HttpServlet {
 
         PrintWriter out = res.getWriter();
         out.println("<script>");
-        out.println("alert('레시피가 추가되었습니다.');");
+        out.println("alert('レシピが追加されました。');");
         out.println("if(window.opener) window.opener.location.reload();");
         out.println("window.close();");
         out.println("</script>");

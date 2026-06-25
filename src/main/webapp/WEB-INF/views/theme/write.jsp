@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>テーマを投稿する</title>
+    <title>テーマを作成する</title>
 
     <style>
         .selected-recipe-box {
@@ -22,39 +22,56 @@
             align-items: center;
             margin-bottom: 10px;
         }
+
+        .preview-text-wrap {
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 
 <body class="bg-light">
 
 <div class="container py-5">
-    <h2 class="mb-4">テーマ投稿</h2>
+    <h2 class="mb-4">テーマ作成</h2>
 
     <div class="row">
         <div class="col-md-7">
 
             <form action="${pageContext.request.contextPath}/theme/writeAction"
                   method="POST"
-                  enctype="multipart/form-data">
+                  enctype="multipart/form-data"
+                  onsubmit="return validateThemeWriteForm();">
 
                 <input type="hidden" name="themeId" value="0">
 
                 <div class="mb-3">
                     <label class="form-label">テーマタイトル *</label>
                     <input type="text"
-                           name="title"
-                           id="input-title"
-                           class="form-control"
-                           placeholder="タイトルを入力してください"
-                           required>
+       name="title"
+       id="input-title"
+       class="form-control"
+       placeholder="タイトルを入力してください"
+       maxlength="300"
+       required>
+
+                    <div class="text-end mt-1">
+                        <small id="titleCount" class="text-muted">0 / 300</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">サブタイトル</label>
                     <input type="text"
-                           name="subtitle"
-                           id="input-subtitle"
-                           class="form-control">
+       name="subtitle"
+       id="input-subtitle"
+       class="form-control"
+       maxlength="300">
+
+                    <div class="text-end mt-1">
+                        <small id="subtitleCount" class="text-muted">0 / 300</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -69,21 +86,26 @@
                 <div class="mb-3">
                     <label class="form-label">テーマ詳細内容</label>
                     <textarea name="description"
-                              id="input-content"
-                              class="form-control"
-                              rows="5"></textarea>
+          id="input-content"
+          class="form-control"
+          rows="5"
+          maxlength="4000"></textarea>
+
+                    <div class="text-end mt-1">
+                        <small id="contentCount" class="text-muted">0 / 4000</small>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">含めるレシピ</label>
 
                     <button type="button"
-        class="btn btn-secondary"
-        onclick="window.open('${pageContext.request.contextPath}/theme/myRecipeList?themeId=0&mode=write',
-                             'recipePopup',
-                             'width=700,height=600,scrollbars=yes')">
-    マイレシピを追加
-</button>
+                            class="btn btn-secondary"
+                            onclick="window.open('${pageContext.request.contextPath}/theme/myRecipeList?themeId=0&mode=write',
+                                                 'recipePopup',
+                                                 'width=700,height=600,scrollbars=yes')">
+                        マイレシピを追加
+                    </button>
 
                     <div id="selectedRecipeArea" class="mt-3"></div>
                 </div>
@@ -98,20 +120,31 @@
             <h5>リアルタイムプレビュー</h5>
 
             <div class="card shadow-sm sticky-top" style="top: 20px;">
-                <img id="preview-img"
-                     src="https://via.placeholder.com/400x200"
-                     class="card-img-top"
-                     alt="プレビュー">
+                <div id="preview-img-box"
+     class="card-img-top d-flex align-items-center justify-content-center"
+     style="height:200px; background:#f1f1f1; color:#999;">
+    画像プレビュー
+</div>
+
+<img id="preview-img"
+     src=""
+     class="card-img-top"
+     alt="プレビュー"
+     style="display:none;">
 
                 <div class="card-body">
-                    <h5 id="preview-title" class="card-title">
+                    <h5 id="preview-title"
+                        class="card-title preview-text-wrap">
                         タイトルがここに表示されます
                     </h5>
 
+                    <h6 id="preview-subtitle"
+                        class="card-subtitle mb-2 text-muted preview-text-wrap">
+                    </h6>
+
                     <p id="preview-content"
-                       class="card-text"
-                       style="white-space: pre-wrap;">
-                        入力した内容がここに表示されます。
+                       class="card-text preview-text-wrap">
+                        作成した内容がここに表示されます。
                     </p>
                 </div>
             </div>
@@ -120,11 +153,122 @@
 </div>
 
 <script>
+const TITLE_MAX = 33;
+const SUBTITLE_MAX = 33;
+const CONTENT_MAX = 4000;
+
+const titleInput = document.getElementById("input-title");
+const subtitleInput = document.getElementById("input-subtitle");
+const contentInput = document.getElementById("input-content");
+
+const titleCount = document.getElementById("titleCount");
+const subtitleCount = document.getElementById("subtitleCount");
+const contentCount = document.getElementById("contentCount");
+
+const previewTitle = document.getElementById("preview-title");
+const previewSubtitle = document.getElementById("preview-subtitle");
+const previewContent = document.getElementById("preview-content");
+
+function toggleCountColor(counter, length, max) {
+    if (length > max) {
+        counter.classList.remove("text-muted");
+        counter.classList.add("text-danger");
+    } else {
+        counter.classList.remove("text-danger");
+        counter.classList.add("text-muted");
+    }
+}
+
+function updateCounts() {
+    titleCount.innerText = titleInput.value.length + " / " + TITLE_MAX;
+    subtitleCount.innerText = subtitleInput.value.length + " / " + SUBTITLE_MAX;
+    contentCount.innerText = contentInput.value.length + " / " + CONTENT_MAX;
+
+    toggleCountColor(titleCount, titleInput.value.length, TITLE_MAX);
+    toggleCountColor(subtitleCount, subtitleInput.value.length, SUBTITLE_MAX);
+    toggleCountColor(contentCount, contentInput.value.length, CONTENT_MAX);
+}
+
+titleInput.addEventListener("input", function(e) {
+    previewTitle.innerText = e.target.value || "タイトルがここに表示されます";
+    updateCounts();
+});
+
+subtitleInput.addEventListener("input", function(e) {
+    previewSubtitle.innerText = e.target.value;
+    updateCounts();
+});
+
+contentInput.addEventListener("input", function(e) {
+    previewContent.innerText = e.target.value || "作成した内容がここに表示されます。";
+    updateCounts();
+});
+
+document.getElementById("input-img").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+
+    const previewBox = document.getElementById("preview-img-box");
+    const previewImg = document.getElementById("preview-img");
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            previewImg.src = event.target.result;
+            previewImg.className = "card-img-top";
+            previewImg.style.maxHeight = "250px";
+            previewImg.style.objectFit = "cover";
+            previewImg.style.display = "block";
+
+            previewBox.classList.remove("d-flex");
+            previewBox.classList.add("d-none");
+            previewBox.style.display = "none";
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        previewImg.removeAttribute("src");
+        previewImg.style.display = "none";
+
+        previewBox.classList.remove("d-none");
+        previewBox.classList.add("d-flex");
+        previewBox.style.display = "flex";
+    }
+});
+
+function validateThemeWriteForm() {
+    const title = titleInput.value.trim();
+    const subtitle = subtitleInput.value.trim();
+    const content = contentInput.value;
+
+    if (title.length === 0) {
+        alert("テーマタイトルを入力してください。");
+        return false;
+    }
+
+    if (title.length > TITLE_MAX) {
+        alert("テーマタイトルは最大33文字まで入力できます。");
+        return false;
+    }
+
+    if (subtitle.length > SUBTITLE_MAX) {
+        alert("サブタイトルは最大33文字まで入力できます。");
+        return false;
+    }
+
+    if (content.length > CONTENT_MAX) {
+        alert("テーマ詳細内容は最大4000文字まで入力できます。");
+        return false;
+    }
+
+    return true;
+}
+
 function addRecipeToWrite(recipeId, title) {
     var area = document.getElementById("selectedRecipeArea");
 
     if (document.getElementById("rec-" + recipeId)) {
-        alert("すでに追加済みのレシピです。");
+        alert("すでに追加されたレシピです。");
         return;
     }
 
@@ -146,6 +290,8 @@ function addRecipeToWrite(recipeId, title) {
 
     area.appendChild(div);
 }
+
+updateCounts();
 </script>
 
 </body>
