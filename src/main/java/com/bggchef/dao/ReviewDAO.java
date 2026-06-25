@@ -343,4 +343,13 @@ public class ReviewDAO {
 
         return clob.getSubString(1, (int) clob.length());
     }
+    
+    
+    
+    
+    
+    
+  
+    
+    
 }
