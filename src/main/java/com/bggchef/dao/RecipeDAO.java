@@ -95,11 +95,15 @@ public class RecipeDAO {
     //4  레시피id로 작성유저정보,카테고리L 정보
     public RecipeDTO selectRecipeById(long recipeId) throws SQLException {
         String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
-                   + "       r.servings, r.cook_time, r.difficulty, r.view_count, r.avg_rating, "
-                   + "       r.is_deleted, r.created_at, u.nickname, cm.name AS category_name "
+                   + "       r.servings, r.cook_time, r.difficulty, r.view_count, "
+                   + "       r.is_deleted, r.created_at, u.nickname, cm.name AS category_name, "
+                   + "       NVL(ar.AVG_RATING, 0) AS avg_rating "
                    + "  FROM RECIPE r "
                    + "  JOIN USERS u ON r.user_id = u.user_id "
                    + "  JOIN CATEGORY_M cm ON r.category_id = cm.categorym_id "
+                   + "  LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+                   + "             WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+                   + "  ON r.recipe_id = ar.RECIPE_ID "
                    + " WHERE r.recipe_id = ? AND r.is_deleted = 0";
 
         Connection conn = null;
@@ -449,9 +453,12 @@ public class RecipeDAO {
     public List<RecipeDTO> selectLatest(int limit) throws SQLException {
         String sql = "SELECT * FROM ("
                    + "    SELECT r.recipe_id, r.user_id, r.title, r.thumbnail,"
-                   + "           r.view_count, r.avg_rating, r.created_at, u.nickname"
+                   + "           r.view_count, NVL(ar.AVG_RATING, 0) AS avg_rating, r.created_at, u.nickname"
                    + "    FROM RECIPE r"
                    + "    JOIN USERS u ON r.user_id = u.user_id"
+                   + "    LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW"
+                   + "               WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar"
+                   + "    ON r.recipe_id = ar.RECIPE_ID"
                    + "    WHERE r.is_deleted = 0 AND u.is_deleted = 0"
                    + "    ORDER BY r.created_at DESC"
                    + ") WHERE ROWNUM <= ?";
@@ -488,8 +495,12 @@ public class RecipeDAO {
     //22
     public List<RecipeDTO> selectByUserId(String userId) throws SQLException {
         List<RecipeDTO> list = new ArrayList<>();
-        String sql = "SELECT recipe_id, title, thumbnail, avg_rating, view_count, created_at " +
-                     "FROM RECIPE WHERE user_id = ? AND is_deleted = 0 ORDER BY created_at DESC";
+        String sql = "SELECT r.recipe_id, r.title, r.thumbnail, NVL(ar.AVG_RATING, 0) AS avg_rating, r.view_count, r.created_at " +
+                     "FROM RECIPE r " +
+                     "LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW " +
+                     "           WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar " +
+                     "ON r.recipe_id = ar.RECIPE_ID " +
+                     "WHERE r.user_id = ? AND r.is_deleted = 0 ORDER BY r.created_at DESC";
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, userId);

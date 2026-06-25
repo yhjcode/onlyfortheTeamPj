@@ -28,8 +28,13 @@ public class ListDAO {
 		List<ListDTO> arr = new ArrayList<ListDTO>();
 		try {
 			con = getConnection();
-			String sql = "SELECT R.*, U.NICKNAME, U.PROFILE_IMG, U.MEDAL_GRADE FROM RECIPE R "
-					+ "LEFT JOIN USERS U ON R.USER_ID = U.USER_ID WHERE R.IS_DELETED = 0 ORDER BY R.CREATED_AT DESC";
+			String sql = "SELECT R.RECIPE_ID, R.USER_ID, R.CATEGORY_ID, R.TITLE, R.THUMBNAIL, R.DESCRIPTION, "
+					+ "R.VIEW_COUNT, R.CREATED_AT, R.IS_DELETED, U.NICKNAME, U.PROFILE_IMG, U.MEDAL_GRADE, "
+					+ "NVL(ar.AVG_RATING, 0) AS AVG_RATING "
+					+ "FROM RECIPE R LEFT JOIN USERS U ON R.USER_ID = U.USER_ID "
+					+ "LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+					+ "           WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+					+ "ON R.RECIPE_ID = ar.RECIPE_ID WHERE R.IS_DELETED = 0 ORDER BY R.CREATED_AT DESC";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
@@ -66,8 +71,13 @@ public class ListDAO {
 		List<ListDTO> arr = new ArrayList<ListDTO>();
 		try {
 			con = getConnection();
-			String sql = "SELECT R.*, U.NICKNAME, U.PROFILE_IMG, U.MEDAL_GRADE FROM RECIPE R "
-					+ "LEFT JOIN USERS U ON R.USER_ID = U.USER_ID WHERE R.IS_DELETED = 0 ORDER BY R.VIEW_COUNT DESC";
+			String sql = "SELECT R.RECIPE_ID, R.USER_ID, R.CATEGORY_ID, R.TITLE, R.THUMBNAIL, R.DESCRIPTION, "
+					+ "R.VIEW_COUNT, R.CREATED_AT, R.IS_DELETED, U.NICKNAME, U.PROFILE_IMG, U.MEDAL_GRADE, "
+					+ "NVL(ar.AVG_RATING, 0) AS AVG_RATING "
+					+ "FROM RECIPE R LEFT JOIN USERS U ON R.USER_ID = U.USER_ID "
+					+ "LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+					+ "           WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+					+ "ON R.RECIPE_ID = ar.RECIPE_ID WHERE R.IS_DELETED = 0 ORDER BY NVL(R.VIEW_COUNT, 0) DESC, R.CREATED_AT DESC";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
@@ -104,8 +114,13 @@ public class ListDAO {
 		List<ListDTO> arr = new ArrayList<ListDTO>();
 		try {
 			con = getConnection();
-			String sql = "SELECT R.*, U.NICKNAME, U.PROFILE_IMG, U.MEDAL_GRADE FROM RECIPE R "
-					+ "LEFT JOIN USERS U ON R.USER_ID = U.USER_ID WHERE R.IS_DELETED = 0 ORDER BY R.AVG_RATING DESC";
+			String sql = "SELECT R.RECIPE_ID, R.USER_ID, R.CATEGORY_ID, R.TITLE, R.THUMBNAIL, R.DESCRIPTION, "
+					+ "R.VIEW_COUNT, R.CREATED_AT, R.IS_DELETED, U.NICKNAME, U.PROFILE_IMG, U.MEDAL_GRADE, "
+					+ "NVL(ar.AVG_RATING, 0) AS AVG_RATING "
+					+ "FROM RECIPE R LEFT JOIN USERS U ON R.USER_ID = U.USER_ID "
+					+ "LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+					+ "           WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+					+ "ON R.RECIPE_ID = ar.RECIPE_ID WHERE R.IS_DELETED = 0 ORDER BY NVL(ar.AVG_RATING, 0) DESC";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
@@ -172,10 +187,14 @@ public class ListDAO {
 			int paramIndex = 1;
 			
 			String basesql = "SELECT R.RECIPE_ID, R.TITLE, R.DESCRIPTION, R.THUMBNAIL, "
-							+ "R.VIEW_COUNT, R.AVG_RATING, R.CREATED_AT, R.IS_DELETED, R.CATEGORY_ID, "
-							+ "R.USER_ID, U.NICKNAME, U.PROFILE_IMG "
+							+ "R.VIEW_COUNT, R.CREATED_AT, R.IS_DELETED, R.CATEGORY_ID, "
+							+ "R.USER_ID, U.NICKNAME, U.PROFILE_IMG, "
+							+ "NVL(ar.AVG_RATING, 0) AS AVG_RATING "
 							+ "FROM RECIPE R "
 							+ "INNER JOIN USERS U ON R.USER_ID = U.USER_ID "
+							+ "LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+							+ "           WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+							+ "ON R.RECIPE_ID = ar.RECIPE_ID "
 							+ "WHERE R.IS_DELETED = 0";
 			
 			if(categoryId != null && !categoryId.equals("0")) {
@@ -198,7 +217,7 @@ public class ListDAO {
 			    else if (filterNum == 9) { minRating = 0.5; maxRating = 0.9; }
 			    else if (filterNum == 10) { minRating = 0.0; maxRating = 0.4; }
 			    
-			    basesql += " AND R.AVG_RATING >= ? AND R.AVG_RATING <= ?"; 
+			    basesql += " AND NVL(ar.AVG_RATING, 0) >= ? AND NVL(ar.AVG_RATING, 0) <= ?";
 			}
 			
 			if("desc".equals(sort)) {
@@ -206,7 +225,7 @@ public class ListDAO {
 			} else if("view".equals(sort)) {
 				basesql += " ORDER BY NVL(R.VIEW_COUNT, 0) DESC, R.CREATED_AT DESC";
 			} else if("avg".equals(sort)) {
-				basesql += " ORDER BY R.AVG_RATING DESC";
+				basesql += " ORDER BY NVL(ar.AVG_RATING, 0) DESC";
 			}
 			
 			String sql = "SELECT * FROM ( "
@@ -267,7 +286,10 @@ public class ListDAO {
 	        con = getConnection();
 	        int paramIndex = 1; 
 	        
-	        String sql = "SELECT COUNT(*) FROM RECIPE R INNER JOIN USERS U ON R.USER_ID = U.USER_ID WHERE R.IS_DELETED = 0";
+	        String sql = "SELECT COUNT(*) FROM RECIPE R INNER JOIN USERS U ON R.USER_ID = U.USER_ID "
+	        		   + "LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+	        		   + "           WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+	        		   + "ON R.RECIPE_ID = ar.RECIPE_ID WHERE R.IS_DELETED = 0";
 	        
 	        if(categoryId != null && !categoryId.equals("0")) {
 	            sql += " AND R.CATEGORY_ID = ?";
@@ -290,7 +312,7 @@ public class ListDAO {
 	            else if (filterNum == 9) { minRating = 0.5; maxRating = 1.0; } 
 	            else if (filterNum == 10) { minRating = 0.0; maxRating = 0.5; }
 	            
-	            sql += " AND R.AVG_RATING >= ? AND R.AVG_RATING < ? AND";
+	            sql += " AND NVL(ar.AVG_RATING, 0) >= ? AND NVL(ar.AVG_RATING, 0) < ?";
 	        }
 	        pstmt = con.prepareStatement(sql);
 	        

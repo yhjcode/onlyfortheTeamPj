@@ -41,7 +41,7 @@
         <div class="text-center mb-4">
             <img src="${pageContext.request.contextPath}${theme.thumbnail}"
                  alt="${theme.title}"
-                 style="max-width: 500px; border-radius: 15px;">
+                 style="max-width: 900px; width: 100%; border-radius: 15px;">
         </div>
     </c:if>
 
@@ -53,6 +53,13 @@
         <span><i class="bi bi-eye"></i> 閲覧数 ${theme.viewCount}</span>
         <span><i class="bi bi-calendar3"></i> ${theme.createdAt}</span>
     </div>
+
+    <c:if test="${not empty theme.description}">
+        <div class="mt-4 p-4 rounded-4 theme-desc"
+             style="background:#fff; border: 1px solid #e9ecef; text-align: center !important;">
+            ${fn:trim(theme.description)}
+        </div>
+    </c:if>
 </div>
 
 <!-- 테마 수정 / 삭제 버튼 -->
@@ -93,9 +100,6 @@
         </c:if>
     </div>
 
-    <!-- 테마 설명 -->
-    <div class="mb-5 p-4 bg-light rounded-4 theme-desc"><c:choose><c:when test="${not empty theme.description}">${fn:trim(theme.description)}</c:when><c:otherwise>テーマの紹介文を準備中です。</c:otherwise></c:choose></div>
-
     <c:if test="${empty recipeList}">
         <div class="text-center text-muted py-5">
             まだレシピが追加されていません。<br>
@@ -111,7 +115,7 @@
         <div class="text-center mb-4">
             <img src="${pageContext.request.contextPath}${recipe.thumbnail}"
                  alt="${recipe.title}"
-                 style="max-width: 300px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                 style="max-width: 600px; width: 100%; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         </div>
     </c:if>
 
