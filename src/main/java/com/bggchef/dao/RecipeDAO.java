@@ -16,23 +16,23 @@ public class RecipeDAO {
             throws SQLException {
         Connection conn = null;
         try {
-            conn = DBUtil.getConnection();
-            conn.setAutoCommit(false);
+            conn = DBUtil.getConnection();   //DB.Util클래스로 db와 세션이 연결된 객체 참조
+            conn.setAutoCommit(false);       // 레시피dto, 재료리스트, 스텝리스트를 한번에 커밋하기 위해 수동 커밋으로 설정
 
-            long recipeId = nextLong(conn, "SELECT SEQ_RECIPE.NEXTVAL FROM DUAL");
+            long recipeId = nextLong(conn, "SELECT SEQ_RECIPE.NEXTVAL FROM DUAL");  // 시퀀스 번호 발급받고 레시피dto의 레시피id필드에 저장
             recipe.setRecipeId(recipeId);
 
-            insertRecipeOnly(conn, recipe); 
-            insertIngredients(conn, recipeId, ingrList);
-            insertSteps(conn, recipeId, stepList);
+            insertRecipeOnly(conn, recipe);  //레시피dto정보를 레시피 테이블에 저장- 리턴값은 없음
+            insertIngredients(conn, recipeId, ingrList); //레시피 재료묶음 리스트,재료id를 레시피 재료 테이블에 저장 -리턴값없음
+            insertSteps(conn, recipeId, stepList); //레시피 스텝묶음 리스트를 스텝 테이블에 저장- 리턴값없음
 
-            conn.commit();
-            return recipeId;
+            conn.commit();                       // 커밋
+            return recipeId;                     //레시피id를 컨트롤러에 리턴
         } catch (SQLException e) {
-            rollback(conn);
-            throw e;
+            rollback(conn);                      //sql예외 발생시 롤백처리
+            throw e;               
         } finally {
-            closeConnection(conn);
+            closeConnection(conn);           //jdbc 자원 반납
         }
     }
     
@@ -197,7 +197,7 @@ public class RecipeDAO {
 
     
     
-    //9
+    //9   레시피 인서트 메서드에서 매개변수로 받은 리시피dto(레시피 dto, 재료리스트, 스텝리스트중 하나)의 필드값들을 레시피 테이블에 저장하는 메서드
     private void insertRecipeOnly(Connection conn, RecipeDTO recipe) throws SQLException {
         String sql = "INSERT INTO RECIPE "
                    + "(recipe_id, user_id, category_id, title, thumbnail, description, "
@@ -219,17 +219,19 @@ public class RecipeDAO {
     }
 
     
-   //10  (2번메서드 내부호출)
+   //10  (2번메서드 내부호출)    재료리스트를 받아서 레시피 재료테이블에 값을 저장하는 메서드
     private void insertIngredients(Connection conn, long recipeId, List<RecipeIngredientDTO> ingrList)
             throws SQLException {
         if (ingrList == null) return;
 
-        String sql = "INSERT INTO RECIPE_INGREDIENTS "
+        String sql = "INSERT INTO RECIPE_INGREDIENTS "                        //레시피가 아니고 레시피 제료테이블에 저장한다  /레시피id,레시피재료id,재료id,수량,
+        		                                                                             //레시피id,수량은 List<RecipeIngredientDTO> ingrList에서 하나씩 추출,레시피재료id는 + "VALUES (SEQ_RECIPE_INGR.NEXTVAL, ?, ?, ?)";
+        		                                                                            //이 쿼리문으로,재료id는 findOrCreateIngredient메서드로 직접 db를 조회해서 가져온다
                    + "(recipe_ingr_id, ingredient_id, recipe_id, amount) "
                    + "VALUES (SEQ_RECIPE_INGR.NEXTVAL, ?, ?, ?)";
 
-        for (RecipeIngredientDTO ingredient : ingrList) {
-            if (isBlank(ingredient.getName()) || isBlank(ingredient.getAmount())) {
+        for (RecipeIngredientDTO ingredient : ingrList) { // 리스트 길이만큼 반복하며 레시피재료 dto 타입 변수에 재료리스트값인 레시피재료dto를 저장
+            if (isBlank(ingredient.getName()) || isBlank(ingredient.getAmount())) {  // 재료나 수량이 없는 dto는 건너뜀
                 continue;
             }
             int ingredientId = findOrCreateIngredient(conn, ingredient.getName(), ingredient.getUnit());
@@ -238,33 +240,33 @@ public class RecipeDAO {
                 pstmt.setLong(2, recipeId);
                 pstmt.setString(3, ingredient.getAmount());
                 pstmt.executeUpdate();
-            }
+            }// 레시피 묶음의 재료이름,수량,레시피id(매개값으로 받음),재료id(findOrCreateIngredient로 조회함)을 레시피 재료 테이블에 저장
         }
     }
     
     
     
-//11  (2번메서드 내부호출)
+//11  (2번메서드 내부호출) // 레시피 스텝(사진, 스텝설명)을 스텝dto단위로 저장한 스텝리스트를 레시피 스텝 테이블에 저장하는 메서드
     private void insertSteps(Connection conn, long recipeId, List<RecipeStepDTO> stepList)
             throws SQLException {
         if (stepList == null) return;
-
+                                                                                                //스텝테이블 컬럼 = 스텝id,스텝no(번호),리시피id, content(스텝설명)
         String sql = "INSERT INTO RECIPE_STEP "
                    + "(step_id, recipe_id, step_no, image_url, content) "
                    + "VALUES (SEQ_RECIPE_STEP.NEXTVAL, ?, ?, ?, ?)";
 
-        int stepNo = 1;
+        int stepNo = 1;                                                                    // 스텝 순서번호는 기본 1부터 시작
         for (RecipeStepDTO step : stepList) {
             if (isBlank(step.getContent())) {
                 continue;
             }
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setLong(1, recipeId);
-                pstmt.setInt(2, stepNo++);
+                pstmt.setLong(1, recipeId);                                               
+                pstmt.setInt(2, stepNo++);                                               //쿼리문에 두번째 ?가 step_no에 해당하고 초기값이1, 1++ 후위연산이기 때문에   continue가 적용돼도 1씩만 늘어난다
                 pstmt.setString(3, step.getImageUrl());
                 pstmt.setString(4, step.getContent());
-                pstmt.executeUpdate();
-            }
+                pstmt.executeUpdate();                                                    //스텝 테이블에 매개변수로 받은 레시피id, 스탭dto리스트에서 뽑은 사진과 스텝설명,1부터시작하도록 정의한 스텝no를 저장
+            }                                                                                   //반복문을 한번 실행할때마다 스텝테이블 의 행이 하나씩 완성된다
         }
     }
 

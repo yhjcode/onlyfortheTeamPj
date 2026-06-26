@@ -243,7 +243,7 @@ public class RecipeController extends HttpServlet {
 
         long recipeId = recipeDAO.insertRecipe(recipe, ingredients, steps);//  (레시피DTO객체), 재료정보(리스트),스텝정보(리스트)들을 각 db테이블에 insert into 하고 한번에 커밋+ 레시피id를 시퀀스로
         //발급받고 리턴
-        res.sendRedirect(req.getContextPath() + "/recipe/view?recipe_id=" + recipeId); //레시피id에 해당하는 레시피상세페이지를 조립해서 브라우저에 응답
+        res.sendRedirect(req.getContextPath() + "/recipe/view?recipe_id=" + recipeId); //레시피id에 해당하는 레시피상세페이지 view코드를  브라우저에 응답
     }
     
     
@@ -480,7 +480,7 @@ public class RecipeController extends HttpServlet {
     }
 
     
-    //20
+    //20 
     private String trimToNull(String value) {
         return isBlank(value) ? null : value.trim();
     }
