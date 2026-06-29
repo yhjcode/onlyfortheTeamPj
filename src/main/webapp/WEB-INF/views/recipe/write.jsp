@@ -53,6 +53,9 @@
         text-align: center;
     }
     .photo-preview {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         min-height: 198px;

@@ -39,7 +39,7 @@
 <hr>
 <div class=categorybutton>
 <c:forEach var="cbutton" items="${button}">
-<input type="button" value="${cbutton.categoryL}" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${cbutton.categoryId}'"
+<input type="button" value="${cbutton.categoryL}" onclick="location.href='${pageContext.request.contextPath}/category/list?sort=${currentsort}&categoryId=${cbutton.categoryId}&ratingFilter=${currentRatingFilter}'"
  class="${currentcategory eq cbutton.categoryId ? 'active' : ''}">
 </c:forEach>								
 <input type="button" value="すべて"
@@ -84,9 +84,9 @@
 
 <div class="categoryrecipe" align="right">
 	<input type="button" value="最新順" class="${empty param.sort || param.sort == 'desc' ? 'active' : ''}"
-	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=desc&categoryId=${currentcategory}'">
+	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=desc&categoryId=${currentcategory}&ratingFilter=${currentRatingFilter}'">
 	<input type="button" value="閲覧数順" class="${param.sort == 'view' ? 'active' : ''}"
-	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=view&categoryId=${currentcategory}'">
+	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=view&categoryId=${currentcategory}&ratingFilter=${currentRatingFilter}'">
 <%--	<input type="button" value="평점순" class="${param.sort == 'avg' ? 'active' : ''}"
 	 onclick="location.href='${pageContext.request.contextPath}/category/list?sort=avg&categoryId=${currentcategory}'"> --%>
 </div>
