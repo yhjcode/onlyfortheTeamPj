@@ -118,7 +118,7 @@
                                                 <i class="bi bi-star-fill"></i>
                                                 <c:choose>
                                                     <c:when test="${r.avgRating != null and r.avgRating > 0}"><fmt:formatNumber value="${r.avgRating}" pattern="0.0"/></c:when>
-                                                    <c:otherwise>-</c:otherwise>
+                                                    <c:otherwise>0.0</c:otherwise>
                                                 </c:choose>
                                             </span>
                                             <span><i class="bi bi-eye"></i> ${r.viewCount}</span>
@@ -210,7 +210,7 @@
                                             <span class="rating"><i class="bi bi-star-fill"></i>
                                                 <c:choose>
                                                     <c:when test="${u.avgRating != null and u.avgRating > 0}"><fmt:formatNumber value="${u.avgRating}" pattern="0.0"/></c:when>
-                                                    <c:otherwise>-</c:otherwise>
+                                                    <c:otherwise>0.0</c:otherwise>
                                                 </c:choose>
                                             </span>
                                             <span><i class="bi bi-award-fill" style="color:${medalColor}"></i> ${u.medalGrade}</span>

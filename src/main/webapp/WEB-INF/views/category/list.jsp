@@ -116,7 +116,7 @@
                             <div class="recipe-meta">
                                     <span class="rating">
                                         <i class="bi bi-star-fill"></i> 
-                                        ${descRecipe.avgRating}
+                                        <fmt:formatNumber value="${descRecipe.avgRating}" pattern="0.0" />
                                     </span> 
                                     <span><i class="bi bi-eye"></i> ${descRecipe.viewCount == null || empty descRecipe.viewCount ? '0' : descRecipe.viewCount }</span> 
                                     <span><i class="bi bi-person-fill"></i>${descRecipe.nickname }</span>
