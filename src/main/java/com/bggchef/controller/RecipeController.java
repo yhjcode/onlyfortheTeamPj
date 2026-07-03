@@ -162,6 +162,10 @@ public class RecipeController extends HttpServlet {
 
         recipeDAO.increaseViewCount(recipeId);
         RecipeDTO recipe = recipeDAO.selectRecipeById(recipeId);
+        
+        System.out.println("데이터 : " + recipe);
+        
+        
         if (recipe == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;

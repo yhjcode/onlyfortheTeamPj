@@ -198,7 +198,7 @@
    ) ;
 
 
--- ========== INDEXES ==========
+-- ========== INDEXES ==========  
 
   CREATE INDEX "BGGCHEF"."IDX_FAVORITE_USER" ON "BGGCHEF"."FAVORITE" ("USER_ID")
   ;
@@ -309,3 +309,5 @@
 
 
 -- ========== VIEWS ==========
+
+   ALTER TABLE RECOMMENDED_THEME;

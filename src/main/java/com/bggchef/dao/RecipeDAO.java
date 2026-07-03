@@ -94,17 +94,29 @@ public class RecipeDAO {
     
     //4  레시피id로 작성유저정보,카테고리L 정보
     public RecipeDTO selectRecipeById(long recipeId) throws SQLException {
-        String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
-                   + "       r.servings, r.cook_time, r.difficulty, r.view_count, "
-                   + "       r.is_deleted, r.created_at, u.nickname, cl.name AS category_name, "
-                   + "       NVL(ar.AVG_RATING, 0) AS avg_rating "
-                   + "  FROM RECIPE r "
-                   + "  JOIN USERS u ON r.user_id = u.user_id "
-                   + "  JOIN CATEGORY_L cl ON r.category_id = cl.categoryl_id "
-                   + "  LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
-                   + "             WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
-                   + "  ON r.recipe_id = ar.RECIPE_ID "
-                   + " WHERE r.recipe_id = ? AND r.is_deleted = 0";
+    	String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
+    	           + "       r.servings, r.cook_time, r.difficulty, r.view_count, "
+    	           + "       r.is_deleted, r.created_at, u.nickname, cm.name AS category_name, "
+    	           + "       NVL(ar.AVG_RATING, 0) AS avg_rating "
+    	           + "  FROM RECIPE r "
+    	           + "  JOIN USERS u ON r.user_id = u.user_id "
+    	           + "  JOIN CATEGORY_M cm ON r.category_id = cm.categorym_id "
+    	           + "  JOIN CATEGORY_L cl ON cm.categoryl_id = cl.categoryl_id "
+    	           + "  LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+    	           + "             WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+    	           + "  ON r.recipe_id = ar.RECIPE_ID "
+    	           + " WHERE r.recipe_id = ? AND r.is_deleted = 0";
+//        String sql = "SELECT r.recipe_id, r.user_id, r.category_id, r.title, r.thumbnail, r.description, "
+//                   + "       r.servings, r.cook_time, r.difficulty, r.view_count, "
+//                   + "       r.is_deleted, r.created_at, u.nickname, cl.name AS category_name, "
+//                   + "       NVL(ar.AVG_RATING, 0) AS avg_rating "
+//                   + "  FROM RECIPE r "
+//                   + "  JOIN USERS u ON r.user_id = u.user_id "
+//                   + "  JOIN CATEGORY_L cl ON r.category_id = cl.categoryl_id "
+//                   + "  LEFT JOIN (SELECT RECIPE_ID, AVG(RATING) AS AVG_RATING FROM REVIEW "
+//                   + "             WHERE IS_DELETED = 0 AND RATING IS NOT NULL GROUP BY RECIPE_ID) ar "
+//                   + "  ON r.recipe_id = ar.RECIPE_ID "
+//                   + " WHERE r.recipe_id = ? AND r.is_deleted = 0";
 
         Connection conn = null;
         PreparedStatement pstmt = null;

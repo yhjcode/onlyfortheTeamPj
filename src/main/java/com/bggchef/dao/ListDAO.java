@@ -164,7 +164,7 @@ public class ListDAO {
 			while(rs.next()) {	
 				ListDTO dto = new ListDTO();
 				dto.setCategoryL(rs.getString("NAME")); 
-				dto.setCategoryId(rs.getInt("CATEGORYL_ID"));
+				dto.setCategoryId(rs.getInt("CATEGORYL_ID")); //확인 
 				arr.add(dto);
 			}
 		} catch (Exception e) {

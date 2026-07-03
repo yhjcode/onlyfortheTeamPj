@@ -104,7 +104,7 @@ public class CategoryController extends HttpServlet {
             
             
             req.setAttribute("currentsort",sort);
-            req.setAttribute("currentcategory",categoryId);
+            req.setAttribute("currentcategory",categoryId); ////////
             req.setAttribute("currentRatingFilter", ratingFilter);
             
             
